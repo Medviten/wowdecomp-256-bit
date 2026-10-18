@@ -365,11 +365,12 @@ static bool FactionHasReputationForPlayer(const FactionRec* faction) {
     uint8_t race = player->m_unit->m_unitFieldBytes0[0];
 
     for (uint32_t i = 0; i < 4; i++) {
-        int32_t raceMask = faction->m_reputationRaceMask[i];
+        // Custom: 256-bit race mask (see RaceMask.h)
+        const RaceMask& raceMask = faction->m_reputationRaceMask[i];
         int32_t classMask = faction->m_reputationClassMask[i];
 
-        if (raceMask) {
-            if (!((1 << (race - 1)) & raceMask)) {
+        if (!raceMask.IsEmpty()) {
+            if (!raceMask.HasRace(race)) {
                 continue;
             }
 
@@ -730,11 +731,12 @@ void CGReputationInfo::EnterWorld() {
         CGReputationInfo::m_factionStandings[faction->m_reputationIndex].m_factionId = faction->m_id;
 
         for (uint32_t k = 0; k < 4; k++) {
-            int32_t raceMask = faction->m_reputationRaceMask[k];
+            // Custom: 256-bit race mask (see RaceMask.h)
+            const RaceMask& raceMask = faction->m_reputationRaceMask[k];
             int32_t classMask = faction->m_reputationClassMask[k];
 
-            if (raceMask) {
-                if (!((1 << (race - 1)) & raceMask)) {
+            if (!raceMask.IsEmpty()) {
+                if (!raceMask.HasRace(race)) {
                     continue;
                 }
 

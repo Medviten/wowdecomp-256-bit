@@ -383,8 +383,9 @@ static void BuildTabInfo(CGPlayer_C* player, TSFixedArray<TalentTabInfo*>* tabs,
         TalentTabRec* tab = g_talentTabDB.GetRecordByIndex(i);
 
         if (player) {
-            if (tab->m_raceMask) {
-                if (!(tab->m_raceMask & (1 << (player->m_unit->m_unitFieldBytes0[0] - 1)))) {
+            // Custom: 256-bit race mask (see RaceMask.h)
+            if (!tab->m_raceMask.IsEmpty()) {
+                if (!tab->m_raceMask.HasRace(player->m_unit->m_unitFieldBytes0[0])) {
                     continue;
                 }
 
@@ -417,8 +418,9 @@ static void BuildTabInfo(CGPlayer_C* player, TSFixedArray<TalentTabInfo*>* tabs,
         TalentTabRec* tab = g_talentTabDB.GetRecordByIndex(i);
 
         if (player) {
-            if (tab->m_raceMask) {
-                if (!(tab->m_raceMask & (1 << (player->m_unit->m_unitFieldBytes0[0] - 1)))) {
+            // Custom: 256-bit race mask (see RaceMask.h)
+            if (!tab->m_raceMask.IsEmpty()) {
+                if (!tab->m_raceMask.HasRace(player->m_unit->m_unitFieldBytes0[0])) {
                     continue;
                 }
 

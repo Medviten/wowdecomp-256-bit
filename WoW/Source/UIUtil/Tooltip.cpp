@@ -2018,10 +2018,11 @@ int32_t CGTooltip::SetUnit(const WOWGUID& guid, int32_t showHealth, const WOWGUI
 
         if (faction && faction->m_reputationIndex >= 0) {
             for (uint32_t i = 0; i < 4; i++) {
-                uint32_t raceMask = faction->m_reputationRaceMask[i];
+                // Custom: 256-bit race mask (see RaceMask.h)
+                const RaceMask& raceMask = faction->m_reputationRaceMask[i];
                 uint32_t classMask = faction->m_reputationClassMask[i];
 
-                if ((!raceMask || ((1 << (activePlayer->m_unit->m_unitFieldBytes0[0] - 1)) & raceMask)) && (raceMask || classMask) && (!classMask || ((1 << (activePlayer->m_unit->m_unitFieldBytes0[1] - 1)) & classMask))) {
+                if ((raceMask.IsEmpty() || raceMask.HasRace(activePlayer->m_unit->m_unitFieldBytes0[0])) && (!raceMask.IsEmpty() || classMask) && (!classMask || ((1 << (activePlayer->m_unit->m_unitFieldBytes0[1] - 1)) & classMask))) {
                     if (!(faction->m_reputationFlags[i] & 0x4)) {
                         this->AddLine(faction->m_name, nullptr, textColor, textColor, 0);
                     }

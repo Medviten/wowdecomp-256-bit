@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <cstdint>
 #include "Engine/Source/Storm/H/stpl.h"
+#include "WoW/Source/DB/RaceMask.h"
 
 class SkillCostsDataRec;
 class SkillLineAbilityRec;
@@ -40,7 +41,7 @@ struct SkillLineLinkInfo {
 
 void SpellTableInitialize();
 void SpellTableDestroy();
-bool SpellTableMatchRaceClass(int32_t race, int32_t classId, int32_t raceMask, int32_t classMask, int32_t excludeRace, int32_t excludeClass);
+bool SpellTableMatchRaceClass(int32_t race, int32_t classId, const RaceMask& raceMask, int32_t classMask, int32_t excludeRace, int32_t excludeClass);
 SkillLineAbilityRec* SpellTableLookupPetAbility(int32_t skillLine, int32_t spellId);
 bool SpellTableGetSkillLineLinkInfo(int32_t skillLine, const SkillLineAbilityRec*& ability, uint32_t& count);
 const SkillRaceClassInfoRec* SpellTableLookupInfo(int32_t race, int32_t classId, int32_t skillId);

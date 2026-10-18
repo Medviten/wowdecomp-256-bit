@@ -49,16 +49,15 @@ SKILLLINEREC* SkillLineRecTable::InternalNew(TSExplicitList<SKILLLINEREC>* listp
 
 // VERIFY: 87b0816a manual
 // OFFSET: 0x00810320
-bool SpellTableMatchRaceClass(int32_t race, int32_t classId, int32_t raceMask, int32_t classMask, int32_t excludeRace, int32_t excludeClass) {
-    if (excludeRace) {
-        raceMask = ~raceMask;
-    }
+// Custom: 256-bit race mask (see RaceMask.h)
+bool SpellTableMatchRaceClass(int32_t race, int32_t classId, const RaceMask& raceMask, int32_t classMask, int32_t excludeRace, int32_t excludeClass) {
+    RaceMask races = excludeRace ? ~raceMask : raceMask;
 
     if (excludeClass) {
         classMask = ~classMask;
     }
 
-    return (!raceMask || ((1 << (race - 1)) & raceMask)) && (!classMask || ((1 << (classId - 1)) & classMask));
+    return (races.IsEmpty() || races.HasRace(race)) && (!classMask || ((1 << (classId - 1)) & classMask));
 }
 
 // VERIFY: 57f2bfbe auto
@@ -102,7 +101,8 @@ const SkillRaceClassInfoRec* SpellTableLookupInfo(int32_t race, int32_t classId,
     const SkillRaceClassInfoRec* rec = info->m_info;
 
     for (int32_t i = 0; i < info->m_count; i++, rec++) {
-        if ((!rec->m_raceMask || ((1 << (race - 1)) & rec->m_raceMask)) && (!rec->m_classMask || ((1 << (classId - 1)) & rec->m_classMask))) {
+        // Custom: 256-bit race mask (see RaceMask.h)
+        if ((rec->m_raceMask.IsEmpty() || rec->m_raceMask.HasRace(race)) && (!rec->m_classMask || ((1 << (classId - 1)) & rec->m_classMask))) {
             return rec;
         }
     }
