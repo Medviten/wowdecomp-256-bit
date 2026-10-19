@@ -599,7 +599,9 @@ void FriendList::SendWho(const char* filter) {
 
     int32_t minLevel = 0;
     int32_t maxLevel = 100;
-    int32_t raceMask = -1;
+    // Custom: 256-bit race filter, bit = race id; all bits set means no race filter
+    RaceMask raceMask = RaceMask::All();
+    bool raceFiltered = false;
     int32_t classMask = -1;
     uint32_t zoneCount = 0;
     int32_t zones[10];
@@ -670,15 +672,16 @@ void FriendList::SendWho(const char* filter) {
                         if (!SStrCmpUTF8I(word, tag, SStrLenUTF8(tag))) {
                             const char* raceText = &word[SStrLen(tag)];
 
-                            if (raceMask == -1) {
-                                raceMask = 0;
+                            if (!raceFiltered) {
+                                raceMask = RaceMask::None();
+                                raceFiltered = true;
                             }
 
                             for (int32_t i = 0; i < g_chrRacesDB.m_numRecords; i++) {
                                 ChrRacesRec* race = g_chrRacesDB.GetRecordByIndex(i);
 
                                 if (SStrStrUTF8I(race->m_name, raceText)) {
-                                    raceMask |= 1 << race->m_id;
+                                    raceMask.SetBit(race->m_id);
                                 }
                             }
                         } else {
@@ -766,7 +769,11 @@ void FriendList::SendWho(const char* filter) {
     strcpy(this->m_whoName, name);
     msg.PutString(guild);
     strcpy(this->m_whoGuild, guild);
-    msg.Put(static_cast<uint32_t>(raceMask));
+    // Custom: 256-bit race mask, 8 uint32
+    for (int32_t i = 0; i < RaceMask::s_numWords; i++) {
+        msg.Put(raceMask.m_words[i]);
+    }
+
     this->m_whoRaceMask = raceMask;
     msg.Put(static_cast<uint32_t>(classMask));
     this->m_whoClassMask = classMask;
@@ -884,7 +891,7 @@ int32_t FriendList::DoLocalWho() {
         uint8_t race = player->m_unit->m_unitFieldBytes0[0];
         uint8_t classId = player->m_unit->m_unitFieldBytes0[1];
 
-        if (!((1 << race) & this->m_whoRaceMask) || !((1 << classId) & this->m_whoClassMask)) {
+        if (!this->m_whoRaceMask.HasBit(race) || !((1 << classId) & this->m_whoClassMask)) { // Custom: 256-bit race mask
             continue;
         }
 

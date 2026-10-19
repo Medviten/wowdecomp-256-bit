@@ -3,12 +3,14 @@
 
 #include <cstddef>
 #include <cstdint>
+#include "WoW/Source/DB/RaceMask.h"
 
 class CDataStore;
 
 class ItemStats_C {
     public:
-    static const uint32_t s_cacheVersion = 5;
+    // Custom: bumped from 5, AllowableRace is 256-bit (old itemcache.wdb files are discarded)
+    static const uint32_t s_cacheVersion = 6;
 
     /* 0004 */ uint32_t m_class;
     /* 0008 */ uint32_t m_subClass;
@@ -20,7 +22,8 @@ class ItemStats_C {
     /* 0024 */ uint32_t m_sellPrice;
     /* 0028 */ uint32_t m_inventoryType;
     /* 002C */ uint32_t m_allowableClass;
-    /* 0030 */ uint32_t m_allowableRace;
+    // Custom: 256-bit (see RaceMask.h); the offsets below are those of the stock 32-bit layout
+    /* 0030 */ RaceMask m_allowableRace;
     /* 0034 */ uint32_t m_itemLevel;
     /* 0038 */ uint32_t m_requiredLevel;
     /* 003C */ uint32_t m_requiredSkill;

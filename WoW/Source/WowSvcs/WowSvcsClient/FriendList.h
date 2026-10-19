@@ -3,6 +3,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include "WoW/Source/DB/RaceMask.h"
 #include "WoW/Source/Object/WGUID.h"
 #include "WoW/Source/Net/Types.h"
 
@@ -73,7 +74,8 @@ class FriendList {
     /* DBF4 */ int32_t m_whoMaxLevel;
     /* DBF8 */ char m_whoName[48];
     /* DC28 */ char m_whoGuild[96];
-    /* DC88 */ int32_t m_whoRaceMask;
+    // Custom: 256-bit, bit = race id (see RaceMask.h); the offsets below are those of the stock 32-bit layout
+    /* DC88 */ RaceMask m_whoRaceMask;
     /* DC8C */ int32_t m_whoClassMask;
     /* DC90 */ int32_t m_whoStringCount;
     /* DC94 */ char m_whoStrings[10][128];

@@ -57,7 +57,10 @@ void ItemStats_C::Unpack(CDataStore* msg) {
     msg->Get(this->m_sellPrice);
     msg->Get(this->m_inventoryType);
     msg->Get(this->m_allowableClass);
-    msg->Get(this->m_allowableRace);
+    // Custom: 256-bit race mask, 8 uint32
+    for (uint32_t i = 0; i < RaceMask::s_numWords; i++) {
+        msg->Get(this->m_allowableRace.m_words[i]);
+    }
     msg->Get(this->m_itemLevel);
     msg->Get(this->m_requiredLevel);
     msg->Get(this->m_requiredSkill);
@@ -175,7 +178,10 @@ void ItemStats_C::Pack(CDataStore* msg) {
     msg->Put(this->m_sellPrice);
     msg->Put(this->m_inventoryType);
     msg->Put(this->m_allowableClass);
-    msg->Put(this->m_allowableRace);
+    // Custom: 256-bit race mask, 8 uint32
+    for (uint32_t i = 0; i < RaceMask::s_numWords; i++) {
+        msg->Put(this->m_allowableRace.m_words[i]);
+    }
     msg->Put(this->m_itemLevel);
     msg->Put(this->m_requiredLevel);
     msg->Put(this->m_requiredSkill);

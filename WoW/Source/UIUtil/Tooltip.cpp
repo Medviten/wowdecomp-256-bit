@@ -5279,14 +5279,15 @@ static void AddItemRaceClassLines(CGTooltip* tooltip, const ItemStats_C* stats, 
     int32_t allowed = 1;
     text[0] = '\0';
 
-    if (((stats->m_allowableRace - 1) & stats->m_allowableRace) || ((stats->m_allowableClass - 1) & stats->m_allowableClass)) {
+    // Custom: 256-bit race mask (see RaceMask.h)
+    if (stats->m_allowableRace.HasMultipleBits() || ((stats->m_allowableClass - 1) & stats->m_allowableClass)) {
         int32_t allRaces = 1;
         int32_t allClasses = 1;
 
         for (int32_t i = 0; i < g_chrRacesDB.m_numRecords; i++) {
             ChrRacesRec* race = g_chrRacesDB.GetRecordByIndex(i);
 
-            if (race && !(race->m_flags & 1) && !((1 << (race->m_id - 1)) & stats->m_allowableRace)) {
+            if (race && !(race->m_flags & 1) && !stats->m_allowableRace.HasRace(race->m_id)) {
                 allRaces = 0;
                 break;
             }
@@ -5309,7 +5310,7 @@ static void AddItemRaceClassLines(CGTooltip* tooltip, const ItemStats_C* stats, 
             for (int32_t i = 0; i < g_chrRacesDB.m_numRecords; i++) {
                 ChrRacesRec* race = g_chrRacesDB.GetRecordByIndex(i);
 
-                if (!(race->m_flags & 1) && race->m_name && ((1 << (race->m_id - 1)) & stats->m_allowableRace)) {
+                if (!(race->m_flags & 1) && race->m_name && stats->m_allowableRace.HasRace(race->m_id)) {
                     if (!first) {
                         SStrPack(list, ", ", sizeof(list));
                     }
@@ -5367,7 +5368,7 @@ static void AddItemRaceClassLines(CGTooltip* tooltip, const ItemStats_C* stats, 
     for (int32_t i = 0; i < g_chrRacesDB.m_numRecords; i++) {
         ChrRacesRec* race = g_chrRacesDB.GetRecordByIndex(i);
 
-        if (!(race->m_flags & 1) && race->m_name && ((1 << (race->m_id - 1)) & stats->m_allowableRace)) {
+        if (!(race->m_flags & 1) && race->m_name && stats->m_allowableRace.HasRace(race->m_id)) {
             SStrPrintf(text, sizeof(text), "%s ", race->m_name);
 
             if (player->m_unit->m_unitFieldBytes0[0] != race->m_id) {

@@ -604,11 +604,12 @@ bool CGCharacterInfo::CanEquipItemInSlot(const ItemStats_C* stats, uint32_t slot
 
     int32_t allowed = 1;
 
-    if (!((stats->m_allowableRace - 1) & stats->m_allowableRace) && !((stats->m_allowableClass - 1) & stats->m_allowableClass)) {
+    // Custom: 256-bit race mask (see RaceMask.h)
+    if (!stats->m_allowableRace.HasMultipleBits() && !((stats->m_allowableClass - 1) & stats->m_allowableClass)) {
         for (int32_t i = 0; i < g_chrRacesDB.m_numRecords; i++) {
             ChrRacesRec* race = g_chrRacesDB.GetRecordByIndex(i);
 
-            if (race && !(race->m_flags & 0x1) && ((1 << (race->m_id - 1)) & stats->m_allowableRace) && player->m_unit->m_unitFieldBytes0[0] != race->m_id) {
+            if (race && !(race->m_flags & 0x1) && stats->m_allowableRace.HasRace(race->m_id) && player->m_unit->m_unitFieldBytes0[0] != race->m_id) {
                 return false;
             }
         }
@@ -630,7 +631,7 @@ bool CGCharacterInfo::CanEquipItemInSlot(const ItemStats_C* stats, uint32_t slot
     for (int32_t i = 0; i < g_chrRacesDB.m_numRecords; i++) {
         ChrRacesRec* race = g_chrRacesDB.GetRecordByIndex(i);
 
-        if (race && !(race->m_flags & 0x1) && !((1 << (race->m_id - 1)) & stats->m_allowableRace)) {
+        if (race && !(race->m_flags & 0x1) && !stats->m_allowableRace.HasRace(race->m_id)) {
             allRaces = 0;
             break;
         }
@@ -651,7 +652,7 @@ bool CGCharacterInfo::CanEquipItemInSlot(const ItemStats_C* stats, uint32_t slot
         for (int32_t i = 0; i < g_chrRacesDB.m_numRecords; i++) {
             ChrRacesRec* race = g_chrRacesDB.GetRecordByIndex(i);
 
-            if (race && !(race->m_flags & 0x1) && ((1 << (race->m_id - 1)) & stats->m_allowableRace) && player->m_unit->m_unitFieldBytes0[0] == race->m_id) {
+            if (race && !(race->m_flags & 0x1) && stats->m_allowableRace.HasRace(race->m_id) && player->m_unit->m_unitFieldBytes0[0] == race->m_id) {
                 allowed = 1;
             }
         }
