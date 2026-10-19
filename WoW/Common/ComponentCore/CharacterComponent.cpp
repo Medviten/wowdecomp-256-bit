@@ -3882,33 +3882,34 @@ void CCharacterComponent::AddHelm(int32_t itemVisual) {
         return;
     }
 
-    uint32_t raceMask = 1 << this->m_data.m_preferences.m_raceID;
+    // Custom: 256-bit hide masks (see RaceMask.h); a 32-bit `1 << raceID` wrapped around for race ids 32 and above
+    int32_t race = this->m_data.m_preferences.m_raceID;
 
-    if (raceMask & visRec->m_hideGeoset[0]) {
+    if (visRec->m_hideGeoset[0].HasBit(race)) {
         this->m_data.m_geosets[0] = 1;
     }
 
-    if (raceMask & visRec->m_hideGeoset[1]) {
+    if (visRec->m_hideGeoset[1].HasBit(race)) {
         this->m_data.m_geosets[1] = 101;
     }
 
-    if (raceMask & visRec->m_hideGeoset[2]) {
+    if (visRec->m_hideGeoset[2].HasBit(race)) {
         this->m_data.m_geosets[2] = 201;
     }
 
-    if (raceMask & visRec->m_hideGeoset[3]) {
+    if (visRec->m_hideGeoset[3].HasBit(race)) {
         this->m_data.m_geosets[3] = 301;
     }
 
-    if (raceMask & visRec->m_hideGeoset[4]) {
+    if (visRec->m_hideGeoset[4].HasBit(race)) {
         this->m_data.m_geosets[7] = 701;
     }
 
-    if (raceMask & visRec->m_hideGeoset[5]) {
+    if (visRec->m_hideGeoset[5].HasBit(race)) {
         this->m_data.m_geosets[16] = 1601;
     }
 
-    if (raceMask & visRec->m_hideGeoset[6]) {
+    if (visRec->m_hideGeoset[6].HasBit(race)) {
         this->m_data.m_geosets[17] = 1701;
     }
 }

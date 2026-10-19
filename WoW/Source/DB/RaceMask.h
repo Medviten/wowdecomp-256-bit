@@ -5,7 +5,8 @@
 
 // Custom: 256-bit race mask, bit (race - 1) set per race, so race ids 1-255 fit. Stored exactly as in the DBC files
 // written by DBCTool-256-bit: 8 little-endian uint32 fields, races 1-32 first. Replaces the stock int32 race masks of
-// Faction, SkillLineAbility, SkillRaceClassInfo and TalentTab.
+// Faction, SkillLineAbility, SkillRaceClassInfo and TalentTab, and HelmetGeosetVisData's hide masks, which index
+// their bits by race id itself (see HasBit()).
 struct RaceMask {
     static const int32_t s_numWords = 8;
 
@@ -21,12 +22,16 @@ struct RaceMask {
         return true;
     }
 
-    bool HasRace(int32_t race) const {
-        if (race <= 0 || race > s_numWords * 32) {
+    bool HasBit(int32_t bit) const {
+        if (bit < 0 || bit >= s_numWords * 32) {
             return false;
         }
 
-        return (this->m_words[(race - 1) / 32] >> ((race - 1) % 32)) & 1;
+        return (this->m_words[bit / 32] >> (bit % 32)) & 1;
+    }
+
+    bool HasRace(int32_t race) const {
+        return race > 0 && this->HasBit(race - 1);
     }
 
     RaceMask operator~() const {
