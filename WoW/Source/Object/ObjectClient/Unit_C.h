@@ -588,9 +588,10 @@ class CGUnit_C : public CGObject_C, public CGUnit {
     // (s_alteredFormAura) is up; and the display actually drawn, which uses that in place of the native display.
     int32_t GetCurrentClientNativeDisplayID() const;
     int32_t GetLocalDisplayID() const;
-    // Custom: whether a change of altered form should play the transformation anim (a manual change out of combat),
-    // rather than swapping instantly
-    bool CanPlayAlteredFormTransition();
+    // Custom: Cataclysm's mount self (Running Wild): mounted on a display that is the unit's own, so no mount model is
+    // made and the unit plays the MountSelf anims in place of its own stand/move/jump/fall anims (GetMountSelfAnim)
+    bool IsMountSelf() const;
+    uint32_t GetMountSelfAnim(uint32_t anim) const;
     uint32_t GetVoiceSex() const;
     bool IsShapeShifted() const;
     void PreemptivelyCancelShapeshift();

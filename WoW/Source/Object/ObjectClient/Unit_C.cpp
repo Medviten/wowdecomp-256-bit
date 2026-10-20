@@ -3619,6 +3619,17 @@ int32_t IsLocomotionAnimId(uint32_t animId) {
         case 143:
         case 187:
         case 223:
+        // Custom: the MountSelf movement and jump anims (see GetMountSelfAnim), so they follow movement speed too
+        case 620:
+        case 622:
+        case 624:
+        case 630:
+        case 632:
+        case 634:
+        case 638:
+        case 640:
+        case 642:
+        case 644:
             return 1;
         default:
             return 0;
@@ -4395,6 +4406,12 @@ void CGUnit_C::PlayBaseAnimation(uint32_t animId, int32_t flags) {
         }
 
         anim = (flags & 0x4) ? animId : this->ResolveAnimForModel(animId, nullptr);
+    }
+
+    // Custom: a unit that is its own mount plays the MountSelf versions of its anims. Done after resolving, since the
+    // MountSelf IDs are past what AnimationData and the fallback lookups cover; the model plays them directly.
+    if (this->IsMountSelf()) {
+        anim = this->GetMountSelfAnim(anim);
     }
 
     M2BoneSequenceInfo mount;
@@ -7264,28 +7281,60 @@ int32_t CGUnit_C::GetLocalDisplayID() const {
     return displayId;
 }
 
-// Custom: see Unit_C.h. The client is not told why the aura went away, so a change while fighting (the aura breaks on
-// attack), casting, moving or mounted swaps instantly. The base anim is also overridden by any combat or movement anim
-// that follows, so a fight starting just after the swap cuts the transformation short as well.
-bool CGUnit_C::CanPlayAlteredFormTransition() {
-    if (!(this->m_obj->m_type & TYPEMASK_PLAYER) || this->IsDeadOrAttachmentDying()) {
+// Custom: see Unit_C.h. Cataclysm 0x005BEEA0 without the display transition and casting checks
+bool CGUnit_C::IsMountSelf() const {
+    int32_t mountDisplayId = this->m_mountDisplayId;
+
+    if (mountDisplayId <= 0) {
         return false;
     }
 
-    if ((this->m_unit->m_unitFieldFlags & 0x80000) || this->IsInCombat()) {
-        return false;
+    return mountDisplayId == static_cast<int32_t>(this->m_unit->m_unitFieldNativedisplayid) || mountDisplayId == this->GetLocalDisplayID();
+}
+
+// Custom: Cataclysm's s_animSetMountSelfGround (0x00CA7DC0) as a map from the anims this client chooses. Swimming and
+// flying keep the unit's own anims, which these models have no MountSelf versions of.
+static const uint32_t s_mountSelfAnims[][2] = {
+    { ANIM_STAND, 618 },
+    { ANIM_WALK, 620 },
+    { ANIM_RUN, 622 },
+    { ANIM_SPRINT, 624 },
+    { ANIM_SHUFFLE_LEFT, 630 },
+    { ANIM_SHUFFLE_RIGHT, 632 },
+    { ANIM_WALKBACKWARDS, 634 },
+    { ANIM_JUMP, 638 },
+    { ANIM_JUMP_START, 640 },
+    { ANIM_JUMP_END, 642 },
+    { ANIM_JUMP_LAND_RUN, 644 },
+    { ANIM_FALL, 648 },
+};
+
+// Custom: see Unit_C.h. Keeps the anim when the model has no MountSelf version of it (e.g. female Worgen have no
+// MountSelf sprint, so they sprint with the MountSelf run)
+uint32_t CGUnit_C::GetMountSelfAnim(uint32_t anim) const {
+    CM2Model* model = this->m_worldModel;
+
+    if (!model) {
+        return anim;
     }
 
-    if (this->m_castingSpellId || this->m_channelSpellId || this->m_unit->m_unitChannelSpell) {
-        return false;
+    for (uint32_t i = 0; i < sizeof(s_mountSelfAnims) / sizeof(s_mountSelfAnims[0]); i++) {
+        if (s_mountSelfAnims[i][0] != anim) {
+            continue;
+        }
+
+        if (model->HasSequence(s_mountSelfAnims[i][1])) {
+            return s_mountSelfAnims[i][1];
+        }
+
+        if (anim == ANIM_SPRINT) {
+            return this->GetMountSelfAnim(ANIM_RUN);
+        }
+
+        return anim;
     }
 
-    if (this->m_mountDisplayId > 0 || this->m_vehiclePassenger) {
-        return false;
-    }
-
-    uint32_t moving = MOVEMENTFLAG_FORWARD | MOVEMENTFLAG_BACKWARD | MOVEMENTFLAG_STRAFE_LEFT | MOVEMENTFLAG_STRAFE_RIGHT | MOVEMENTFLAG_FALLING | MOVEMENTFLAG_SWIMMING | MOVEMENTFLAG_FLYING;
-    return !(this->m_movementData.m_flags & moving);
+    return anim;
 }
 
 // VERIFY: 8b19ad28 manual
@@ -8166,7 +8215,8 @@ CAaBox CGUnit_C::GetStandBox() const {
         box = *reinterpret_cast<const CAaBox*>(&modelData->m_geoBoxMinX);
     }
 
-    if (this->m_unit->m_unitFieldMountdisplayid > 0) {
+    // Custom: a unit that is its own mount does not sit higher
+    if (this->m_unit->m_unitFieldMountdisplayid > 0 && !this->IsMountSelf()) {
         CreatureDisplayInfoRec* displayInfo = g_creatureDisplayInfoDB.GetRecord(this->m_mountDisplayId);
 
         if (displayInfo) {
@@ -13670,16 +13720,11 @@ void CGUnit_C::OnAuraUpdate(CDataStore* msg, bool updateAll) {
     this->UpdateAuraEffectMask();
     bool changed = false;
 
-    // Custom: the altered form aura changes the drawn display (Cataclysm's UpdateAlteredForm). Returning to the native
-    // form by hand plays the post-swap half of Cataclysm's transformation on the native model. The first half
-    // (ToAltered) is not used: on the native model it hides the body and only fades in an overlay, meant to be drawn
-    // over the altered model while that plays its own ToAltered, which these human models do not have.
+    // Custom: the altered form aura changes the drawn display (Cataclysm's UpdateAlteredForm, without the transition:
+    // Cataclysm's ToAltered on the native model only fades in an overlay meant to be drawn over the altered model's
+    // own ToAltered, which these human models do not have)
     if (wasAltered != this->HasAuraEffect(s_alteredFormAura) && this->m_worldModel) {
         this->UpdateDisplayInfo(0);
-
-        if (wasAltered && !updateAll && this->CanPlayAlteredFormTransition()) {
-            this->PlayBaseAnimation(ANIM_TO_ALTERED_POST_SWAP, 0);
-        }
     }
 
     for (uint32_t i = 0; i < oldCount; i++) {
@@ -21455,7 +21500,8 @@ void CGUnit_C::DestroyUnitMount(int32_t a2) {
 void CGUnit_C::CreateUnitMount(int32_t a2, int32_t a3) {
     this->m_wheelMask = 0;
 
-    if (!this->m_mountModel) {
+    // Custom: a unit that is its own mount has no mount model (Cataclysm 0x005D6950)
+    if (!this->m_mountModel && !this->IsMountSelf()) {
         CreatureDisplayInfoRec* displayInfo = g_creatureDisplayInfoDB.GetRecord(this->m_mountDisplayId);
 
         if (!displayInfo) {
@@ -22300,7 +22346,8 @@ void CGUnit_C::OnMountDisplayChanged(int32_t displayId) {
     this->m_mountDisplayId = displayId;
 
     if (displayId) {
-        bool noTransition = this->m_mountTransition == nullptr;
+        // Custom: no mount summon effect when mounting oneself (Cataclysm 0x005D8550)
+        bool noTransition = this->m_mountTransition == nullptr && !this->IsMountSelf();
         this->CreateUnitMount(0, wasMounted);
 
         if (noTransition) {
@@ -23699,7 +23746,8 @@ void CGUnit_C::HandleScaleUpdate(float scale) {
     int32_t mountDisplayId = this->m_unit->m_unitFieldMountdisplayid;
     int32_t updated = 0;
 
-    if (mountDisplayId <= 0 || !(this->m_obj->m_type & TYPEMASK_PLAYER)) {
+    // Custom: a unit that is its own mount keeps its own collision box (Cataclysm 0x005C7B00)
+    if (mountDisplayId <= 0 || !(this->m_obj->m_type & TYPEMASK_PLAYER) || this->IsMountSelf()) {
         updated = this->UpdateUnitCollisionBox(growing, 0);
     } else {
         CreatureDisplayInfoRec* displayRec = g_creatureDisplayInfoDB.GetRecord(mountDisplayId);
