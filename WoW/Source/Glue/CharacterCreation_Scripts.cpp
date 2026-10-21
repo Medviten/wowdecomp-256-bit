@@ -398,6 +398,18 @@ static int32_t Script_SetViewingAlteredForm(lua_State* L) {
     return 0;
 }
 
+// Custom: IsMaleOnlyRace() for the selected race: true when its ChrRaces female display uses the male display's
+// model, i.e. the race has no female model. The server (WHE core patch) creates such characters male, and the
+// character creation UI hides the female button for them.
+static int32_t Script_IsMaleOnlyRace(lua_State* L) {
+    ChrRacesRec* raceRec = CCharacterCreation::m_character ? g_chrRacesDB.GetRecord(CCharacterCreation::m_character->m_data.m_preferences.m_raceID) : nullptr;
+    CreatureDisplayInfoRec* maleDisplay = raceRec ? g_creatureDisplayInfoDB.GetRecord(raceRec->m_maleDisplayID) : nullptr;
+    CreatureDisplayInfoRec* femaleDisplay = raceRec ? g_creatureDisplayInfoDB.GetRecord(raceRec->m_femaleDisplayID) : nullptr;
+
+    lua_pushboolean(L, maleDisplay && femaleDisplay && maleDisplay->m_modelID == femaleDisplay->m_modelID);
+    return 1;
+}
+
 // VERIFY: 262c3be3 manual
 // OFFSET: 0x004DFCA0
 static int32_t Script_GetRandomName(lua_State* L) {
@@ -865,6 +877,7 @@ static FrameScript_Method s_scriptFunctions[] = {
     { "SetModelCreatureDisplay", &Script_SetModelCreatureDisplay },
     { "IsViewingAlteredForm", &Script_IsViewingAlteredForm },
     { "SetViewingAlteredForm", &Script_SetViewingAlteredForm },
+    { "IsMaleOnlyRace", &Script_IsMaleOnlyRace },
     { "CycleCharCustomization", &Script_CycleCharCustomization },
     { "RandomizeCharCustomization", &Script_RandomizeCharCustomization },
     { "GetCharacterCreateFacing", &Script_GetCharacterCreateFacing },
