@@ -4,8 +4,15 @@
 #include <windows.h>
 #include "Engine/Source/Storm/H/storm.h"
 
-#ifndef NDEBUG
+#if !defined(NDEBUG) || defined(WOWDECOMP_DEBUG_LOG) // Custom: see storm.h
 void DebugLog(const char* format, ...) {
+#if defined(WOWDECOMP_DEBUG_LOG)
+    // Custom: the scene renderer logs every batch it draws; that would flood the output every frame
+    if (!strncmp(format, "Batch", 5)) {
+        return;
+    }
+#endif
+
     char buffer[1024];
 
     va_list args;

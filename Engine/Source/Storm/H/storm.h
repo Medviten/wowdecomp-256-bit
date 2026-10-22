@@ -277,7 +277,8 @@ void StormRtlDestroy();
 void StormRtlInitialize();
 int32_t STORMAPI StormSetOption(int32_t optname, void* optval, uint32_t optlen);
 
-#ifdef NDEBUG
+// Custom: WOWDECOMP_DEBUG_LOG keeps DebugLog in optimized builds (OutputDebugString, shown by a debugger)
+#if defined(NDEBUG) && !defined(WOWDECOMP_DEBUG_LOG)
 inline void DebugLog(const char* format, ...) {
 }
 

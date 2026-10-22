@@ -71,7 +71,9 @@ int32_t CACHEENTRY::LoadTexture() {
     this->m_asyncObject->m_size = SFileGetFileSize(file, nullptr);
     this->m_asyncObject->m_priority = 130;
     this->m_size = this->m_asyncObject->m_size;
-    this->m_data = static_cast<BLPHeader*>(SMemAlloc(this->m_size, __FILE__, __LINE__, 0));
+    // Custom: allocate the full file size. m_size is a 20-bit field, so for textures over 1 MB (HD character textures)
+    // the stock client allocated the truncated size and the async read wrote past the buffer.
+    this->m_data = static_cast<BLPHeader*>(SMemAlloc(this->m_asyncObject->m_size, __FILE__, __LINE__, 0));
     this->m_asyncObject->m_buffer = this->m_data;
     AsyncFileReadObject(this->m_asyncObject, 0);
 

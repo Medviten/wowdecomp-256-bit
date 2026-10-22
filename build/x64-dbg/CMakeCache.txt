@@ -247,6 +247,9 @@ WOWCLIENT_CRASH_LOG:BOOL=ON
 // (re/tools/build sets Waystone / WaystoneDev)
 WOWCLIENT_OUTPUT_OVERRIDE:STRING=WowClient64Dbg
 
+//Keep DebugLog output in optimized builds
+WOWDECOMP_DEBUG_LOG:BOOL=ON
+
 //Skip MPQ file signature and .toc signature checks
 WOWDECOMP_DISABLE_SIGNATURE_CHECKS:BOOL=ON
 
