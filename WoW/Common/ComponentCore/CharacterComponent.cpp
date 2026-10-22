@@ -174,6 +174,10 @@ static CompSectionInfo s_sectionInfo[NUM_COMPONENT_SECTIONS];
 namespace {
 void PasteSkinGaps(void* skin, MipBits* dstMips);
 void UploadSkinGaps(CGxTex* texture);
+
+// Custom: set while composing a character of a race in creatureSkinRaces (per thread, the component thread composes
+// requests too): skin pastes keep the skin's alpha instead of making it opaque, for models with alpha-keyed parts
+thread_local bool s_keepSkinAlpha = false;
 }
 
 // STATIC: 0x00B6B928
@@ -3580,6 +3584,7 @@ void CCharacterComponent::GeosRenderPrep() {
 // VERIFY: f3bbc113 manual
 // OFFSET: 0x004EE0D0
 void CCharacterComponent::PrepSections() {
+    s_keepSkinAlpha = ClientRaceHidesArmorTextures(this->m_data.m_preferences.m_raceID); // Custom
     for (int32_t section = 0; section < NUM_COMPONENT_SECTIONS; section++) {
         if (!((1 << section) & this->m_dirtySections)) {
             continue;
@@ -3660,6 +3665,7 @@ void CCharacterComponent::RenderPrepAll() {
     this->m_flags &= ~0x8;
     this->VariationsLoaded(1);
     this->ItemsLoaded(1);
+    s_keepSkinAlpha = ClientRaceHidesArmorTextures(this->m_data.m_preferences.m_raceID); // Custom
 
     for (int32_t section = 0; section < NUM_COMPONENT_SECTIONS; section++) {
         (this->*CCharacterComponent::m_prepFunc[section])();
@@ -5012,7 +5018,7 @@ void PasteGeneral(void* texture, const TCTEXTUREINFO& info, MipBits* dstMips, co
                 uint32_t a = color >> 24;
                 dst = BlendChannels(dst, color, 255 - a, a, 255) | 0xFF000000;
             } else {
-                dst = color | 0xFF000000;
+                dst = s_keepSkinAlpha ? color : color | 0xFF000000;
             }
         }
     }
@@ -5154,8 +5160,9 @@ void CCharacterComponent::PasteFromSkin(COMPONENT_SECTIONS section, void* textur
     uint32_t width = info.m_width;
     info.m_alphaSize = 0;
 
-    // Custom: textures the stock paths cannot take (see PasteGeneral): the section's part of the skin, opaque
-    if (!StockPasteFits(texture, info, s_textureSize, s_textureSize)) {
+    // Custom: textures the stock paths cannot take (see PasteGeneral): the section's part of the skin, opaque (alpha
+    // kept for races in creatureSkinRaces, which the stock paths cannot do either)
+    if (s_keepSkinAlpha || !StockPasteFits(texture, info, s_textureSize, s_textureSize)) {
         const CompSectionInfo& rect = s_sectionInfo[section];
         float size = static_cast<float>(s_textureSize);
         PasteGeneral(texture, info, dstMips, rect.m_pos, rect.m_size, rect.m_pos.x / size, rect.m_pos.y / size, (rect.m_pos.x + rect.m_size.x) / size, (rect.m_pos.y + rect.m_size.y) / size, false);
@@ -5410,6 +5417,7 @@ void CCharacterComponent::ProcessFinishedRequest() {
 // OFFSET: 0x004F0EE0
 void CCharacterComponent::ProcessComponentRequest(CComponentRequest* request) {
     MipBits* dstMips = request->m_mipBits->m_mipBits;
+    s_keepSkinAlpha = request->m_keepSkinAlpha; // Custom
 
     if (request->m_format == GxTex_Dxt1) {
         dstMips = s_threadTextureBuffer;
@@ -5671,6 +5679,7 @@ int32_t CCharacterComponent::ThreadInitialize() {
 void CCharacterComponent::CreateComponentRequest() {
     this->m_request = CCharacterComponent::AllocComponentRequest();
     this->m_request->m_format = this->m_gxTexFormat;
+    this->m_request->m_keepSkinAlpha = ClientRaceHidesArmorTextures(this->m_data.m_preferences.m_raceID); // Custom
 
     for (int32_t section = 0; section < NUM_COMPONENT_SECTIONS; section++) {
         if ((1 << section) & this->m_dirtySections) {
@@ -6019,7 +6028,8 @@ bool CCharacterComponent::Init(ComponentData* data, const char* debug) {
 
     uint32_t dataFlags = this->m_data.m_flags;
 
-    if (dataFlags & 0x2) {
+    // Custom: races in creatureSkinRaces keep their skin's alpha (alpha-keyed parts), which needs a format with alpha
+    if ((dataFlags & 0x2) || ClientRaceHidesArmorTextures(this->m_data.m_preferences.m_raceID)) {
         this->m_gxTexFormat = CCharacterComponent::s_gxFormatHigh;
     }
 

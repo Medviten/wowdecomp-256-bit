@@ -61,6 +61,8 @@ class CComponentRequest {
     /* 0038 */ void* m_layerTextures [40];
     /* 00D8 */ uint8_t m_layerSections [40];
     /* 0100 */ TSLink<CComponentRequest> m_link;
+    // Custom: appended after the stock layout; the skin's alpha is kept (races in creatureSkinRaces)
+    bool m_keepSkinAlpha;
 
     void AddLayer(uint8_t section, void* texture);
     void DestroyCachedTextures();
