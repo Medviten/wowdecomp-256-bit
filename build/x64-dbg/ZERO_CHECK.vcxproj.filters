@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="D:\GitHub\wowdecomp-256-bit\build\x64-dbg\CMakeFiles\be4f91dfbb27ef8152eddb7e9c95b624\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{BFFFC50F-D1A1-3D4C-8484-10CD5E8D3175}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,35 @@
+# CMake generation dependency list for this directory.
+C:/Program Files/CMake/share/cmake-4.5/Modules/CMakeCInformation.cmake
+C:/Program Files/CMake/share/cmake-4.5/Modules/CMakeCXXInformation.cmake
+C:/Program Files/CMake/share/cmake-4.5/Modules/CMakeCommonLanguageInclude.cmake
+C:/Program Files/CMake/share/cmake-4.5/Modules/CMakeGenericSystem.cmake
+C:/Program Files/CMake/share/cmake-4.5/Modules/CMakeInitializeConfigs.cmake
+C:/Program Files/CMake/share/cmake-4.5/Modules/CMakeLanguageInformation.cmake
+C:/Program Files/CMake/share/cmake-4.5/Modules/CMakeRCInformation.cmake
+C:/Program Files/CMake/share/cmake-4.5/Modules/CMakeSystemSpecificInformation.cmake
+C:/Program Files/CMake/share/cmake-4.5/Modules/CMakeSystemSpecificInitialize.cmake
+C:/Program Files/CMake/share/cmake-4.5/Modules/Compiler/CMakeCommonCompilerMacros.cmake
+C:/Program Files/CMake/share/cmake-4.5/Modules/Compiler/MSVC-C.cmake
+C:/Program Files/CMake/share/cmake-4.5/Modules/Compiler/MSVC-CXX.cmake
+C:/Program Files/CMake/share/cmake-4.5/Modules/Compiler/MSVC.cmake
+C:/Program Files/CMake/share/cmake-4.5/Modules/Internal/CMakeCLinkerInformation.cmake
+C:/Program Files/CMake/share/cmake-4.5/Modules/Internal/CMakeCXXLinkerInformation.cmake
+C:/Program Files/CMake/share/cmake-4.5/Modules/Internal/CMakeCommonLinkerInformation.cmake
+C:/Program Files/CMake/share/cmake-4.5/Modules/Linker/MSVC-C.cmake
+C:/Program Files/CMake/share/cmake-4.5/Modules/Linker/MSVC-CXX.cmake
+C:/Program Files/CMake/share/cmake-4.5/Modules/Linker/MSVC.cmake
+C:/Program Files/CMake/share/cmake-4.5/Modules/Platform/Linker/Windows-MSVC-C.cmake
+C:/Program Files/CMake/share/cmake-4.5/Modules/Platform/Linker/Windows-MSVC-CXX.cmake
+C:/Program Files/CMake/share/cmake-4.5/Modules/Platform/Linker/Windows-MSVC.cmake
+C:/Program Files/CMake/share/cmake-4.5/Modules/Platform/Windows-Initialize.cmake
+C:/Program Files/CMake/share/cmake-4.5/Modules/Platform/Windows-MSVC-C.cmake
+C:/Program Files/CMake/share/cmake-4.5/Modules/Platform/Windows-MSVC-CXX.cmake
+C:/Program Files/CMake/share/cmake-4.5/Modules/Platform/Windows-MSVC.cmake
+C:/Program Files/CMake/share/cmake-4.5/Modules/Platform/Windows.cmake
+C:/Program Files/CMake/share/cmake-4.5/Modules/Platform/WindowsPaths.cmake
+D:/GitHub/wowdecomp-256-bit/CMakeLists.txt
+D:/GitHub/wowdecomp-256-bit/build/x64-dbg/CMakeFiles/4.5.0-rc1/CMakeCCompiler.cmake
+D:/GitHub/wowdecomp-256-bit/build/x64-dbg/CMakeFiles/4.5.0-rc1/CMakeCXXCompiler.cmake
+D:/GitHub/wowdecomp-256-bit/build/x64-dbg/CMakeFiles/4.5.0-rc1/CMakeRCCompiler.cmake
+D:/GitHub/wowdecomp-256-bit/build/x64-dbg/CMakeFiles/4.5.0-rc1/CMakeSystem.cmake
+D:/GitHub/wowdecomp-256-bit/build/x64-dbg/CMakeFiles/cmake.verify_globs

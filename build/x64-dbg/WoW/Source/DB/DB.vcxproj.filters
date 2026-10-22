@@ -1,0 +1,760 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\DBClient\CreatureStats_C.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\DBClient\DBCache.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\DBClient\DBCacheInstances.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\DBClient\DBClient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\DBClient\GameObjectStats_C.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\DBClient\Lights.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\DBClient\sdbItemSubclass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\AchievementRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\Achievement_CategoryRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\Achievement_CriteriaRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\AnimationDataRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\AreaGroupRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\AreaPOIRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\AreaTableRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\AreaTriggerRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\AttackAnimKitsRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\AttackAnimTypesRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\AuctionHouseRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\BankBagSlotPricesRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\BannedAddOnsRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\BarberShopStyleRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\BattlemasterListRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\CameraShakesRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\Cfg_CategoriesRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\Cfg_ConfigsRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\CharBaseInfoRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\CharHairGeosetsRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\CharSectionsRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\CharStartOutfitRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\CharTitlesRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\CharacterFacialHairStylesRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\ChatChannelsRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\ChatProfanityRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\ChrClassesRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\ChrRacesRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\CinematicCameraRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\CinematicSequencesRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\CreatureDisplayInfoExtraRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\CreatureDisplayInfoRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\CreatureFamilyRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\CreatureModelDataRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\CreatureMovementInfoRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\CreatureSoundDataRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\CreatureSpellDataRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\CreatureTypeRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\CurrencyCategoryRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\CurrencyTypesRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\DanceMovesRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\DeathThudLookupsRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\DeclinedWordCasesRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\DeclinedWordRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\DestructibleModelDataRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\DungeonEncounterRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\DungeonMapChunkRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\DungeonMapRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\DurabilityCostsRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\DurabilityQualityRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\EmotesRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\EmotesTextDataRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\EmotesTextRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\EmotesTextSoundRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\EnvironmentalDamageRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\ExhaustionRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\FactionGroupRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\FactionRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\FactionTemplateRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\FileDataRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\FootprintTexturesRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\FootstepTerrainLookupRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\GMSurveyAnswersRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\GMSurveyCurrentSurveyRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\GMSurveyQuestionsRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\GMSurveySurveysRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\GMTicketCategoryRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\GameObjectArtKitRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\GameObjectDisplayInfoRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\GameTablesRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\GameTipsRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\GemPropertiesRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\GlyphPropertiesRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\GlyphSlotRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\GroundEffectDoodadRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\GroundEffectTextureRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\HelmetGeosetVisDataRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\HolidayDescriptionsRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\HolidayNamesRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\HolidaysRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\ItemBagFamilyRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\ItemClassRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\ItemCondExtCostsRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\ItemDisplayInfoRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\ItemExtendedCostRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\ItemGroupSoundsRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\ItemLimitCategoryRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\ItemPetFoodRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\ItemPurchaseGroupRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\ItemRandomPropertiesRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\ItemRandomSuffixRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\ItemRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\ItemSetRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\ItemSubClassMaskRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\ItemSubClassRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\ItemVisualEffectsRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\ItemVisualsRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\LanguageWordsRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\LanguagesRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\LfgDungeonExpansionRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\LfgDungeonGroupRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\LfgDungeonsRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\LightFloatBandRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\LightIntBandRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\LightParamsRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\LightRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\LightSkyboxRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\LiquidMaterialRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\LiquidTypeRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\LoadingScreenTaxiSplinesRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\LoadingScreensRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\LockRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\LockTypeRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\MailTemplateRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\MapDifficultyRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\MapRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\MaterialRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\MovieFileDataRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\MovieRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\MovieVariationRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\NPCSoundsRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\NameGenRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\NamesProfanityRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\NamesReservedRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\ObjectEffectGroupRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\ObjectEffectModifierRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\ObjectEffectPackageElemRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\ObjectEffectPackageRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\ObjectEffectRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\OverrideSpellDataRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\PackageRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\PageTextMaterialRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\PaperDollItemFrameRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\ParticleColorRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\PetPersonalityRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\PowerDisplayRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\PvpDifficultyRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\QuestFactionRewardRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\QuestInfoRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\QuestSortRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\QuestXPRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\RandPropPointsRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\ResistancesRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\ScalingStatDistributionRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\ScalingStatValuesRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\ScreenEffectRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\ServerMessagesRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SheatheSoundLookupsRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SkillCostsDataRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SkillLineAbilityRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SkillLineCategoryRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SkillLineRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SkillRaceClassInfoRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SkillTiersRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SoundAmbienceRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SoundEmittersRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SoundEntriesAdvancedRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SoundEntriesRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SoundFilterElemRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SoundFilterRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SoundProviderPreferencesRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SoundSamplePreferencesRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SoundWaterTypeRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SpamMessagesRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SpellCastTimesRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SpellCategoryRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SpellChainEffectsRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SpellDescriptionVariablesRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SpellDifficultyRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SpellDispelTypeRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SpellDurationRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SpellEffectCameraShakesRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SpellFocusObjectRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SpellIconRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SpellItemEnchantmentConditionRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SpellItemEnchantmentRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SpellMechanicRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SpellMissileMotionRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SpellMissileRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SpellRadiusRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SpellRangeRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SpellRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SpellRuneCostRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SpellShapeshiftFormRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SpellVisualEffectNameRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SpellVisualKitAreaModelRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SpellVisualKitModelAttachRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SpellVisualKitRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SpellVisualRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\StableSlotPricesRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\Startup_StringsRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\StationeryRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\StringLookupsRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\SummonPropertiesRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\TalentRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\TalentTabRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\TaxiNodesRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\TaxiPathNodeRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\TaxiPathRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\TeamContributionPointsRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\TerrainTypeRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\TerrainTypeSoundsRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\TotemCategoryRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\TransportAnimationRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\TransportPhysicsRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\TransportRotationRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\UISoundLookupsRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\UnitBloodLevelsRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\UnitBloodRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\VehicleRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\VehicleSeatRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\VehicleUIIndSeatRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\VehicleUIIndicatorRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\VideoHardwareRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\VocalUISoundsRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\WMOAreaTableRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\WeaponImpactSoundsRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\WeaponSwingSounds2Rec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\WeatherRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\WorldChunkSoundsRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\WorldMapAreaRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\WorldMapContinentRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\WorldMapOverlayRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\WorldMapTransformsRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\WorldSafeLocsRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\WorldStateUIRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\WorldStateZoneSoundsRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\ZoneIntroMusicTableRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\ZoneMusicRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\gtBarberShopCostBaseRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\gtChanceToMeleeCritBaseRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\gtChanceToMeleeCritRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\gtChanceToSpellCritBaseRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\gtChanceToSpellCritRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\gtCombatRatingsRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\gtNPCManaCostScalerRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\gtOCTClassCombatRatingScalarRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\gtOCTRegenHPRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\gtOCTRegenMPRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\gtRegenHPPerSptRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\Rec\gtRegenMPPerSptRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\WowClientDB.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\DB\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{98152516-3177-37D2-8B4D-E45CF98948C1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

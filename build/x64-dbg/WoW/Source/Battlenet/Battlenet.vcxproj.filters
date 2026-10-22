@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Battlenet\BSN\Adapter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Battlenet\BSN\BSNCpp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Battlenet\BSN\BSNEncodeInterface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Battlenet\BSN\Encoder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Battlenet\BSN\Protocol.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Battlenet\BSN\ProtocolMeta.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Battlenet\BSN\ProtocolType.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Battlenet\Battlenet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Battlenet\BattlenetMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Battlenet\BattlenetProtocol.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Battlenet\BattlenetProtocolData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Battlenet\BattlenetProtocolTypes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Battlenet\GeneralFunction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Battlenet\Tumor\CreepTendril.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Battlenet\Tumor\Tendril.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Battlenet\Tumor\Tumor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Battlenet\Tumor\TumorManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Battlenet\Win64\Battlenet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Battlenet\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{98152516-3177-37D2-8B4D-E45CF98948C1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -45,7 +45,10 @@ struct FACTION : public TSHashObject<FACTION, HASHKEY_NONE> {
 class CGReputationInfo {
     public:
     static TSGrowableArray<const FactionRec*>* GetFactionChildren(int32_t faction);
-    static FactionStanding m_factionStandings[128];
+    // Custom: 1024 entries (stock 128), for the reputation list indices of custom races' factions; the 256-bit server
+    // sends as many as its highest index needs
+    static constexpr uint32_t NUM_FACTION_STANDINGS = 1024;
+    static FactionStanding m_factionStandings[NUM_FACTION_STANDINGS];
     static const int32_t m_reactionThresholds[9];
     static FactionHeader* m_headers[64];
     static uint32_t m_numHeaders;

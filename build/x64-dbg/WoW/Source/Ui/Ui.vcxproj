@@ -1,0 +1,514 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{82F1C0AE-6107-33E0-A267-C48187D6961A}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>Ui</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\GitHub\wowdecomp-256-bit\build\x64-dbg\lib\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Ui.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Ui</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\GitHub\wowdecomp-256-bit\build\x64-dbg\lib\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Ui.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Ui</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\GitHub\wowdecomp-256-bit\build\x64-dbg\lib\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Ui.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Ui</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\GitHub\wowdecomp-256-bit\build\x64-dbg\lib\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Ui.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Ui</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.lib</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\GitHub\wowdecomp-256-bit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;WOWDECOMP_ARCH_64=1;NOMINMAX;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;DISABLE_SIGNATURE_CHECKS=1;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;WOWDECOMP_ARCH_64=1;NOMINMAX;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;DISABLE_SIGNATURE_CHECKS=1;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\GitHub\wowdecomp-256-bit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\GitHub\wowdecomp-256-bit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\GitHub\wowdecomp-256-bit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;WOWDECOMP_ARCH_64=1;NOMINMAX;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;DISABLE_SIGNATURE_CHECKS=1;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;WOWDECOMP_ARCH_64=1;NOMINMAX;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;DISABLE_SIGNATURE_CHECKS=1;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\GitHub\wowdecomp-256-bit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\GitHub\wowdecomp-256-bit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\GitHub\wowdecomp-256-bit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;WOWDECOMP_ARCH_64=1;NOMINMAX;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;DISABLE_SIGNATURE_CHECKS=1;CMAKE_INTDIR="MinSizeRel"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;WOWDECOMP_ARCH_64=1;NOMINMAX;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;DISABLE_SIGNATURE_CHECKS=1;CMAKE_INTDIR=\"MinSizeRel\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\GitHub\wowdecomp-256-bit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\GitHub\wowdecomp-256-bit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\GitHub\wowdecomp-256-bit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;WOWDECOMP_ARCH_64=1;NOMINMAX;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;DISABLE_SIGNATURE_CHECKS=1;CMAKE_INTDIR="RelWithDebInfo"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;WOWDECOMP_ARCH_64=1;NOMINMAX;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;DISABLE_SIGNATURE_CHECKS=1;CMAKE_INTDIR=\"RelWithDebInfo\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\GitHub\wowdecomp-256-bit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\GitHub\wowdecomp-256-bit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule D:/GitHub/wowdecomp-256-bit/WoW/Source/Ui/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/GitHub/wowdecomp-256-bit -BD:/GitHub/wowdecomp-256-bit/build/x64-dbg --check-stamp-file D:/GitHub/wowdecomp-256-bit/build/x64-dbg/WoW/Source/Ui/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\GitHub\wowdecomp-256-bit\build\x64-dbg\CMakeFiles\cmake.verify_globs;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\GitHub\wowdecomp-256-bit\build\x64-dbg\WoW\Source\Ui\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule D:/GitHub/wowdecomp-256-bit/WoW/Source/Ui/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/GitHub/wowdecomp-256-bit -BD:/GitHub/wowdecomp-256-bit/build/x64-dbg --check-stamp-file D:/GitHub/wowdecomp-256-bit/build/x64-dbg/WoW/Source/Ui/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\GitHub\wowdecomp-256-bit\build\x64-dbg\CMakeFiles\cmake.verify_globs;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\GitHub\wowdecomp-256-bit\build\x64-dbg\WoW\Source\Ui\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule D:/GitHub/wowdecomp-256-bit/WoW/Source/Ui/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/GitHub/wowdecomp-256-bit -BD:/GitHub/wowdecomp-256-bit/build/x64-dbg --check-stamp-file D:/GitHub/wowdecomp-256-bit/build/x64-dbg/WoW/Source/Ui/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\GitHub\wowdecomp-256-bit\build\x64-dbg\CMakeFiles\cmake.verify_globs;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\GitHub\wowdecomp-256-bit\build\x64-dbg\WoW\Source\Ui\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule D:/GitHub/wowdecomp-256-bit/WoW/Source/Ui/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/GitHub/wowdecomp-256-bit -BD:/GitHub/wowdecomp-256-bit/build/x64-dbg --check-stamp-file D:/GitHub/wowdecomp-256-bit/build/x64-dbg/WoW/Source/Ui/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\GitHub\wowdecomp-256-bit\build\x64-dbg\CMakeFiles\cmake.verify_globs;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\GitHub\wowdecomp-256-bit\build\x64-dbg\WoW\Source\Ui\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\AchievementInfo.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\AchievementInfo_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\ActionBarFrame.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\ActionBarFrame_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\ArenaTeamInfo.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\ArenaTeamInfo_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\AuctionHouse.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\AuctionHouse_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\BarberShop.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\BarberShop_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\BattlefieldInfo.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\BattlefieldInfo_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\BattlenetAPI.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\BattlenetUI.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\BattlenetUI_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\BugReport.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\CAccountMsgBody.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\CAccountMsgHeaders.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\CAccountMsgHeaders_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\CFormula.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\CGAutoCompleteName.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\CGAutoCompleteName_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\CGBankInfo.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\CGBankInfo_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\CGCalendarEventHash.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\CGCooldown.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\CGCooldown_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\CGLookingForGroup.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\CGMailFrame.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\CGMinigameInfo.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\CGMinigameInfo_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\CGPlayerData.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\CGQuestObjectiveCache.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\CGQuestPOIFrame.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\CGQuestPOIFrame_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\CGQuest_C.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\CGSkillInfo.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\CGTabardCreationFrame.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\CGTabardCreationFrame_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\CGWorldStateInfo.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\CGWorldStateInfo_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\CKBArticle.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\CKBIterator.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\CKBQuery.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\CKBSystem.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\Calendar.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\CalendarEvent.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\Calendar_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\CharacterModelBase.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\CharacterModelBase_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\ChatBubbleFrame.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\ChatFrame.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\ChatFrame_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\ClassTrainerFrame.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\ClassTrainerFrame_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\CommentatorFrame.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\CommentatorFrame_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\ContainerFrame.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\ContainerFrame_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\CurrencyTypes.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\CurrencyTypes_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\DBItemCache.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\DanceStudio.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\DanceStudio_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\DressUpModelFrame.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\DressUpModelFrame_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\DuelInfo.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\DuelInfo_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\EVENTDATEHASH.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\EquipmentManager.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\EquipmentManager_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\FadingScreen.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\GMSurveyInfo.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\GMTicketInfo.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\GMTicketInfo_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\GameUI.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\GameUI_CVar.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\GameUI_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\GlyphInfo_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\GossipInfo.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\GossipInfo_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\GuildBankFrame.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\GuildBankFrame_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\GuildInfo.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\GuildInfo_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\GuildRegistrar.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\GuildRegistrar_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\HealthBar.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\InstanceEncounter_C.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\ItemSocketInfo.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\ItemSocketInfo_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\ItemTextFrame.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\ItemTextFrame_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\KEYBINDING.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\KnowledgeBase.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\KnowledgeBase_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\LFGHandler.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\LFGInfo.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\LFGInfo_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\LFGLIST.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\LFGListParty.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\LootFrame.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\LootFrame_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\MODIFIEDCLICK.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\MacroCondition.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\MacroConditions.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\MacroSubstring.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\Macros.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\MailInfo.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\MailInfo_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\MathState.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\MerchantFrame.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\MerchantFrame_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\MinimapFrame.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\MinimapFrame_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\NamePlateFrame.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\PaperDollInfoFrame.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\PaperDollInfoFrame_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\PartyFrame.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\PartyFrame_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\PetInfo.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\PetInfo_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\PetitionInfo.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\PetitionInfo_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\PetitionVendor.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\PetitionVendor_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\QuestFrame.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\QuestFrame_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\QuestLog.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\QuestLogLeaderBoardParams.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\QuestLog_Console.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\QuestLog_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\QuestTextParser.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\RaidInfo.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\RaidInfo_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\ReputationInfo.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\ReputationInfo_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\RuneInfo.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\Screen.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\ScriptEvents.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\ScriptEvents_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\SkillInfo.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\SkillInfo_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\SpellBookFrame.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\SpellBookFrame_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\StableInfo.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\StableInfo_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\TSGrowableArray.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\TabardModelFrame.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\TabardModelFrame_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\TalentInfo.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\TalentInfo_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\TaxiMapFrame.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\TaxiMapFrame_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\TotemInfo.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\TradeFrame.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\TradeFrame_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\TradeSkillFrame.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\TradeSkillFrame_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\Tutorial.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\Tutorial_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\UIBindings.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\UIBindings_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\UILCD\LCD.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\UILCD\Windows\EZ_LCD.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\UILCD\Windows\EZ_LCD_Page.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\UILCD\Windows\LCDBase.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\UILCD\Windows\LCDBitmap.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\UILCD\Windows\LCDCollection.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\UILCD\Windows\LCDConnection.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\UILCD\Windows\LCDGfxBase.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\UILCD\Windows\LCDGfxColor.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\UILCD\Windows\LCDGfxMono.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\UILCD\Windows\LCDOutput.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\UILCD\Windows\LCDPage.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\UILCD\Windows\LCDText.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\UILCD\Windows\LCDUtils.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\UIMacroOptions.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\UIMacros.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\UIMacros_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\USEABLESTYLE.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\VideoOptions.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\VideoOptions_Scripts.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\WorldFrame.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\WorldMap.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\Ui\WorldMap_Scripts.cpp" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\x64-dbg\ZERO_CHECK.vcxproj">
+      <Project>{DFA125BF-DDD3-3D2D-8128-E324DE64E049}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\x64-dbg\ThirdParty\lgLcd.vcxproj">
+      <Project>{CFF9B634-1DCC-35E7-95DB-B9943166329C}</Project>
+      <Name>lgLcd</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

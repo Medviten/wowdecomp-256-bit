@@ -719,6 +719,39 @@ bool ClientShapeshiftUsesSkinColor(uint32_t race) {
     return race < sizeof(s_shapeshiftSkinColorRace) && s_shapeshiftSkinColorRace[race];
 }
 
+// Custom: creatureSkinRaces lists races whose models use their skin texture's whole layout, like creature models made
+// playable (default "41": Murloc). Armour textures are not composited onto them: they would land wherever the
+// model's own UVs fall. Weapons, shields, helmets and other attached item models still show.
+static bool s_creatureSkinRace[256];
+
+bool CreatureSkinRacesCallback(CVar* var, const char* oldValue, const char* value, void* arg) {
+    memset(s_creatureSkinRace, 0, sizeof(s_creatureSkinRace));
+
+    const char* cursor = value ? value : "";
+
+    while (*cursor) {
+        char* end;
+        long race = strtol(cursor, &end, 10);
+
+        if (end == cursor) {
+            cursor++;
+            continue;
+        }
+
+        cursor = end;
+
+        if (race > 0 && race < 256) {
+            s_creatureSkinRace[race] = true;
+        }
+    }
+
+    return true;
+}
+
+bool ClientRaceHidesArmorTextures(uint32_t race) {
+    return race < sizeof(s_creatureSkinRace) && s_creatureSkinRace[race];
+}
+
 // VERIFY: 9951b118 manual
 // OFFSET: 0x00401B60
 void ClientRegisterConsoleCommands() {

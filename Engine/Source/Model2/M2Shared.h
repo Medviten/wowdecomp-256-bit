@@ -72,6 +72,10 @@ class CM2Shared {
     /* 0198 */ uint16_t m_billboardBoneCount;
     /* 019C */ uint32_t m_lastUsedTime;
     /* 01A0 */ TSLink<CM2Shared> m_updateLink;
+    // Custom: appended after the stock layout, for SplitSkinSectionsToBoneBudget
+    uint32_t m_maxBones;              // bones one draw can upload (from the device's vertex shader constants)
+    void* m_splitSkinBuffer;          // rebuilt skin arrays when sections were split
+    uint16_t* m_splitBoneCombos;      // bone combo table with the split sections' palettes appended
 
     static void LoadFailedCallback(void* param);
     static void LoadSucceededCallback(void* param);
@@ -104,6 +108,7 @@ class CM2Shared {
     void Release();
     int32_t SetIndices();
     int32_t SetVertices(uint32_t texCoordIndex);
+    int32_t SplitSkinSectionsToBoneBudget();
     void SubstituteSimpleShaders();
     void SubstituteSpecializedShaders();
 };

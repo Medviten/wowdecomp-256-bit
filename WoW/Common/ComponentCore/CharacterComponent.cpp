@@ -48,6 +48,9 @@
 #include "WoW/Source/DB/Rec/ItemVisualsRec.h"
 #include "WoW/Source/DB/Rec/ParticleColorRec.h"
 #include "WoW/Source/Object/ObjectClient/Player_C.h"
+#include "WoW/Source/Client.h"
+#include <algorithm>
+#include <vector>
 
 // STATIC: 0x009F6A00
 static int32_t s_itemPriority[NUM_ITEM_SLOTS][NUM_COMPONENT_SECTIONS] = {
@@ -166,6 +169,12 @@ int32_t CCharacterComponent::s_bInRenderPrep;
 
 // STATIC: 0x00B6B888
 static CompSectionInfo s_sectionInfo[NUM_COMPONENT_SECTIONS];
+
+// Custom: skin painted between the sections, defined with the general paste path below
+namespace {
+void PasteSkinGaps(void* skin, MipBits* dstMips);
+void UploadSkinGaps(CGxTex* texture);
+}
 
 // STATIC: 0x00B6B928
 CompSectionInfo CCharacterComponent::s_sectionInfoRaw[NUM_COMPONENT_SECTIONS] = {
@@ -1439,6 +1448,11 @@ void CCharacterComponent::UpdateSections() {
             GxTexUpdate(TextureGetGxTex(this->m_baseSkinTexture, 1, nullptr), info.m_pos.x, info.m_pos.y, info.m_pos.x + info.m_size.x, info.m_pos.y + info.m_size.y, 1);
         }
     }
+
+    // Custom: the skin between the sections (ProcessComponentRequest painted it)
+    if (this->m_dirtySections && this->m_baseVariation[VARIATION_SKIN].m_texture[0]) {
+        UploadSkinGaps(TextureGetGxTex(this->m_baseSkinTexture, 1, nullptr));
+    }
 }
 
 // VERIFY: 58d8dc90 manual
@@ -1951,7 +1965,9 @@ void CCharacterComponent::SetSkinColor(int32_t skinID, bool loadHair, bool rende
             this->m_baseVariation[VARIATION_UNDERWEAR].m_texture[1] = nullptr;
         }
 
-        if (*underwearRec->m_textureName[0] && CopyStringToBuffer(underwearRec->m_textureName[0], s_pathEnd)) {
+        // Custom: a race may have no underwear CharSections rows (custom races); the stock client dereferenced the
+        // missing record. Without one the character just has no underwear texture.
+        if (underwearRec && *underwearRec->m_textureName[0] && CopyStringToBuffer(underwearRec->m_textureName[0], s_pathEnd)) {
             this->m_baseVariation[VARIATION_UNDERWEAR].m_texture[0] = TextureCacheCreateTexture(s_path);
 
             if (!this->m_baseVariation[VARIATION_UNDERWEAR].m_texture[0]) {
@@ -1959,7 +1975,7 @@ void CCharacterComponent::SetSkinColor(int32_t skinID, bool loadHair, bool rende
             }
         }
 
-        if (*underwearRec->m_textureName[1] && CopyStringToBuffer(underwearRec->m_textureName[1], s_pathEnd)) {
+        if (underwearRec && *underwearRec->m_textureName[1] && CopyStringToBuffer(underwearRec->m_textureName[1], s_pathEnd)) {
             this->m_baseVariation[VARIATION_UNDERWEAR].m_texture[1] = TextureCacheCreateTexture(s_path);
 
             if (!this->m_baseVariation[VARIATION_UNDERWEAR].m_texture[1]) {
@@ -3577,7 +3593,18 @@ void CCharacterComponent::PrepSections() {
         }
     }
 
+    // Custom: the skin between the sections (see PasteSkinGaps), uploaded like the dirty sections
+    bool skinGaps = this->m_dirtySections && this->m_baseVariation[VARIATION_SKIN].m_texture[0];
+
+    if (skinGaps) {
+        PasteSkinGaps(this->m_baseVariation[VARIATION_SKIN].m_texture[0], CCharacterComponent::s_textureBuffer);
+    }
+
     if (!(this->m_flags & 0x1) && this->m_gxTexFormat != GxTex_Dxt1) {
+        if (skinGaps) {
+            UploadSkinGaps(TextureGetGxTex(this->m_baseSkinTexture, 1, nullptr));
+        }
+
         return;
     }
 
@@ -3595,6 +3622,11 @@ void CCharacterComponent::PrepSections() {
             const CompSectionInfo& info = s_sectionInfo[section];
             GxTexUpdate(TextureGetGxTex(this->m_baseSkinTexture, 1, nullptr), info.m_pos.x, info.m_pos.y, info.m_pos.x + info.m_size.x, info.m_pos.y + info.m_size.y, 1);
         }
+    }
+
+    // Custom: the skin between the sections
+    if (skinGaps) {
+        UploadSkinGaps(TextureGetGxTex(this->m_baseSkinTexture, 1, nullptr));
     }
 }
 
@@ -3633,6 +3665,9 @@ void CCharacterComponent::RenderPrepAll() {
         (this->*CCharacterComponent::m_prepFunc[section])();
     }
 
+    // Custom: the skin between the sections (see PasteSkinGaps)
+    PasteSkinGaps(this->m_baseVariation[VARIATION_SKIN].m_texture[0], CCharacterComponent::s_textureBuffer);
+
     if (this->m_gxTexFormat == GxTex_Dxt1) {
         ComputeMipLevels(CCharacterComponent::s_textureBuffer, s_compressedTextureBuffer);
     }
@@ -3667,7 +3702,8 @@ int32_t CCharacterComponent::UpdateTextureSlot(COMPONENT_SECTIONS section, const
         sectionData.m_layerTex[layer] = nullptr;
     }
 
-    sectionData.m_layerItemDisplayId[layer] = displayRec->m_id;
+    // Custom: races in creatureSkinRaces get no armour textures (the layer stays empty, so the section shows skin)
+    sectionData.m_layerItemDisplayId[layer] = ClientRaceHidesArmorTextures(this->m_data.m_preferences.m_raceID) ? 0 : displayRec->m_id;
 
     return 1;
 }
@@ -4695,6 +4731,412 @@ bool CCharacterComponent::SetPrevHairStyle(COMPONENT_CONTEXT context) {
     return true;
 }
 
+// Custom: general paste path, no counterpart in the binary. The stock paste functions only handle paletted BLPs whose
+// size is the target's times a power of two (or exactly half of it), with no more mips than the composite texture:
+// they fill other textures with green (PasteCrappyGreen), read past a source mip of another aspect ratio, and write
+// past the composite's mip list for sources with more mips. Textures from later clients (DXT, larger, other aspect
+// ratios) hit all of these. They are decoded to 32-bit pixels instead, resampled into the target rectangle of the
+// composite's top mip and box-filtered into its smaller mips; stock textures keep the stock path.
+namespace {
+
+uint32_t Rgb565ToPixel(uint16_t color) {
+    uint32_t r = (color >> 11) & 0x1F;
+    uint32_t g = (color >> 5) & 0x3F;
+    uint32_t b = color & 0x1F;
+
+    return ((b << 3) | (b >> 2)) | (((g << 2) | (g >> 4)) << 8) | (((r << 3) | (r >> 2)) << 16) | 0xFF000000;
+}
+
+uint32_t BlendChannels(uint32_t a, uint32_t b, uint32_t wa, uint32_t wb, uint32_t div) {
+    uint32_t result = 0;
+
+    for (uint32_t shift = 0; shift < 24; shift += 8) {
+        result |= ((((a >> shift) & 0xFF) * wa + ((b >> shift) & 0xFF) * wb) / div) << shift;
+    }
+
+    return result;
+}
+
+// Pixels of one DXT colour block; DXT1 with color0 <= color1 has transparent black as its fourth colour
+void DecodeDxtColors(const uint8_t* block, bool dxt1, uint32_t* out) {
+    uint16_t c0 = block[0] | (block[1] << 8);
+    uint16_t c1 = block[2] | (block[3] << 8);
+    uint32_t colors[4];
+    colors[0] = Rgb565ToPixel(c0);
+    colors[1] = Rgb565ToPixel(c1);
+
+    if (!dxt1 || c0 > c1) {
+        colors[2] = BlendChannels(colors[0], colors[1], 2, 1, 3) | 0xFF000000;
+        colors[3] = BlendChannels(colors[0], colors[1], 1, 2, 3) | 0xFF000000;
+    } else {
+        colors[2] = BlendChannels(colors[0], colors[1], 1, 1, 2) | 0xFF000000;
+        colors[3] = 0;
+    }
+
+    uint32_t indices = block[4] | (block[5] << 8) | (block[6] << 16) | (static_cast<uint32_t>(block[7]) << 24);
+
+    for (uint32_t i = 0; i < 16; i++) {
+        out[i] = colors[(indices >> (2 * i)) & 3];
+    }
+}
+
+// One mip of a loaded BLP as composite pixels (B, G, R, A bytes); paletted, DXT1/3/5 and uncompressed ARGB
+bool DecodeBlpMip(void* texture, uint32_t mip, std::vector<uint32_t>& pixels, uint32_t& width, uint32_t& height) {
+    const BLPHeader* header = TextureCacheGetHeader(texture);
+    const uint8_t* data = static_cast<const uint8_t*>(TextureCacheGetMip(texture, mip));
+
+    if (!header || !data || mip >= 16) {
+        return false;
+    }
+
+    width = (header->m_width >> mip) ? header->m_width >> mip : 1;
+    height = (header->m_height >> mip) ? header->m_height >> mip : 1;
+    size_t count = static_cast<size_t>(width) * height;
+    size_t available = header->m_mipSizes[mip];
+    pixels.assign(count, 0xFF000000);
+
+    switch (header->m_colorEncoding) {
+        case 1: {
+            uint32_t alphaBits = header->m_alphaSize;
+            size_t alphaBytes = (count * alphaBits + 7) / 8;
+
+            if (available < count + alphaBytes) {
+                return false;
+            }
+
+            const uint8_t* alpha = data + count;
+
+            for (size_t i = 0; i < count; i++) {
+                const BlpPalPixel& color = header->m_extended.m_palette[data[i]];
+                uint32_t a = 0xFF;
+
+                if (alphaBits == 1) {
+                    a = ((alpha[i >> 3] >> (i & 7)) & 1) ? 0xFF : 0;
+                } else if (alphaBits == 4) {
+                    a = ((alpha[i >> 1] >> ((i & 1) * 4)) & 0xF) * 17;
+                } else if (alphaBits == 8) {
+                    a = alpha[i];
+                }
+
+                pixels[i] = color.m_b | (color.m_g << 8) | (color.m_r << 16) | (a << 24);
+            }
+
+            return true;
+        }
+
+        case 2: {
+            // m_preferredFormat: 0 DXT1, 1 DXT3, 7 DXT5
+            bool dxt1 = header->m_preferredFormat == 0 || header->m_alphaSize <= 1;
+            bool dxt5 = !dxt1 && header->m_preferredFormat == 7;
+            uint32_t blockBytes = dxt1 ? 8 : 16;
+            uint32_t blocksX = (width + 3) / 4;
+            uint32_t blocksY = (height + 3) / 4;
+
+            if (available < static_cast<size_t>(blocksX) * blocksY * blockBytes) {
+                return false;
+            }
+
+            for (uint32_t by = 0; by < blocksY; by++) {
+                for (uint32_t bx = 0; bx < blocksX; bx++) {
+                    const uint8_t* block = data + (static_cast<size_t>(by) * blocksX + bx) * blockBytes;
+                    uint32_t texels[16];
+                    uint8_t alphas[16];
+
+                    if (dxt1) {
+                        DecodeDxtColors(block, true, texels);
+
+                        for (uint32_t i = 0; i < 16; i++) {
+                            alphas[i] = static_cast<uint8_t>(texels[i] >> 24);
+                        }
+                    } else {
+                        DecodeDxtColors(block + 8, false, texels);
+
+                        if (dxt5) {
+                            uint32_t a0 = block[0];
+                            uint32_t a1 = block[1];
+                            uint64_t bits = 0;
+
+                            for (uint32_t i = 0; i < 6; i++) {
+                                bits |= static_cast<uint64_t>(block[2 + i]) << (8 * i);
+                            }
+
+                            for (uint32_t i = 0; i < 16; i++) {
+                                uint32_t code = (bits >> (3 * i)) & 7;
+                                uint32_t a;
+
+                                if (code == 0) {
+                                    a = a0;
+                                } else if (code == 1) {
+                                    a = a1;
+                                } else if (a0 > a1) {
+                                    a = ((8 - code) * a0 + (code - 1) * a1) / 7;
+                                } else if (code < 6) {
+                                    a = ((6 - code) * a0 + (code - 1) * a1) / 5;
+                                } else {
+                                    a = code == 6 ? 0 : 0xFF;
+                                }
+
+                                alphas[i] = static_cast<uint8_t>(a);
+                            }
+                        } else {
+                            for (uint32_t i = 0; i < 16; i++) {
+                                alphas[i] = static_cast<uint8_t>(((block[i >> 1] >> ((i & 1) * 4)) & 0xF) * 17);
+                            }
+                        }
+                    }
+
+                    for (uint32_t i = 0; i < 16; i++) {
+                        uint32_t x = bx * 4 + (i & 3);
+                        uint32_t y = by * 4 + (i >> 2);
+
+                        if (x < width && y < height) {
+                            pixels[static_cast<size_t>(y) * width + x] = (texels[i] & 0x00FFFFFF) | (static_cast<uint32_t>(header->m_alphaSize ? alphas[i] : 0xFF) << 24);
+                        }
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        case 3: {
+            if (available < count * 4) {
+                return false;
+            }
+
+            for (size_t i = 0; i < count; i++) {
+                uint32_t pixel = data[i * 4] | (data[i * 4 + 1] << 8) | (data[i * 4 + 2] << 16) | (static_cast<uint32_t>(data[i * 4 + 3]) << 24);
+                pixels[i] = header->m_alphaSize ? pixel : (pixel | 0xFF000000);
+            }
+
+            return true;
+        }
+
+        default:
+            return false;
+    }
+}
+
+// Whether the stock paste functions handle this texture for a target of targetWidth x targetHeight
+bool StockPasteFits(void* texture, const TCTEXTUREINFO& info, uint32_t targetWidth, uint32_t targetHeight) {
+    const BLPHeader* header = TextureCacheGetHeader(texture);
+
+    if (!header || header->m_colorEncoding != 1 || !TextureCacheGetPal(texture) || !info.m_mipCount) {
+        return false;
+    }
+
+    if (info.m_width < targetWidth && info.m_height < targetHeight) {
+        return info.m_width * 2 == targetWidth && info.m_height * 2 == targetHeight;
+    }
+
+    for (uint32_t k = 0; k < info.m_mipCount; k++) {
+        if ((info.m_width >> k) == targetWidth && (info.m_height >> k) == targetHeight) {
+            // the stock loop writes one composite mip per remaining source mip
+            return info.m_mipCount - k <= CCharacterComponent::s_mipLevels + 1;
+        }
+    }
+
+    return false;
+}
+
+// Pastes the part (u0, v0)-(u1, v1) of the texture (fractions of its size) into the composite rectangle at dstPos of
+// dstSize (top mip coordinates), alpha blended when blend is set (else opaque), then rebuilds that rectangle in the
+// smaller mips
+void PasteGeneral(void* texture, const TCTEXTUREINFO& info, MipBits* dstMips, const C2iVector& dstPos, const C2iVector& dstSize, float u0, float v0, float u1, float v1, bool blend) {
+    const BLPHeader* header = TextureCacheGetHeader(texture);
+
+    if (!header || dstSize.x <= 0 || dstSize.y <= 0) {
+        return;
+    }
+
+    // the smallest source mip still covering the target at full resolution
+    uint32_t mip = 0;
+
+    while (mip + 1 < info.m_mipCount && (header->m_width >> (mip + 1)) * (u1 - u0) >= dstSize.x && (header->m_height >> (mip + 1)) * (v1 - v0) >= dstSize.y) {
+        mip++;
+    }
+
+    std::vector<uint32_t> source;
+    uint32_t width;
+    uint32_t height;
+
+    if (!DecodeBlpMip(texture, mip, source, width, height)) {
+        return;
+    }
+
+    float minX = u0 * width;
+    float maxX = u1 * width - 1.0f;
+    float minY = v0 * height;
+    float maxY = v1 * height - 1.0f;
+
+    if (maxX < minX) {
+        maxX = minX;
+    }
+
+    if (maxY < minY) {
+        maxY = minY;
+    }
+
+    uint32_t stride = s_textureSize;
+    uint32_t* top = reinterpret_cast<uint32_t*>(dstMips->m_mip[0]);
+
+    for (int32_t y = 0; y < dstSize.y; y++) {
+        float sy = minY + (y + 0.5f) * (v1 - v0) * height / dstSize.y - 0.5f;
+        sy = sy < minY ? minY : (sy > maxY ? maxY : sy);
+        uint32_t y0 = static_cast<uint32_t>(sy);
+        uint32_t y1 = (y0 + 1 <= static_cast<uint32_t>(maxY)) ? y0 + 1 : y0;
+        uint32_t fy = static_cast<uint32_t>((sy - y0) * 256.0f);
+
+        for (int32_t x = 0; x < dstSize.x; x++) {
+            float sx = minX + (x + 0.5f) * (u1 - u0) * width / dstSize.x - 0.5f;
+            sx = sx < minX ? minX : (sx > maxX ? maxX : sx);
+            uint32_t x0 = static_cast<uint32_t>(sx);
+            uint32_t x1 = (x0 + 1 <= static_cast<uint32_t>(maxX)) ? x0 + 1 : x0;
+            uint32_t fx = static_cast<uint32_t>((sx - x0) * 256.0f);
+
+            uint32_t p00 = source[static_cast<size_t>(y0) * width + x0];
+            uint32_t p01 = source[static_cast<size_t>(y0) * width + x1];
+            uint32_t p10 = source[static_cast<size_t>(y1) * width + x0];
+            uint32_t p11 = source[static_cast<size_t>(y1) * width + x1];
+            uint32_t color = 0;
+
+            for (uint32_t shift = 0; shift < 32; shift += 8) {
+                uint32_t c0 = (((p00 >> shift) & 0xFF) * (256 - fx) + ((p01 >> shift) & 0xFF) * fx) >> 8;
+                uint32_t c1 = (((p10 >> shift) & 0xFF) * (256 - fx) + ((p11 >> shift) & 0xFF) * fx) >> 8;
+                color |= ((c0 * (256 - fy) + c1 * fy) >> 8) << shift;
+            }
+
+            uint32_t& dst = top[static_cast<size_t>(dstPos.y + y) * stride + dstPos.x + x];
+
+            if (blend) {
+                uint32_t a = color >> 24;
+                dst = BlendChannels(dst, color, 255 - a, a, 255) | 0xFF000000;
+            } else {
+                dst = color | 0xFF000000;
+            }
+        }
+    }
+
+    // smaller mips of the rectangle: box filter of the mip above
+    for (uint32_t level = 1; level <= CCharacterComponent::s_mipLevels; level++) {
+        uint32_t aboveStride = (s_textureSize >> (level - 1)) ? s_textureSize >> (level - 1) : 1;
+        uint32_t levelStride = (s_textureSize >> level) ? s_textureSize >> level : 1;
+        const uint32_t* above = reinterpret_cast<const uint32_t*>(dstMips->m_mip[level - 1]);
+        uint32_t* current = reinterpret_cast<uint32_t*>(dstMips->m_mip[level]);
+        int32_t x0 = dstPos.x >> level;
+        int32_t y0 = dstPos.y >> level;
+        int32_t w = (dstSize.x >> level) ? dstSize.x >> level : 1;
+        int32_t h = (dstSize.y >> level) ? dstSize.y >> level : 1;
+
+        for (int32_t y = y0; y < y0 + h && static_cast<uint32_t>(y) < levelStride; y++) {
+            for (int32_t x = x0; x < x0 + w && static_cast<uint32_t>(x) < levelStride; x++) {
+                uint32_t ax = static_cast<uint32_t>(x) * 2;
+                uint32_t ay = static_cast<uint32_t>(y) * 2;
+                uint32_t ax1 = (ax + 1 < aboveStride) ? ax + 1 : ax;
+                uint32_t ay1 = (ay + 1 < aboveStride) ? ay + 1 : ay;
+                uint32_t p00 = above[ay * aboveStride + ax];
+                uint32_t p01 = above[ay * aboveStride + ax1];
+                uint32_t p10 = above[ay1 * aboveStride + ax];
+                uint32_t p11 = above[ay1 * aboveStride + ax1];
+                uint32_t color = 0;
+
+                for (uint32_t shift = 0; shift < 32; shift += 8) {
+                    color |= ((((p00 >> shift) & 0xFF) + ((p01 >> shift) & 0xFF) + ((p10 >> shift) & 0xFF) + ((p11 >> shift) & 0xFF)) >> 2) << shift;
+                }
+
+                current[static_cast<size_t>(y) * levelStride + x] = color;
+            }
+        }
+    }
+}
+
+// Custom: the composite texture outside every section, as rectangles (top mip coordinates): the cells of the grid
+// through all section edges that no section covers, merged along rows. Stock character models only sample inside the
+// sections; models made from creatures (e.g. the murloc) use their skin texture's whole layout.
+void GetSkinGapRects(std::vector<CompSectionInfo>& gaps) {
+    std::vector<int32_t> xs = { 0, static_cast<int32_t>(s_textureSize) };
+    std::vector<int32_t> ys = { 0, static_cast<int32_t>(s_textureSize) };
+
+    for (int32_t section = 0; section < NUM_COMPONENT_SECTIONS; section++) {
+        const CompSectionInfo& info = s_sectionInfo[section];
+        xs.push_back(info.m_pos.x);
+        xs.push_back(info.m_pos.x + info.m_size.x);
+        ys.push_back(info.m_pos.y);
+        ys.push_back(info.m_pos.y + info.m_size.y);
+    }
+
+    std::sort(xs.begin(), xs.end());
+    xs.erase(std::unique(xs.begin(), xs.end()), xs.end());
+    std::sort(ys.begin(), ys.end());
+    ys.erase(std::unique(ys.begin(), ys.end()), ys.end());
+
+    gaps.clear();
+
+    for (size_t j = 0; j + 1 < ys.size(); j++) {
+        for (size_t i = 0; i + 1 < xs.size(); i++) {
+            int32_t cx = (xs[i] + xs[i + 1]) / 2;
+            int32_t cy = (ys[j] + ys[j + 1]) / 2;
+            bool covered = xs[i] < 0 || ys[j] < 0 || xs[i + 1] > static_cast<int32_t>(s_textureSize) || ys[j + 1] > static_cast<int32_t>(s_textureSize);
+
+            for (int32_t section = 0; section < NUM_COMPONENT_SECTIONS && !covered; section++) {
+                const CompSectionInfo& info = s_sectionInfo[section];
+                covered = cx >= info.m_pos.x && cx < info.m_pos.x + info.m_size.x && cy >= info.m_pos.y && cy < info.m_pos.y + info.m_size.y;
+            }
+
+            if (covered) {
+                continue;
+            }
+
+            if (!gaps.empty() && gaps.back().m_pos.y == ys[j] && gaps.back().m_pos.x + gaps.back().m_size.x == xs[i]) {
+                gaps.back().m_size.x += xs[i + 1] - xs[i];
+            } else {
+                CompSectionInfo gap;
+                gap.m_pos.x = xs[i];
+                gap.m_pos.y = ys[j];
+                gap.m_size.x = xs[i + 1] - xs[i];
+                gap.m_size.y = ys[j + 1] - ys[j];
+                gaps.push_back(gap);
+            }
+        }
+    }
+}
+
+// Custom: paints the skin texture into the composite's gaps between sections (see GetSkinGapRects), opaque, with
+// their smaller mips. Called after the sections are pasted; the gaps are uploaded along with the dirty sections.
+void PasteSkinGaps(void* skin, MipBits* dstMips) {
+    if (!skin || !TextureCacheHasMips(skin)) {
+        return;
+    }
+
+    TCTEXTUREINFO info;
+    info.m_width = 0;
+    info.m_height = 0;
+    info.m_mipCount = 0;
+    info.m_alphaSize = 0;
+    info.m_opaque = 1;
+    TextureCacheGetInfo(skin, info, 1);
+
+    std::vector<CompSectionInfo> gaps;
+    GetSkinGapRects(gaps);
+    float size = static_cast<float>(s_textureSize);
+
+    for (const CompSectionInfo& gap : gaps) {
+        PasteGeneral(skin, info, dstMips, gap.m_pos, gap.m_size, gap.m_pos.x / size, gap.m_pos.y / size, (gap.m_pos.x + gap.m_size.x) / size, (gap.m_pos.y + gap.m_size.y) / size, false);
+    }
+}
+
+// Custom: uploads the gaps between sections of a character's composite texture (see PasteSkinGaps)
+void UploadSkinGaps(CGxTex* texture) {
+    std::vector<CompSectionInfo> gaps;
+    GetSkinGapRects(gaps);
+
+    for (const CompSectionInfo& gap : gaps) {
+        GxTexUpdate(texture, gap.m_pos.x, gap.m_pos.y, gap.m_pos.x + gap.m_size.x, gap.m_pos.y + gap.m_size.y, 1);
+    }
+}
+
+} // namespace
+
 // VERIFY: f3be180c auto
 // OFFSET: 0x004F07D0
 void CCharacterComponent::PasteFromSkin(COMPONENT_SECTIONS section, void* texture, MipBits* dstMips) {
@@ -4711,6 +5153,14 @@ void CCharacterComponent::PasteFromSkin(COMPONENT_SECTIONS section, void* textur
     TextureCacheGetInfo(texture, info, 1);
     uint32_t width = info.m_width;
     info.m_alphaSize = 0;
+
+    // Custom: textures the stock paths cannot take (see PasteGeneral): the section's part of the skin, opaque
+    if (!StockPasteFits(texture, info, s_textureSize, s_textureSize)) {
+        const CompSectionInfo& rect = s_sectionInfo[section];
+        float size = static_cast<float>(s_textureSize);
+        PasteGeneral(texture, info, dstMips, rect.m_pos, rect.m_size, rect.m_pos.x / size, rect.m_pos.y / size, (rect.m_pos.x + rect.m_size.x) / size, (rect.m_pos.y + rect.m_size.y) / size, false);
+        return;
+    }
 
     if (info.m_width < s_textureSize && info.m_height < s_textureSize) {
         CCharacterComponent::PasteScale(texture, dstMips, s_sectionInfo[section].m_pos, s_sectionInfo[section].m_pos, s_sectionInfo[section].m_size, info);
@@ -4744,6 +5194,12 @@ void CCharacterComponent::PasteToSection(COMPONENT_SECTIONS section, void* textu
     uint32_t width = info.m_width;
     uint32_t sectionWidth = s_sectionInfo[section].m_size.x;
     C2iVector srcPos;
+
+    // Custom: textures the stock paths cannot take (see PasteGeneral): the whole texture, blended if it has alpha
+    if (!StockPasteFits(texture, info, sectionWidth, s_sectionInfo[section].m_size.y)) {
+        PasteGeneral(texture, info, dstMips, s_sectionInfo[section].m_pos, s_sectionInfo[section].m_size, 0.0f, 0.0f, 1.0f, 1.0f, info.m_alphaSize != 0);
+        return;
+    }
 
     if (info.m_width < sectionWidth && info.m_height < static_cast<uint32_t>(s_sectionInfo[section].m_size.y)) {
         srcPos.x = 0;
@@ -4967,6 +5423,14 @@ void CCharacterComponent::ProcessComponentRequest(CComponentRequest* request) {
 
     for (uint32_t i = 0; i < request->m_layerCount; i++) {
         CCharacterComponent::PasteToSection(static_cast<COMPONENT_SECTIONS>(request->m_layerSections[i]), request->m_layerTextures[i], dstMips);
+    }
+
+    // Custom: the skin between the sections (see PasteSkinGaps); every section's base texture is the skin
+    for (int32_t section = 0; section < NUM_COMPONENT_SECTIONS; section++) {
+        if (request->m_baseTextures[section]) {
+            PasteSkinGaps(request->m_baseTextures[section], dstMips);
+            break;
+        }
     }
 
     if (request->m_format == GxTex_Dxt1) {

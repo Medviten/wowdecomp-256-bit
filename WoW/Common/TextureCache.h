@@ -35,6 +35,8 @@ void TextureCacheDestroyTexture(void* handle);
 int32_t TextureCacheGetInfo(void* handle, TCTEXTUREINFO& info, int32_t wait);
 void* TextureCacheGetMip(void* handle, uint32_t mipLevel);
 BlpPalPixel* TextureCacheGetPal(void* handle);
+// Custom: the loaded BLP's header (format, size, mip offsets), nullptr while not loaded
+const BLPHeader* TextureCacheGetHeader(void* handle);
 int32_t TextureCacheHasMips(void* handle);
 void TextureCacheResetLoadCount();
 

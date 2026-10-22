@@ -114,6 +114,17 @@ BlpPalPixel* TextureCacheGetPal(void* handle) {
     return entry->m_data->m_extended.m_palette;
 }
 
+// Custom: no counterpart in the binary. The compositor's general paste path reads non-paletted (DXT, ARGB) textures.
+const BLPHeader* TextureCacheGetHeader(void* handle) {
+    CACHEENTRY* entry = static_cast<CACHEENTRY*>(handle);
+
+    if (!entry || entry->m_loadFailed || !entry->m_data) {
+        return nullptr;
+    }
+
+    return entry->m_data;
+}
+
 // VERIFY: 8b89ff06 manual
 // OFFSET: 0x004F2D80
 int32_t TextureCacheHasMips(void* handle) {

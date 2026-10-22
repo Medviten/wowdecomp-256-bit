@@ -104,6 +104,9 @@ uint32_t ClientGetAlteredFormRace(uint32_t race);
 // Custom: races whose shapeshift models follow skin (fur) color (shapeshiftSkinColorRaces)
 bool ShapeshiftSkinColorRacesCallback(CVar* var, const char* oldValue, const char* value, void* arg);
 bool ClientShapeshiftUsesSkinColor(uint32_t race);
+// Custom: races whose characters show no armour textures (creatureSkinRaces)
+bool CreatureSkinRacesCallback(CVar* var, const char* oldValue, const char* value, void* arg);
+bool ClientRaceHidesArmorTextures(uint32_t race);
 int main();
 int32_t Packet_SMSG_NOTIFICATION(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* msg);
 int32_t Packet_SMSG_PLAYED_TIME(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* msg);

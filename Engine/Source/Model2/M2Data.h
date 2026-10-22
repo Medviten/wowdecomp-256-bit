@@ -299,7 +299,11 @@ class M2Batch {
 
 class M2SkinSection {
     public:
-    /* 0000 */ uint32_t m_skinSectionId;
+    // Custom: the stock client reads 0000 as one uint32_t section id. Later clients (and models downported from
+    // them) split it into the 16-bit section id and a 16-bit level holding bits 16-31 of the index start, for skins
+    // with more than 65535 indices. Read through IndexStart()/SetIndexStart(). Stock models have level 0.
+    /* 0000 */ uint16_t m_skinSectionId;
+    /* 0002 */ uint16_t m_level;
     /* 0004 */ uint16_t m_vertexStart;
     /* 0006 */ uint16_t m_vertexCount;
     /* 0008 */ uint16_t m_indexStart;
@@ -311,6 +315,16 @@ class M2SkinSection {
     /* 0014 */ C3Vector m_centerPosition;
     /* 0020 */ C3Vector m_sortCenterPosition;
     /* 002C */ float m_sortRadius;
+
+    // Custom: full index start (m_indexStart plus the level bits)
+    uint32_t IndexStart() const {
+        return this->m_indexStart | (static_cast<uint32_t>(this->m_level) << 16);
+    }
+
+    void SetIndexStart(uint32_t start) {
+        this->m_indexStart = static_cast<uint16_t>(start);
+        this->m_level = static_cast<uint16_t>(start >> 16);
+    }
 };
 
 class M2Data {

@@ -463,7 +463,7 @@ void CM2SceneRender::DrawBatch() {
 
     CGxBatch batch;
     batch.m_primType = GxPrim_Triangles;
-    batch.m_start = this->m_curSkinSection->m_indexStart;
+    batch.m_start = this->m_curSkinSection->IndexStart(); // Custom: index start including the level bits (see M2SkinSection)
     batch.m_count = this->m_curSkinSection->m_indexCount;
 
     if (CShaderEffect::s_enableShaders) {
@@ -609,7 +609,7 @@ void CM2SceneRender::DrawBatchDoodad(M2Element* elements, uint32_t* indices) {
 
     CGxBatch batch;
     batch.m_primType = GxPrim_Triangles;
-    batch.m_start = this->m_curSkinSection->m_indexStart;
+    batch.m_start = this->m_curSkinSection->IndexStart(); // Custom: index start including the level bits (see M2SkinSection)
     batch.m_count = 0;
     batch.m_minIndex = 0;
     batch.m_maxIndex = 0;
