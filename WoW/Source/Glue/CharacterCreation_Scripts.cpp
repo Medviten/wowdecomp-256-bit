@@ -689,7 +689,12 @@ static int32_t Script_GetCreateBackgroundModel(lua_State* L) {
 
         if (classRec) {
             lua_pushstring(L, classRec->m_filename);
-            return 1;
+
+            // Custom: also return the race's file string, so the glue scripts can pick a death knight scene that
+            // frames tall races (the class scene is shared by every race)
+            ChrRacesRec* raceRec = g_chrRacesDB.GetRecord(CCharacterCreation::m_character->m_data.m_preferences.m_raceID);
+            lua_pushstring(L, raceRec ? raceRec->m_clientFileString : "");
+            return 2;
         }
     } else {
         uint32_t raceID = CCharacterCreation::m_character->m_data.m_preferences.m_raceID;

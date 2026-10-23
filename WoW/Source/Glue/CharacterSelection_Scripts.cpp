@@ -254,7 +254,12 @@ static int32_t Script_GetSelectBackgroundModel(lua_State* L) {
 
             if (classRec) {
                 lua_pushstring(L, classRec->m_filename);
-                return 1;
+
+                // Custom: also return the race's file string, so the glue scripts can pick a death knight scene that
+                // frames tall races (the class scene is shared by every race)
+                ChrRacesRec* dkRaceRec = g_chrRacesDB.GetRecord(display->m_characterInfo.m_raceID);
+                lua_pushstring(L, dkRaceRec ? dkRaceRec->m_clientFileString : "");
+                return 2;
             }
 
             lua_pushstring(L, "");

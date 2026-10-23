@@ -720,7 +720,7 @@ bool ClientShapeshiftUsesSkinColor(uint32_t race) {
 }
 
 // Custom: creatureSkinRaces lists races whose models use their skin texture's whole layout, like creature models made
-// playable (default "41": Murloc). Armour textures are not composited onto them: they would land wherever the
+// playable (default "41,43": Murloc, Slime Giant). Armour textures are not composited onto them: they would land wherever the
 // model's own UVs fall. Weapons, shields, helmets and other attached item models still show.
 static bool s_creatureSkinRace[256];
 
