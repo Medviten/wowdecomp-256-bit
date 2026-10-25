@@ -274,13 +274,14 @@ static int32_t GetShapeshiftDisplay(int32_t form, const CharacterPreferences& pr
     return model ? model : formRec->m_creatureDisplayID[0];
 }
 
-// Custom: SetModelCreatureDisplay("frameName", displayID) shows a creature display (model plus its skins) in a Model
-// frame, lit by the frame's own light and framed whole by a camera aimed at its bounding sphere; 0 clears the frame.
-// Used by the druid form preview. (A plain Model frame draws only in its own rectangle; a ModelFFX would clear the
-// whole screen.)
+// Custom: SetModelCreatureDisplay("frameName", displayID[, zoom]) shows a creature display (model plus its skins) in a
+// Model frame, lit by the frame's own light and framed whole by a camera aimed at its bounding sphere; 0 clears the
+// frame. zoom (default 1) brings the camera closer: the model's size on screen follows the frame's diagonal divided by
+// the camera distance, so a frame shrunk by some factor keeps the model's size with zoom = 1 / factor. Used by the druid
+// form preview. (A plain Model frame draws only in its own rectangle; a ModelFFX would clear the whole screen.)
 static int32_t Script_SetModelCreatureDisplay(lua_State* L) {
     if (!lua_isstring(L, 1) || !lua_isnumber(L, 2)) {
-        luaL_error(L, "Usage: SetModelCreatureDisplay(\"frameName\", displayID)");
+        luaL_error(L, "Usage: SetModelCreatureDisplay(\"frameName\", displayID[, zoom])");
         return 0;
     }
 
@@ -324,6 +325,12 @@ static int32_t Script_SetModelCreatureDisplay(lua_State* L) {
     // Like CGCharacterModelBase::ConfigureCamera's fallback, scaled to the model: about 3.4 radii in front, a little above (closer than the paperdoll framing, so the form fills the preview)
     CAaSphere sphere = model->GetBoundingSphere();
     float radius = sphere.r > 0.1f ? sphere.r : 1.0f;
+    float zoom = lua_isnumber(L, 3) ? static_cast<float>(lua_tonumber(L, 3)) : 1.0f;
+
+    if (zoom > 0.1f) {
+        radius /= zoom;
+    }
+
     CCamera* camera = CameraCreate();
     CameraSetFloat(camera, 4, 0.5f);
     CameraSetCoord(camera, 8, sphere.c, 0);
