@@ -11,6 +11,7 @@
 #include <alloca.h>
 #endif
 #include "WoW/Common/ComponentCore/CharacterComponent.h"
+#include "WoW/Common/ComponentCore/RetailRace.h"
 #include "Engine/Source/Base/Handle.h"
 #include "Engine/Source/Base/ObjectAlloc.h"
 #include "Engine/Source/Base/Prop.h"
@@ -48,6 +49,9 @@
 #include "WoW/Source/DB/Rec/ItemVisualsRec.h"
 #include "WoW/Source/DB/Rec/ParticleColorRec.h"
 #include "WoW/Source/Object/ObjectClient/Player_C.h"
+#if defined(WOWDECOMP_RETAIL_ASSETS)
+#include "Engine/Source/Retail/CascSource.h"
+#endif
 #include "WoW/Source/Client.h"
 #include <algorithm>
 #include <vector>
@@ -1761,6 +1765,11 @@ static int32_t GetConditionalGeoset(CharacterPreferences* prefs) {
 // VERIFY: 4a5d8b79 manual
 // OFFSET: 0x004EA0B0
 void CCharacterComponent::ReplaceExtraSkinTexture(const char* debug) {
+    // Custom: retail races compose their textures from retail data (RetailRace.cpp)
+    if (RetailRaceActive(this)) {
+        return;
+    }
+
     if (!ComponentValidateBase(CCharacterComponent::s_chrVarArray, this->m_data.m_preferences.m_raceID, this->m_data.m_preferences.m_sexID, VARIATION_SKIN, 0, this->m_data.m_preferences.m_skinID)) {
         return;
     }
@@ -1783,6 +1792,11 @@ void CCharacterComponent::ReplaceExtraSkinTexture(const char* debug) {
 // VERIFY: d35306aa manual
 // OFFSET: 0x004EA150
 void CCharacterComponent::ReplaceHairTexture(int32_t hairStyleID, const char* debug) {
+    // Custom: retail races compose their textures from retail data (RetailRace.cpp)
+    if (RetailRaceActive(this)) {
+        return;
+    }
+
     if (!ComponentValidateBase(CCharacterComponent::s_chrVarArray, this->m_data.m_preferences.m_raceID, this->m_data.m_preferences.m_sexID, VARIATION_HAIR, hairStyleID, this->m_data.m_preferences.m_hairColorId)) {
         return;
     }
@@ -1810,6 +1824,12 @@ void CCharacterComponent::LoadBaseVariation(COMPONENT_VARIATIONS variation, int3
     if (texture) {
         TextureCacheDestroyTexture(texture);
         texture = nullptr;
+    }
+
+    // Custom: retail races compose their skin from retail data, not CharSections.dbc (RetailRace.cpp)
+    if (RetailRaceActive(this)) {
+        this->SetDirtySections(1 << section);
+        return;
     }
 
     if (!ComponentValidateBase(CCharacterComponent::s_chrVarArray, this->m_data.m_preferences.m_raceID, this->m_data.m_preferences.m_sexID, variation, variationIndex, colorIndex)) {
@@ -3480,6 +3500,9 @@ void CCharacterComponent::GeosRenderPrep() {
     model->SetGeometryVisible(0, 2000, 0);
     model->SetGeometryVisible(0, 0, 1);
 
+    // Custom: retail race geosets and single-layer textures (hair, eyes...; RetailRace.cpp)
+    RetailRaceGeometry(this);
+
     for (int32_t i = 0; i < 19; i++) {
         if (i == 17 && eyeGlow) {
             this->m_data.m_model->SetGeometryVisible(1703, 1703, 1);
@@ -3577,6 +3600,8 @@ void CCharacterComponent::GeosRenderPrep() {
         this->m_data.m_model->SetGeometryVisible(rec.m_geosetGroup[0] + 1801, rec.m_geosetGroup[0] + 1801, 1);
     }
 
+    // Custom: retail feet under boots, helmet hides and fitted legacy helmets (RetailRace.cpp)
+    RetailRaceEquipment(this);
     this->m_data.m_model->OptimizeVisibleGeometry();
     this->m_flags &= ~0x4;
 }
@@ -3680,6 +3705,7 @@ void CCharacterComponent::RenderPrepAll() {
 
     this->m_flags &= ~0x1;
     this->m_dirtySections = 0;
+    RetailRaceBody(this); // Custom: the retail body sheet with the equipment layers (RetailRace.cpp)
     this->DestroyRenderTextures();
     this->m_link.Unlink();
 }
@@ -3924,8 +3950,9 @@ void CCharacterComponent::AddHelm(int32_t itemVisual) {
         return;
     }
 
-    // Custom: 256-bit hide masks (see RaceMask.h); a 32-bit `1 << raceID` wrapped around for race ids 32 and above
-    int32_t race = this->m_data.m_preferences.m_raceID;
+    // Custom: 256-bit hide masks (see RaceMask.h); a 32-bit `1 << raceID` wrapped around for race ids 32 and above.
+    // A retail race uses its helmet donor's bits (RetailRace.cpp).
+    int32_t race = static_cast<int32_t>(RetailRaceHelmetRace(this->m_data.m_preferences.m_raceID));
 
     if (visRec->m_hideGeoset[0].HasBit(race)) {
         this->m_data.m_geosets[0] = 1;
@@ -4380,7 +4407,10 @@ void CCharacterComponent::CreateBaseTexture() {
     }
 
     this->m_baseSkinTexture = TextureCreate(s_textureSize, s_textureSize, this->m_gxTexFormat, dataFormat, flags, this, &CCharacterComponent::UpdateBaseTexture, "CharacterBaseSkin", 1);
-    this->m_data.m_model->ReplaceTexture(1, this->m_baseSkinTexture);
+    // Custom: retail races bind their composed body sheet instead (RetailRaceBody)
+    if (!RetailRaceActive(this)) {
+        this->m_data.m_model->ReplaceTexture(1, this->m_baseSkinTexture);
+    }
 }
 
 // VERIFY: 51c5a21d manual
@@ -5405,6 +5435,7 @@ void CCharacterComponent::ProcessFinishedRequest() {
     }
 
     this->UpdateSections();
+    RetailRaceBody(this); // Custom (RetailRace.cpp)
     this->m_request->m_flags &= ~0x1;
     this->m_flags &= ~0x1;
     this->m_request = nullptr;
@@ -5590,6 +5621,7 @@ void CCharacterComponent::RenderPrepSections() {
     }
 
     this->PrepSections();
+    RetailRaceBody(this); // Custom (RetailRace.cpp)
     this->m_flags &= ~0x1;
     this->m_dirtySections = 0;
     this->DestroyRenderTextures();
@@ -5649,6 +5681,7 @@ bool CCharacterComponent::RenderPrep(int32_t wait) {
 // VERIFY: 3d69252b auto
 // OFFSET: 0x004F16C0
 void CCharacterComponent::FreeComponent(CCharacterComponent* component) {
+    RetailRaceForget(component); // Custom: drops the component's retail race state
     uint32_t* heap = s_componentHeap;
     component->~CCharacterComponent();
     ObjectFree(*heap, component->m_heapIndex);
@@ -5712,6 +5745,7 @@ void CCharacterComponent::DestroyComponentFreeLists() {
 // VERIFY: 0f866952 manual
 // OFFSET: 0x004F18F0
 int32_t CCharacterComponent::Update(const void* data, void* param) {
+    RetailRaceTick(); // Custom: keeps retail race components moving through the section pipeline
     int32_t hasContext = g_theGxDevicePtr ? g_theGxDevicePtr->CapsHasContext(-1) : 0;
 
     for (CCharacterComponent* component = CCharacterComponent::s_queue.Head(); component;) {
@@ -6013,7 +6047,10 @@ bool CCharacterComponent::Init(ComponentData* data, const char* debug) {
     this->m_handItemDisplayID[1] = 0;
     this->m_handItemDisplayID[2] = 0;
 
-    if (static_cast<int32_t>(data->m_preferences.m_raceID) < 0 || static_cast<int32_t>(data->m_preferences.m_raceID) > g_chrRacesDB.m_maxID || !ComponentValidateBase(CCharacterComponent::s_chrVarArray, this->m_data.m_preferences.m_raceID, this->m_data.m_preferences.m_sexID, VARIATION_SKIN, 0, this->m_data.m_preferences.m_skinID)) {
+    // Custom: a retail race needs no CharSections skin row
+    if (static_cast<int32_t>(data->m_preferences.m_raceID) < 0 || static_cast<int32_t>(data->m_preferences.m_raceID) > g_chrRacesDB.m_maxID ||
+        (!RetailRaceOwns(this->m_data.m_preferences.m_raceID, this->m_data.m_preferences.m_sexID) &&
+         !ComponentValidateBase(CCharacterComponent::s_chrVarArray, this->m_data.m_preferences.m_raceID, this->m_data.m_preferences.m_sexID, VARIATION_SKIN, 0, this->m_data.m_preferences.m_skinID))) {
         return false;
     }
 

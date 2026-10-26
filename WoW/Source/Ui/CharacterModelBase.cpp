@@ -1,4 +1,5 @@
 #include "CharacterModelBase.h"
+#include "WoW/Common/ComponentCore/RetailRace.h"
 #include <new>
 #include <typeinfo>
 #include "Engine/Source/Frame/CScriptObject.h"
@@ -151,7 +152,10 @@ CM2Model* CGCharacterModelBase::GetDuplicateUnitCharacterModel(CGUnit_C* unit) {
         return nullptr;
     }
 
-    return this->GetScene()->DuplicateModel(unit->m_worldModel, 0);
+    CM2Model* model = this->GetScene()->DuplicateModel(unit->m_worldModel, 0);
+    // Custom: a retail race's geoset choices live per model and must follow the copy (paper doll, inspect)
+    RetailRaceDuplicateCollections(unit->m_worldModel, model);
+    return model;
 }
 
 // VERIFY: 4219f365 auto

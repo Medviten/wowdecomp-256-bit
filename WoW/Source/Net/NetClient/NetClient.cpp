@@ -8,6 +8,11 @@
 #include "Engine/Source/Event/Types.h"
 #include "Engine/Source/Os/TimeManager.h"
 #include "Engine/Source/Storm/H/storm.h"
+
+// Custom: handlers of server messages past the stock opcode table (NUM_MSG_TYPES..NUM_CUSTOM_MSG_TYPES - 1, see
+// Types.h), kept outside NetClient so its stock layout is unchanged. One client connection exists at a time.
+static MESSAGE_HANDLER s_customHandlers[NUM_CUSTOM_MSG_TYPES - NUM_MSG_TYPES];
+static void* s_customHandlerParams[NUM_CUSTOM_MSG_TYPES - NUM_MSG_TYPES];
 #include "WoW/Source/Glue/CGlueMgr.h"
 #include "WoW/Source/WowServices/HMAC.h"
 
@@ -257,6 +262,16 @@ uint8_t* NetClient::GetSessionKey() {
 // VERIFY: f1080d7c auto
 // OFFSET: 0x00631FA0
 void NetClient::SetMessageHandler(NETMESSAGE msgId, MESSAGE_HANDLER handler, void* param) {
+    // Custom: messages past the stock table (see s_customHandlers)
+    if (msgId >= NUM_MSG_TYPES) {
+        if (msgId < NUM_CUSTOM_MSG_TYPES) {
+            s_customHandlers[msgId - NUM_MSG_TYPES] = handler;
+            s_customHandlerParams[msgId - NUM_MSG_TYPES] = param;
+        }
+
+        return;
+    }
+
     this->m_handlers[msgId] = handler;
     this->m_handlerParams[msgId] = param;
 }
@@ -264,6 +279,16 @@ void NetClient::SetMessageHandler(NETMESSAGE msgId, MESSAGE_HANDLER handler, voi
 // VERIFY: acb4d340 auto
 // OFFSET: 0x00631FC0
 void NetClient::ResetHandler(NETMESSAGE msgId) {
+    // Custom: messages past the stock table (see s_customHandlers)
+    if (msgId >= NUM_MSG_TYPES) {
+        if (msgId < NUM_CUSTOM_MSG_TYPES) {
+            s_customHandlers[msgId - NUM_MSG_TYPES] = nullptr;
+            s_customHandlerParams[msgId - NUM_MSG_TYPES] = nullptr;
+        }
+
+        return;
+    }
+
     this->m_handlers[msgId] = nullptr;
     this->m_handlerParams[msgId] = nullptr;
 }
@@ -279,6 +304,11 @@ int32_t NetClient::ProcessMessage(uint32_t timeReceived, CDataStore* msg, int32_
 
     if (msgId < NUM_MSG_TYPES && this->m_handlers[msgId]) {
         return this->m_handlers[msgId](this->m_handlerParams[msgId], static_cast<NETMESSAGE>(msgId), timeReceived, msg);
+    }
+
+    // Custom: messages past the stock table
+    if (msgId >= NUM_MSG_TYPES && msgId < NUM_CUSTOM_MSG_TYPES && s_customHandlers[msgId - NUM_MSG_TYPES]) {
+        return s_customHandlers[msgId - NUM_MSG_TYPES](s_customHandlerParams[msgId - NUM_MSG_TYPES], static_cast<NETMESSAGE>(msgId), timeReceived, msg);
     }
 
     msg->Reset();

@@ -355,6 +355,9 @@ WOWDECOMP_DISABLE_SIGNATURE_CHECKS:BOOL=OFF
 WOWDECOMP_RETAIL_ASSETS:BOOL=ON
 
 //Dependencies for the target
+WoWCommon_LIB_DEPENDS:STATIC=general;RetailAssets;
+
+//Dependencies for the target
 XvidDecoder_LIB_DEPENDS:STATIC=general;D:/GitHub/wowdecomp-256-bit/ThirdParty/xvidcore/lib/x64/libxvidcore.lib;
 
 //Path to a file.

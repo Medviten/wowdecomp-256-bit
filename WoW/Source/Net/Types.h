@@ -1317,6 +1317,13 @@ enum NETMESSAGE {
     SMSG_COMMENTATOR_SKIRMISH_QUEUE_RESULT2 = 0x51D,
     SMSG_MULTIPLE_MOVES = 0x51E,
     NUM_MSG_TYPES = 0x51F,
+
+    // Custom: messages past the stock table (NetClient keeps their handlers apart). 0x51F/0x520 are the server's
+    // redirect messages; the retail race messages keep the numbers of Kalibro's Esteria client and server.
+    SMSG_RETAIL_LOOK = 0x524,           // guid(8) + CharacterRetailLook payload: a player in view's retail look
+    CMSG_RETAIL_FORM_LOOK = 0x525,      // Two Forms commit: guid(8), revision(4), active form(1), both looks
+    SMSG_RETAIL_FORM_LOOK_ACK = 0x526,  // guid(8), revision(4), result(4)
+    NUM_CUSTOM_MSG_TYPES = 0x530,
 };
 
 #endif

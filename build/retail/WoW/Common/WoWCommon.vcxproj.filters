@@ -13,6 +13,9 @@
     <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Common\ComponentCore\ComponentUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Common\ComponentCore\RetailRace.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Common\Lightning.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

@@ -6,6 +6,17 @@
 #include "WoW/Source/DB/DBClient/DBCacheInstances.h"
 #include "WoW/Source/UIUtil/AddOns.h"
 #include "WoW/Source/WowServices/WDataStore.h"
+#include "WoW/Common/ComponentCore/RetailRace.h"
+
+// Custom: the retail-look messages (see RetailRace.h). They arrive on the realm connection both at the character
+// screen and in the world, so they are registered with the connection rather than with the game.
+static int32_t RetailLookHandler(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* msg) {
+    return RetailRaceReceiveLook(msg) ? 1 : 0;
+}
+
+static int32_t RetailFormLookAckHandler(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* msg) {
+    return RetailRaceReceiveFormAck(msg) ? 1 : 0;
+}
 
 // STATIC: 0x00AB953C
 TSList<RealmConnection::REALMCONNECTIONNODE> RealmConnection::s_allRealmConnections;
@@ -22,6 +33,9 @@ RealmConnection::REALMCONNECTIONNODE::REALMCONNECTIONNODE() {
 // VERIFY: ec31eb67 manual
 // OFFSET: 0x00464C10
 int32_t RealmConnection::HandleCharEnum(uint32_t msgId, uint32_t time, CDataStore* msg) {
+    // Custom: strip the retail-look tail blocks the server appends after the list
+    RetailRaceEnumTail(msg);
+
     if (this->m_realmResponse) {
         this->m_realmResponse->GameServerResult(this, "SMSG_CHAR_ENUM", nullptr, nullptr);
     }
@@ -101,6 +115,13 @@ int32_t RealmConnection::HandleCharEnum(uint32_t msgId, uint32_t time, CDataStor
     if (!success) {
         this->m_characterList.Clear();
     }
+
+    // Custom: a Two Forms character just created learns its guid from the new list (see RetailFormCommitOffer)
+    for (uint32_t i = 0; i < this->m_characterList.Count(); i++) {
+        const CHARACTER_INFO& info = this->m_characterList[i];
+        RetailFormCommitOffer(info.m_name, info.m_raceID, info.m_sexID, info.m_guid.m_guid);
+    }
+    RetailFormCommitListDone();
 
     this->m_realmResponse->CharacterListReceived(this, this->m_characterList, success);
 
@@ -190,6 +211,9 @@ RealmConnection::RealmConnection(RealmResponse* realmResponse) : m_realmResponse
     this->SetMessageHandler(SMSG_LOGOUT_RESPONSE, RealmConnection::MessageHandler, this);
     this->SetMessageHandler(SMSG_DELETE_CHAR, RealmConnection::MessageHandler, this);
     this->SetMessageHandler(SMSG_CACHE_VERSION, RealmConnection::MessageHandler, this);
+    // Custom: retail looks
+    this->SetMessageHandler(SMSG_RETAIL_LOOK, RetailLookHandler, this);
+    this->SetMessageHandler(SMSG_RETAIL_FORM_LOOK_ACK, RetailFormLookAckHandler, this);
 
     RealmConnection::s_allRealmConnectionsCrit.Enter();
     RealmConnection::REALMCONNECTIONNODE* node = RealmConnection::s_allRealmConnections.NewNode(2, 0, 0);
@@ -452,6 +476,9 @@ RealmConnection::~RealmConnection() {
     this->ResetHandler(SMSG_LOGOUT_RESPONSE);
     this->ResetHandler(SMSG_DELETE_CHAR);
     this->ResetHandler(SMSG_CACHE_VERSION);
+    // Custom: retail looks
+    this->ResetHandler(SMSG_RETAIL_LOOK);
+    this->ResetHandler(SMSG_RETAIL_FORM_LOOK_ACK);
     this->Destroy();
 
     RealmConnection::s_allRealmConnectionsCrit.Leave();

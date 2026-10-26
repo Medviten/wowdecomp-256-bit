@@ -18,6 +18,11 @@ class CharacterSelectionDisplay {
     /* 0194 */ uint32_t unused_0194;
 
     static void SetCharacterFacing(float rotation);
+
+    // Custom (Kalibro's retail race layer) Two Forms: the form a Worgen or Dracthyr is not showing, standing beside the selected character.
+    static CCharacterComponent* m_formMirror;
+    static void ClearFormMirror();
+    static void ShowFormMirror(CharacterSelectionDisplay& display);
     static int32_t SetSelectedCharacterInfo(CHARACTER_INFO* info);
 
     CharacterSelectionDisplay();

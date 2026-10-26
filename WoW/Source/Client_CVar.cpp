@@ -686,6 +686,67 @@ uint32_t ClientGetAlteredFormRace(uint32_t race) {
     return race < sizeof(s_alteredFormRace) ? s_alteredFormRace[race] : 0;
 }
 
+// Custom: retailRaces lists the races drawn with retail models and customization (Kalibro's retail race layer, builds
+// with WOWDECOMP_RETAIL_ASSETS): "race=retail" pairs, where retail is a retail ChrRaces ID or "centaur"/"slimegiant" for
+// Kalibro's hand-built Centaur and Slime Giant. Races not listed keep their stock models.
+static uint32_t s_retailRace[256];
+
+bool RetailRacesCallback(CVar* var, const char* oldValue, const char* value, void* arg) {
+    memset(s_retailRace, 0, sizeof(s_retailRace));
+
+    const char* cursor = value ? value : "";
+
+    while (*cursor) {
+        char* end;
+        long race = strtol(cursor, &end, 10);
+
+        if (end == cursor) {
+            cursor++;
+            continue;
+        }
+
+        cursor = end;
+
+        while (*cursor == ' ') {
+            cursor++;
+        }
+
+        if (*cursor != '=') {
+            continue;
+        }
+
+        cursor++;
+        uint32_t retail = 0;
+
+        if (!SStrCmpI(cursor, "centaur", 7)) {
+            retail = CLIENT_RETAIL_CENTAUR;
+            cursor += 7;
+        } else if (!SStrCmpI(cursor, "slimegiant", 10)) {
+            retail = CLIENT_RETAIL_SLIME_GIANT;
+            cursor += 10;
+        } else {
+            long id = strtol(cursor, &end, 10);
+
+            if (end == cursor) {
+                continue;
+            }
+
+            retail = id > 0 && id < 0x10000 ? static_cast<uint32_t>(id) : 0;
+            cursor = end;
+        }
+
+        if (race > 0 && race < 256 && retail) {
+            s_retailRace[race] = retail;
+        }
+    }
+
+    return true;
+}
+
+uint32_t ClientGetRetailRace(uint32_t race) {
+    return race < sizeof(s_retailRace) / sizeof(s_retailRace[0]) ? s_retailRace[race] : 0;
+}
+
 // Custom: shapeshiftSkinColorRaces lists the races whose shapeshift form models follow skin (fur) color rather than
 // hair color in player_shapeshift_model (retail IDs "6,24,25,26,28,35": Tauren, Pandaren, Highmountain Tauren, Vulpera),
 // matching the server's rule

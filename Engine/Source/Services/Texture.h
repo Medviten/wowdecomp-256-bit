@@ -136,6 +136,8 @@ CTexture* TextureCreate(const char* fileName, CGxTexFlags texFlags, CStatus* sta
 CTexture* TextureCreate(EGxTexTarget target, uint32_t width, uint32_t height, uint32_t depth, EGxTexFormat format, EGxTexFormat dataFormat, CGxTexFlags texFlags, void* userArg, GxTexUserFunc userFunc, const char* name, int32_t defaultFilter);
 CTexture* TextureCreate(uint32_t width, uint32_t height, EGxTexFormat format, EGxTexFormat dataFormat, CGxTexFlags texFlags, void* userArg, GxTexUserFunc userFunc, const char* name, int32_t defaultFilter);
 CTexture* TextureCreateBlob(char* fileName, CGxTexFlags texFlags, CStatus* status, int32_t defaultFilter);
+// Custom: a texture from an in-memory BLP (retail race textures)
+CTexture* TextureCreateFromBlpData(const char* name, CGxTexFlags texFlags, void* blpData);
 SFileImpl* TextureCreateOpenFile(const char* fileName, int32_t flags);
 CTexture* TextureCreateSolid(const CImVector& color);
 void TextureDestroy();

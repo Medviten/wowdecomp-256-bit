@@ -1,11 +1,18 @@
 #include "CharacterCreation.h"
 #include <cstring>
+#include <algorithm>
+#include <cmath>
+#include "WoW/Common/ComponentCore/RetailRace.h"
 #include "Engine/Source/Event/Event.h"
 #include "Engine/Source/FrameScript/FrameScript.h"
 #include "Engine/Source/Model2/M2Model.h"
+#include "Engine/Source/Model2/M2Data.h"
 #include "Engine/Source/Model2/M2Scene.h"
 #include "Engine/Source/Model2/M2Shared.h"
 #include "Engine/Source/Storm/H/storm.h"
+#include "Engine/Source/Base/Handle.h"
+#include "Engine/Source/Services/Camera.h"
+#include "Engine/Source/Services/CameraInt.h"
 #include "Engine/Source/Tempest/CRandom.h"
 #include "WoW/Common/ComponentCore/CharacterComponent.h"
 #include "WoW/Source/DB/DBClient/DBClient.h"
@@ -15,6 +22,7 @@
 #include "WoW/Source/DB/Rec/ChrRacesRec.h"
 #include "WoW/Source/DB/Rec/CreatureModelDataRec.h"
 #include "WoW/Source/DB/Rec/ItemDisplayInfoRec.h"
+#include "WoW/Source/DB/Rec/ItemRec.h"
 #include "WoW/Source/Game/GameClient/CDrawBowString.h"
 #include "WoW/Source/Glue/CGlueLoading.h"
 #include "WoW/Source/Glue/CGlueMgr.h"
@@ -46,6 +54,8 @@ CSimpleModelFFX* CCharacterCreation::m_charCustomizeFrame;
 
 // STATIC: 0x00B6B188
 float CCharacterCreation::m_charFacing;
+// Custom: the retail Two Forms preview of the form the character is not showing
+CCharacterComponent* CCharacterCreation::m_formMirror;
 
 // STATIC: 0x00B6B18C
 uint32_t CCharacterCreation::m_prevSkinIndex;
@@ -77,6 +87,95 @@ CNameGen CCharacterCreation::m_nameGen;
 // Custom: altered form preview (see CharacterCreation.h)
 CCharacterComponent* CCharacterCreation::m_alteredCharacter;
 int32_t CCharacterCreation::m_alteredFormAtFront;
+// Custom (Kalibro): creator camera zoom towards the face and pan (EA_ZOOM / EA_PAN in CycleCharCustomization)
+namespace {
+float s_creatorZoom = 0.0f;
+// Camera pan in view distances (right, up); the screen-relative drag keeps the grabbed point under the cursor.
+float s_creatorPanX = 0.0f;
+float s_creatorPanY = 0.0f;
+CCamera* s_creatorCamera = nullptr;
+}
+
+void CCharacterCreation::ZoomCamera(float delta) {
+    if (std::isfinite(delta)) {
+        s_creatorZoom = std::clamp(s_creatorZoom + delta / 12.0f, 0.0f, 1.0f);
+        if (s_creatorZoom < 0.0001f) s_creatorZoom = 0.0f;
+    }
+}
+
+void CCharacterCreation::PanCamera(float dx, float dy) {
+    if (!std::isfinite(dx) || !std::isfinite(dy)) return;
+    // Dragging moves the character with the cursor, so the camera moves the other way.
+    s_creatorPanX = std::clamp(s_creatorPanX - dx, -1.0f, 1.0f);
+    s_creatorPanY = std::clamp(s_creatorPanY - dy, -1.0f, 1.0f);
+}
+
+void CCharacterCreation::ResetPanCamera() {
+    s_creatorPanX = s_creatorPanY = 0.0f;
+}
+
+void CCharacterCreation::ResetZoomCamera() {
+    s_creatorZoom = 0.0f;
+    ResetPanCamera();
+    if (m_charCustomizeFrame && m_charCustomizeFrame->m_camera == s_creatorCamera && s_creatorCamera) {
+        m_charCustomizeFrame->SetCameraByIndex(0);
+    }
+    if (s_creatorCamera) {
+        HandleClose(reinterpret_cast<HOBJECT>(s_creatorCamera));
+        s_creatorCamera = nullptr;
+    }
+}
+
+void CCharacterCreation::UpdateZoomCamera() {
+    auto* frame = m_charCustomizeFrame;
+    auto* body = m_character ? m_character->m_data.m_model : nullptr;
+    if (!frame || !frame->m_model || !body || !(body->m_fFlags & 1)
+        || !(frame->m_model->m_fFlags & 1)) return;
+    if (s_creatorZoom == 0.0f && s_creatorPanX == 0.0f && s_creatorPanY == 0.0f) {
+        if (s_creatorCamera && frame->m_camera == s_creatorCamera) frame->SetCameraByIndex(0);
+        return;
+    }
+    if (!frame->m_model->m_shared->m_data->m_cameras.m_count) return;
+    auto* base = static_cast<CCamera*>(frame->m_model->GetCameraByIndex(0));
+    if (!base) return;
+
+    // Use the loaded body's head, including its pedestal transform and race-specific scale.
+    // The stable bind pivot avoids making the camera bob with idle facial animations.
+    const auto& bounds = body->m_shared->m_data->m_bounds.m_extent;
+    const float height = bounds.t.z - bounds.b.z;
+    C3Vector face = body->HasBone(6) ? body->GetBonePivot(6)
+        : C3Vector(0.0f, 0.0f, bounds.b.z + height * 0.87f);
+    face.z += height * 0.035f;
+    face = face * body->GetAnimatedWorldTransform();
+    C3Vector position, target;
+    DataMgrGetCoord(base, 7, &position);
+    DataMgrGetCoord(base, 8, &target);
+    const auto offset = position - target;
+    target += (face - target) * s_creatorZoom;
+    position = target + offset * std::pow(0.18f, s_creatorZoom);
+    // Screen axes of the view; the pan scales with the zoomed distance so closeups drag at the same feel.
+    const C3Vector forward = target - position;
+    const float distance = std::sqrt(forward.SquaredMag());
+    C3Vector right = C3Vector::Cross(forward, C3Vector(0.0f, 0.0f, 1.0f));
+    if (distance > 0.0f && right.SquaredMag() > 1e-8f) {
+        right.Normalize();
+        C3Vector up = C3Vector::Cross(right, forward);
+        up.Normalize();
+        const C3Vector pan = (right * s_creatorPanX + up * s_creatorPanY) * distance;
+        position += pan;
+        target += pan;
+    }
+    if (!std::isfinite(position.x) || !std::isfinite(position.y) || !std::isfinite(position.z)
+        || !std::isfinite(target.x) || !std::isfinite(target.y) || !std::isfinite(target.z)) return;
+    if (!s_creatorCamera) s_creatorCamera = CameraCreate();
+    if (!s_creatorCamera) return;
+    // A separate camera keeps animated background cameras and other glue screens untouched.
+    for (uint32_t field : {2u, 4u, 5u}) CameraSetFloat(s_creatorCamera, field, CameraGetFloat(base, field));
+    CameraSetFloat(s_creatorCamera, 3, std::max(0.01f, CameraGetFloat(base, 3) * 0.18f));
+    CameraSetCoord(s_creatorCamera, 7, position);
+    CameraSetCoord(s_creatorCamera, 8, target);
+    if (frame->m_camera != s_creatorCamera) frame->SetCamera(s_creatorCamera);
+}
 
 // VERIFY: cbaddeb2 manual
 // OFFSET: 0x004E1C20
@@ -119,6 +218,11 @@ void CCharacterCreation::Initialize() {
 // VERIFY: 3b1595cf manual
 // OFFSET: 0x004E1E20
 void CCharacterCreation::Shutdown() {
+    // Custom: creator zoom camera, retail Two Forms preview and selections
+    ResetZoomCamera();
+    CCharacterCreation::ClearFormMirror();
+    RetailRaceFormClearMemory();
+
     if (CCharacterCreation::m_character) {
         CCharacterComponent::FreeComponent(CCharacterCreation::m_character);
         CCharacterCreation::m_character = nullptr;
@@ -174,6 +278,9 @@ void CCharacterCreation::GetRandomRaceAndSex(ComponentData* data) {
 // VERIFY: 45c27290 auto
 // OFFSET: 0x004DFFC0
 void CCharacterCreation::OnHide() {
+    // Custom: creator zoom camera, retail Two Forms preview
+    ResetZoomCamera();
+    CCharacterCreation::ClearFormMirror();
     EventUnregister(EVENT_ID_IDLE, &CCharacterCreation::Idle);
     LoadingScreenMiniDisable();
 }
@@ -231,7 +338,19 @@ void CCharacterCreation::SetCharacterFacing(float facing) {
     bool alteredFront = CCharacterCreation::m_alteredCharacter && CCharacterCreation::m_alteredFormAtFront;
 
     if (CCharacterCreation::m_character->m_data.m_model) {
-        CCharacterCreation::m_character->m_data.m_model->SetWorldTransform(position, alteredFront ? 0.0f : facing, 1.0f);
+        // Custom: retail races (RetailRace.cpp): the Two Forms side-by-side offset and the preview scale
+        C3Vector offset = position;
+        RetailRaceFormOffset(CCharacterCreation::m_character, offset.x, offset.y);
+        CCharacterCreation::m_character->m_data.m_model->SetWorldTransform(offset, alteredFront ? 0.0f : facing,
+            RetailRacePreviewScale(CCharacterCreation::m_character->m_data.m_preferences.m_raceID));
+    }
+
+    // Custom: the retail Two Forms preview of the form the main character is not showing
+    if (CCharacterCreation::m_formMirror && CCharacterCreation::m_formMirror->m_data.m_model) {
+        C3Vector offset = position;
+        RetailRaceFormOffset(CCharacterCreation::m_formMirror, offset.x, offset.y);
+        CCharacterCreation::m_formMirror->m_data.m_model->SetWorldTransform(offset, facing,
+            RetailRacePreviewScale(CCharacterCreation::m_formMirror->m_data.m_preferences.m_raceID));
     }
 
     if (CCharacterCreation::m_alteredCharacter && CCharacterCreation::m_alteredCharacter->m_data.m_model) {
@@ -344,7 +463,7 @@ void CCharacterCreation::SetViewingAlteredForm(int32_t alteredForm) {
 // OFFSET: 0x004E01B0
 bool CCharacterCreation::IsClassAvailable(int32_t classID) {
     for (uint32_t i = 0; i < CCharacterCreation::m_classes.Count(); i++) {
-        if (CCharacterCreation::m_classes.m_data[i]->m_id == classID) {
+        if (CCharacterCreation::m_classes.m_data[i] && CCharacterCreation::m_classes.m_data[i]->m_id == classID) {
             return true;
         }
     }
@@ -547,7 +666,7 @@ int32_t CCharacterCreation::GetRandomClassID() {
 // Custom: dresses the character and the altered form preview the same way (the body below is the original Dress,
 // working on `component`; the starting outfit is still chosen by the character's own race)
 void CCharacterCreation::Dress() {
-    CCharacterCreation::DressComponent(CCharacterCreation::m_character);
+    CCharacterCreation::Dress(CCharacterCreation::m_character); // Custom: through Dress(target) (retail races shown bare)
 
     if (CCharacterCreation::m_alteredCharacter) {
         CCharacterCreation::DressComponent(CCharacterCreation::m_alteredCharacter);
@@ -556,6 +675,37 @@ void CCharacterCreation::Dress() {
 
 // VERIFY: b15e5451 auto
 // OFFSET: 0x004E0FD0
+// Custom: retail races (RetailRace.cpp): takes every item off a preview (Dracthyr Dragon is shown bare)
+void CCharacterCreation::Undress(CCharacterComponent* target) {
+    if (!target || !target->m_data.m_model) {
+        return;
+    }
+
+    for (int32_t slot = 0; slot < NUM_ITEM_SLOTS; slot++) {
+        target->RemoveItem(static_cast<ITEM_SLOT>(slot));
+    }
+
+    CCharacterComponent::RemoveHandItem(target->m_data.m_model, INVSLOT_MAINHAND, SHEATHE_NONE, false);
+    CCharacterComponent::RemoveHandItem(target->m_data.m_model, INVSLOT_OFFHAND, SHEATHE_NONE, false);
+    CCharacterComponent::RemoveHandItem(target->m_data.m_model, INVSLOT_OFFHAND, SHEATHE_NONE, true);
+    target->m_handItemDisplayID[0] = target->m_handItemDisplayID[1] = 0;
+    target->m_flags |= 0x4;
+}
+
+// Custom: dresses one preview in the starting outfit, or undresses it where the retail race shows it bare
+void CCharacterCreation::Dress(CCharacterComponent* target) {
+    if (RetailRaceNaked(target)) {
+        CCharacterCreation::Undress(target);
+        return;
+    }
+
+    if (!target || !target->m_data.m_model) {
+        return;
+    }
+
+    CCharacterCreation::DressComponent(target);
+}
+
 void CCharacterCreation::DressComponent(CCharacterComponent* component) {
     if (CCharacterCreation::m_existingCharacterIndex >= 0) {
         CharacterSelectionDisplay* display = CCharacterSelection::GetCharacterDisplay(CCharacterCreation::m_existingCharacterIndex);
@@ -688,6 +838,10 @@ void CCharacterCreation::DressComponent(CCharacterComponent* component) {
 // VERIFY: 6d456576 auto
 // OFFSET: 0x004E13A0
 void CCharacterCreation::InitCharacterComponents(ComponentData* data, bool randomize) {
+    // Custom: retail races keep the creator's eye lightning choice across a rebuild of the same race
+    const bool eyeLightning = m_character
+        && m_character->m_data.m_preferences.m_raceID == data->m_preferences.m_raceID
+        && RetailRaceEyeLightning(m_character);
     CreatureModelDataRec* modelRec = GetModelDataRec(data->m_preferences.m_raceID, data->m_preferences.m_sexID);
 
     if (!modelRec || !*modelRec->m_modelName) {
@@ -699,11 +853,16 @@ void CCharacterCreation::InitCharacterComponents(ComponentData* data, bool rando
             CCharacterCreation::m_character->m_data.m_model->DetachFromParent();
         }
 
+        RetailRaceFormStore(CCharacterCreation::m_character); // Custom: retail Two Forms selections survive the rebuild
         CCharacterComponent::FreeComponent(CCharacterCreation::m_character);
     }
 
     CCharacterCreation::m_character = CCharacterComponent::AllocComponent();
-    data->m_model = CCharacterCreation::m_charCustomizeFrame->GetScene()->CreateModel(modelRec->m_modelName, 0);
+    // Custom: retail races are built from their retail model (for the form the creator last showed)
+    const uint32_t form = RetailRaceFormRestore(CCharacterCreation::m_character, data->m_preferences);
+    char retailPath[260];
+    const bool retailModel = RetailRaceModelPath(data->m_preferences.m_raceID, data->m_preferences.m_sexID, retailPath, sizeof(retailPath), form);
+    data->m_model = CCharacterCreation::m_charCustomizeFrame->GetScene()->CreateModel(retailModel ? retailPath : modelRec->m_modelName, 0);
 
     if (!data->m_model) {
         return;
@@ -716,6 +875,7 @@ void CCharacterCreation::InitCharacterComponents(ComponentData* data, bool rando
     data->m_flags |= 0x2;
 
     CCharacterCreation::m_character->Init(data, nullptr);
+    RetailRaceEyeLightning(m_character, eyeLightning); // Custom
 
     if (randomize) {
         CCharacterCreation::m_character->SetRandomSkin(COMPONENT_CONTEXT_0);
@@ -742,6 +902,58 @@ void CCharacterCreation::InitCharacterComponents(ComponentData* data, bool rando
         // Custom: attaches the altered form preview as well
         CCharacterCreation::AttachCharacters();
     }
+
+    CCharacterCreation::SyncFormMirror(); // Custom: retail Two Forms side-by-side preview
+}
+
+// Custom: drops the retail Two Forms preview
+void CCharacterCreation::ClearFormMirror() {
+    CCharacterComponent* mirror = CCharacterCreation::m_formMirror;
+    if (!mirror) return;
+    CCharacterCreation::m_formMirror = nullptr;
+    if (mirror->m_data.m_model && mirror->m_data.m_model->m_attachParent) mirror->m_data.m_model->DetachFromParent();
+    CCharacterComponent::FreeComponent(mirror);
+}
+
+// Custom: rebuilds the second preview: the form the main character is not showing, with that form's own selections.
+void CCharacterCreation::SyncFormMirror() {
+    CCharacterCreation::ClearFormMirror();
+    CCharacterComponent* main = CCharacterCreation::m_character;
+    if (!main || !main->m_data.m_model || !CCharacterCreation::m_charCustomizeFrame || !RetailRaceFormDual(main)) return;
+
+    ComponentData data;
+    data.m_preferences.m_raceID = main->m_data.m_preferences.m_raceID;
+    data.m_preferences.m_sexID = main->m_data.m_preferences.m_sexID;
+    data.m_preferences.m_classId = main->m_data.m_preferences.m_classId;
+    CCharacterComponent* mirror = CCharacterComponent::AllocComponent();
+    if (!mirror) return;
+    const uint32_t form = RetailRaceMirrorSetup(mirror, main, data.m_preferences);
+    char path[260];
+    if (!form || !RetailRaceModelPath(data.m_preferences.m_raceID, data.m_preferences.m_sexID, path, sizeof(path), form)) {
+        CCharacterComponent::FreeComponent(mirror);
+        return;
+    }
+    data.m_model = CCharacterCreation::m_charCustomizeFrame->GetScene()->CreateModel(path, 0);
+    if (!data.m_model) {
+        CCharacterComponent::FreeComponent(mirror);
+        return;
+    }
+
+    CCharacterCreation::m_charCustomizeFrame->m_lightArray2[0].unk_01BC = 1;
+    data.m_model->m_lightingCallback = &CCharacterSelection::GenericLightingCallback;
+    data.m_model->m_lightingArg = CCharacterCreation::m_charCustomizeFrame->m_lightArray2;
+    data.m_model->SetBoneSequence(0xFFFFFFFF, 0, 0, 0, 1.0f, 1, 1);
+    data.m_flags |= 0x2;
+
+    mirror->Init(&data, nullptr);
+    CCharacterCreation::m_formMirror = mirror;
+    CCharacterCreation::SetCharacterFacing(CCharacterCreation::m_charFacing);
+    CCharacterCreation::Dress(mirror);
+    mirror->RenderPrep(0);
+    if (CCharacterCreation::m_charCustomizeFrame->m_model) {
+        mirror->m_data.m_model->AttachToParent(CCharacterCreation::m_charCustomizeFrame->m_model, 0, nullptr, 0);
+    }
+    CGlueLoading::StartLoad(mirror, 1);
 }
 
 // VERIFY: 68a365e1 manual
@@ -817,6 +1029,11 @@ void CCharacterCreation::SetSelectedClass(int32_t classID) {
 
     CCharacterCreation::m_selectedClassID = classID;
 
+    // Custom: a race whose (retail) model failed to load leaves no character to rebuild
+    if (!CCharacterCreation::m_character || !CCharacterCreation::m_character->m_data.m_model) {
+        return;
+    }
+
     ComponentData data;
     data.m_preferences.m_raceID = CCharacterCreation::m_character->m_data.m_preferences.m_raceID;
     data.m_preferences.m_sexID = CCharacterCreation::m_character->m_data.m_preferences.m_sexID;
@@ -887,15 +1104,30 @@ void CCharacterCreation::ResetCharCustomizeInfo() {
     }
 
     CCharacterCreation::m_existingCharacterIndex = -1;
+    RetailRaceEyeLightning(m_character, false); // Custom
 
     if (CCharacterCreation::m_charCustomizeFrame->m_model) {
         CCharacterCreation::m_charCustomizeFrame->m_model->DetachAllChildrenById(0);
     }
 
+    // Custom: some listed races may have no loadable model (missing records, or retail data that could not be read).
+    // Retry with another random race until a character exists, so the rest of the glue never sees a null component.
     ComponentData data;
-    CCharacterCreation::GetRandomRaceAndSex(&data);
-    CCharacterCreation::CalcClasses(data.m_preferences.m_raceID);
-    CCharacterCreation::InitCharacterComponents(&data, true);
+    for (int32_t attempt = 0; attempt < 64; attempt++) {
+        data = ComponentData();
+        CCharacterCreation::GetRandomRaceAndSex(&data);
+        CCharacterCreation::CalcClasses(data.m_preferences.m_raceID);
+        CCharacterCreation::InitCharacterComponents(&data, true);
+
+        if (CCharacterCreation::m_character && CCharacterCreation::m_character->m_data.m_model) {
+            break;
+        }
+    }
+
+    if (!CCharacterCreation::m_character) {
+        return;
+    }
+
     CCharacterCreation::SetSelectedClass(CCharacterCreation::GetRandomClassID());
     data.m_preferences.m_classId = CCharacterCreation::m_selectedClassID;
 

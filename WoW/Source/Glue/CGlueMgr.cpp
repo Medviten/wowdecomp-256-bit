@@ -1,4 +1,5 @@
 #include "CGlueMgr.h"
+#include "WoW/Common/ComponentCore/RetailRace.h"
 #include <cmath>
 #include <cstdarg>
 #include <cstring>
@@ -2378,6 +2379,8 @@ void CGlueMgr::CustomizeCharacter(WOWGUID guid, const CHARACTER_CREATE_INFO* inf
     msg.Put(info->m_hairStyleID);
     msg.Put(info->m_facialHairStyleID);
     msg.Put(info->m_faceID);
+    // Custom: a retail race's full customization (RLK1 footer, only for mapped races)
+    RetailLookCreateFooter(&msg);
     msg.Finalize();
     ClientServices::Send2(&msg);
 }
@@ -2403,6 +2406,8 @@ void CGlueMgr::FactionChange(WOWGUID guid, const CHARACTER_CREATE_INFO* info) {
     msg.Put(info->m_facialHairStyleID);
     msg.Put(info->m_faceID);
     msg.Put(info->m_raceID);
+    // Custom: a retail race's full customization (RLK1 footer, only for mapped races)
+    RetailLookCreateFooter(&msg);
     msg.Finalize();
     ClientServices::Send2(&msg);
 }
@@ -2428,6 +2433,8 @@ void CGlueMgr::RaceChange(WOWGUID guid, const CHARACTER_CREATE_INFO* info) {
     msg.Put(info->m_facialHairStyleID);
     msg.Put(info->m_faceID);
     msg.Put(info->m_raceID);
+    // Custom: a retail race's full customization (RLK1 footer, only for mapped races)
+    RetailLookCreateFooter(&msg);
     msg.Finalize();
     ClientServices::Send2(&msg);
 }

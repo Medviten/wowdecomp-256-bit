@@ -107,6 +107,11 @@ bool ClientShapeshiftUsesSkinColor(uint32_t race);
 // Custom: races whose characters show no armour textures (creatureSkinRaces)
 bool CreatureSkinRacesCallback(CVar* var, const char* oldValue, const char* value, void* arg);
 bool ClientRaceHidesArmorTextures(uint32_t race);
+// Custom: races drawn with retail models (retailRaces): a retail ChrRaces ID, one of Kalibro's profiles below, or 0
+constexpr uint32_t CLIENT_RETAIL_SLIME_GIANT = 0xF0010000; // Retail::SlimeGiant::Profile
+constexpr uint32_t CLIENT_RETAIL_CENTAUR = 0xF0020000;     // Retail::Centaur::Profile
+bool RetailRacesCallback(CVar* var, const char* oldValue, const char* value, void* arg);
+uint32_t ClientGetRetailRace(uint32_t race);
 int main();
 int32_t Packet_SMSG_NOTIFICATION(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* msg);
 int32_t Packet_SMSG_PLAYED_TIME(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* msg);

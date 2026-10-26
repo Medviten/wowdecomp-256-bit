@@ -16,6 +16,7 @@
 #include "Engine/Source/Tempest/CMath.h"
 #include "Engine/Source/Tempest/CRandom.h"
 #include "WoW/Common/ComponentCore/CharacterComponent.h"
+#include "WoW/Common/ComponentCore/RetailRace.h"
 #include "WoW/Source/DB/DBClient/CreatureStats_C.h"
 #include "WoW/Source/DB/DBClient/DBCacheInstances.h"
 #include "WoW/Source/DB/DBClient/DBClient.h"
@@ -8051,6 +8052,26 @@ float CGUnit_C::GetStandHeight() const {
 // VERIFY: 566bccef manual
 // OFFSET: 0x00717B20
 int32_t CGUnit_C::GetModelFileName(const char** name) const {
+    // Custom: players of a race mapped to retail data (retailRaces) use the retail character model while they show their
+    // native display (shapeshifts and morphs keep their stock models). Players in view start with m_displayId 0, which
+    // means "use the display field", like GetModelData.
+    if (this->m_obj->m_type & TYPEMASK_PLAYER) {
+        int32_t effectiveDisplay = this->m_displayId;
+
+        if (!effectiveDisplay || this->m_unit->m_unitFieldNativedisplayid != this->m_unit->m_unitFieldDisplayid) {
+            effectiveDisplay = this->m_unit->m_unitFieldDisplayid;
+        }
+
+        if (effectiveDisplay == static_cast<int32_t>(this->m_unit->m_unitFieldNativedisplayid)) {
+            static thread_local char retailPath[260];
+
+            if (RetailRaceModelPath(this->m_unit->m_unitFieldBytes0[0], this->m_unit->m_unitFieldBytes0[2], retailPath, sizeof(retailPath), RetailRaceLookForm(this->m_obj->m_guid.m_guid))) {
+                *name = retailPath;
+                return 1;
+            }
+        }
+    }
+
     CreatureModelDataRec* modelData = this->GetModelData();
 
     if (modelData) {
@@ -9925,6 +9946,7 @@ void CGUnit_C::InitializeActivePlayerComponent() {
     if (this->m_modelData && (this->m_modelData->m_flags & 0x4) && CGPlayer_C::s_displayId == this->m_unit->m_unitFieldDisplayid) {
         this->SetCharacterModel(CCharacterComponent::m_activePlayerComponent->m_data.m_model);
         this->m_characterComponent = component;
+        RetailRaceBindOwner(component, this); // Custom: the component follows this unit's retail look
         CCharacterComponent::m_activePlayerComponent = nullptr;
     } else {
         CCharacterComponent::FreeComponent(CCharacterComponent::m_activePlayerComponent);
@@ -10459,6 +10481,7 @@ CGUnit_C::~CGUnit_C() {
         this->m_pendingMissiles->DeleteSelf();
     }
 
+    RetailRaceBindOwner(this->m_characterComponent, nullptr); // Custom
     this->RemoveMountModel();
     SI2::StopSound(&this->m_npcInteractSound, 1, -1.0f, 1);
     this->KillCreatureLoopSound();
@@ -14017,13 +14040,17 @@ int32_t CGUnit_C::InitializeExtendedDisplay(CGPlayer_C* player, int32_t hasDispl
     data.m_flags ^= (data.m_flags ^ (static_cast<uint32_t>(this->m_obj->m_guid == ClntObjMgrGetActivePlayer()) << 1)) & 0x2;
     data.m_model->m_refCount++;
 
+    // Custom: retail race options go beyond the stock CharSections ranges; players of such races keep the server's values
     if (player) {
-        CCharacterComponent::ValidateComponentData(&data, COMPONENT_CONTEXT_1);
+        if (!RetailRaceMapped(data.m_preferences.m_raceID)) {
+            CCharacterComponent::ValidateComponentData(&data, COMPONENT_CONTEXT_1);
+        }
     } else {
         CCharacterComponent::ValidateComponentData(&data, COMPONENT_CONTEXT_2);
     }
 
     this->m_characterComponent->Init(&data, nullptr);
+    RetailRaceBindOwner(this->m_characterComponent, this); // Custom
     return 1;
 }
 
@@ -14078,6 +14105,14 @@ int32_t CGUnit_C::InitializeComponent() {
         }
     } else if ((this->m_obj->m_type & TYPEMASK_PLAYER) && (this->m_modelData->m_flags & 0x4)) {
         this->InitializeExtendedDisplay(static_cast<CGPlayer_C*>(this), 0);
+    }
+
+    // Custom: returning from a form creates a fresh retail body; restore its full appearance before the item refresh
+    if (this->m_characterComponent && this->m_unit->m_unitFieldDisplayid == this->m_unit->m_unitFieldNativedisplayid && RetailRaceActive(this->m_characterComponent)) {
+        this->m_characterComponent->m_flags |= 0x4;
+        this->m_characterComponent->m_dirtySections = 0xFFFFFFFF;
+        RetailRaceGeometry(this->m_characterComponent);
+        RetailRaceBody(this->m_characterComponent);
     }
 
     if (!(this->m_obj->m_type & TYPEMASK_PLAYER) || !static_cast<CGPlayer_C*>(this)->RefreshVisibleItems()) {

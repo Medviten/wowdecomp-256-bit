@@ -1792,7 +1792,11 @@ int32_t PumpBlpTextureAsync(CTexture* texture, void* data) {
 
     PIXEL_FORMAT pixelFormat;
     EGxTexFormat gxTexFormat;
-    TextureGetTextureFormats(pixelFormat, gxTexFormat, static_cast<PIXEL_FORMAT>(image.m_header.m_preferredFormat), image.m_header.m_alphaSize);
+    // Custom: raw BLP2 pixels (colour encoding 3) are BGRA even when the file keeps a DXT format hint (Kalibro's
+    // composed retail textures, imported files)
+    TextureGetTextureFormats(pixelFormat, gxTexFormat,
+        image.m_header.m_colorEncoding == 3 ? PIXEL_ARGB8888 : static_cast<PIXEL_FORMAT>(image.m_header.m_preferredFormat),
+        image.m_header.m_alphaSize);
 
     s_pumping = 1;
 
@@ -2295,6 +2299,19 @@ CTexture* TextureCreate(EGxTexTarget target, uint32_t width, uint32_t height, ui
     texture->m_gxTexFlags = texFlags;
     texture->m_asyncObject = nullptr;
     SStrCopy(texture->m_filename, name ? name : "UniqueTexture", sizeof(texture->m_filename));
+
+    return reinterpret_cast<CTexture*>(HandleCreate(texture, "HTEXTURE"));
+}
+
+// Custom: a texture from an in-memory BLP (Kalibro's retail race layer composes character textures in memory)
+CTexture* TextureCreateFromBlpData(const char* name, CGxTexFlags texFlags, void* blpData) {
+    CTexture* texture = new ("HTEXTURE", SLOG_OBJECT) CTexture;
+    texture->m_gxTexFlags = texFlags;
+    SStrCopy(texture->m_filename, name, sizeof(texture->m_filename));
+
+    if (!PumpBlpTextureAsync(texture, blpData)) {
+        FillInSolidTexture(*reinterpret_cast<const CImVector*>(&s_defaultColor), texture);
+    }
 
     return reinterpret_cast<CTexture*>(HandleCreate(texture, "HTEXTURE"));
 }

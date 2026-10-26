@@ -28,6 +28,11 @@ His design notes: `Kalibros-decomp/docs/retail-race-handoff.md`, `retail-casc.md
 2. **Characters.** `RetailRace.{h,cpp}` and its hooks (CharacterComponent, ComponentUtils, Unit_C,
    CharacterSelection/Creation), without his Esteria DLL coupling (`EsteriaAppearance.cpp`). Mapping CVar.
    Check: Dracthyr in character creation and in the world.
+   Client wire side done here too: opcodes `SMSG_RETAIL_LOOK` 0x524, `CMSG_RETAIL_FORM_LOOK` 0x525,
+   `SMSG_RETAIL_FORM_LOOK_ACK` 0x526 (`Net/Types.h`, routed by a side table in `NetClient.cpp` since they are
+   past `NUM_MSG_TYPES`; registered on `RealmConnection`), `RLE1`/`RLP1` char-enum tails
+   (`RetailRaceEnumTail`), `RLK1` footer on create / customize / race / faction change. Kalibro's eye-effect and
+   body-slider footers (`BSH1`, `BSE1`) are not sent.
 3. **Creator UI.** Our GlueXML panel for the retail options (his `EA_*` contract under our own names),
    choice names, random, preview.
 4. **Persistence.** His later commits (78ac78e7 body sliders, 566014cd Two Forms) already carry the full look:

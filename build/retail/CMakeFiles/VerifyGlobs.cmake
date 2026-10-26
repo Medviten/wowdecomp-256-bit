@@ -1643,6 +1643,7 @@ set(OLD_GLOB
   "D:/GitHub/wowdecomp-256-bit/WoW/Common/ComponentCore/CharacterComponent.cpp"
   "D:/GitHub/wowdecomp-256-bit/WoW/Common/ComponentCore/CharacterComponent_CVar.cpp"
   "D:/GitHub/wowdecomp-256-bit/WoW/Common/ComponentCore/ComponentUtils.cpp"
+  "D:/GitHub/wowdecomp-256-bit/WoW/Common/ComponentCore/RetailRace.cpp"
   "D:/GitHub/wowdecomp-256-bit/WoW/Common/Lightning.cpp"
   "D:/GitHub/wowdecomp-256-bit/WoW/Common/TextureCache.cpp"
   "D:/GitHub/wowdecomp-256-bit/WoW/Common/WowTime.cpp"

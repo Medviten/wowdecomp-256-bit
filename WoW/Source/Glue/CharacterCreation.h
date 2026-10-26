@@ -15,8 +15,11 @@ struct CharacterPreferences;
 class CCharacterCreation {
     public:
     // Custom: was [22][2] (race IDs 0-21); race IDs are uint8_t, so 256 covers every possible ChrRaces ID
-    static CharacterPreferences* m_charPreferences[256][2];
+    static const uint32_t MAX_RACES = 256;
+    static CharacterPreferences* m_charPreferences[MAX_RACES][2];
     static CCharacterComponent* m_character;
+    // Custom: retail Two Forms creator: a second preview showing the form the main character is not
+    static CCharacterComponent* m_formMirror;
     static CNameGen m_nameGen;
     static CSimpleModelFFX* m_charCustomizeFrame;
     static float m_charFacing;
@@ -35,6 +38,11 @@ class CCharacterCreation {
     static void CreateCharacter(const char* name);
     static void CycleCharCustomization(CHAR_CUSTOMIZATION_TYPE type, int32_t delta);
     static void Dress();
+    // Custom: retail races (RetailRace.cpp): one preview dressed or undressed, the Two Forms preview
+    static void Dress(CCharacterComponent* target);
+    static void Undress(CCharacterComponent* target);
+    static void SyncFormMirror();
+    static void ClearFormMirror();
     static int32_t GetExistingClassIndex();
     static int32_t GetExistingRaceIndex();
     static int32_t GetRandomClassID();
@@ -47,6 +55,12 @@ class CCharacterCreation {
     static void RandomizeCharCustomization();
     static void ResetCharCustomizeInfo();
     static void SetCharacterFacing(float facing);
+    // Custom: creator camera zoom and pan (Kalibro)
+    static void ZoomCamera(float delta);
+    static void PanCamera(float dx, float dy);
+    static void ResetPanCamera();
+    static void UpdateZoomCamera();
+    static void ResetZoomCamera();
     static void SetCharCustomizeModel(const char* modelName);
     static void SetSelectedClass(int32_t classID);
     static void SetSelectedRace(uint32_t raceIndex);

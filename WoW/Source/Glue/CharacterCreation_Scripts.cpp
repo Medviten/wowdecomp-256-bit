@@ -9,6 +9,7 @@
 #include "Engine/Source/lua-5.1/src/lua.h"
 #include "Engine/Source/Storm/H/storm.h"
 #include "WoW/Common/ComponentCore/CharacterComponent.h"
+#include "WoW/Common/ComponentCore/RetailRace.h"
 #include "WoW/Source/DB/DBClient/DBClient.h"
 #include "WoW/Source/DB/Rec/ChrClassesRec.h"
 #include "WoW/Source/DB/Rec/ChrRacesRec.h"
@@ -597,9 +598,45 @@ static int32_t Script_GetSelectedClass(lua_State* L) {
     return 6;
 }
 
+// Custom: RetailLoadExisting(): when customizing an existing character of a retail race, start from its saved look
+static int32_t Script_RetailLoadExisting(lua_State* L) {
+    int32_t index = CCharacterCreation::m_existingCharacterIndex;
+
+    if (index >= 0 && index < static_cast<int32_t>(CCharacterSelection::s_characterList.Count())) {
+        RetailRaceApplyLookTo(CCharacterCreation::m_character, CCharacterSelection::s_characterList[index].m_characterInfo.m_guid.m_guid, true);
+    }
+
+    return 0;
+}
+
 // VERIFY: 8c236267 manual
 // OFFSET: 0x004E0B50
 static int32_t Script_CycleCharCustomization(lua_State* L) {
+    // Custom: GlueXML reaches the retail race options and the creator camera through string commands (Kalibro's EA_*
+    // contract): EA_RETAIL, EA_COUNT, EA_GET, EA_SET, EA_CYCLE, EA_CHOICES, EA_CHOICE_NAME, EA_RANDOM, EA_PREVIEW_*,
+    // EA_FORM_*, EA_ZOOM, EA_PAN, EA_PAN_RESET. Unknown commands return nothing.
+    if (lua_type(L, 1) == LUA_TSTRING && !lua_isnumber(L, 1)) {
+        const char* command = lua_tolstring(L, 1, nullptr);
+
+        if (!SStrCmp(command, "EA_ZOOM", STORM_MAX_STR) && lua_isnumber(L, 2)) {
+            CCharacterCreation::ZoomCamera(static_cast<float>(lua_tonumber(L, 2)));
+            return 0;
+        }
+
+        if (!SStrCmp(command, "EA_PAN", STORM_MAX_STR) && lua_isnumber(L, 2) && lua_isnumber(L, 3)) {
+            CCharacterCreation::PanCamera(static_cast<float>(lua_tonumber(L, 2)), static_cast<float>(lua_tonumber(L, 3)));
+            return 0;
+        }
+
+        if (!SStrCmp(command, "EA_PAN_RESET", STORM_MAX_STR)) {
+            CCharacterCreation::ResetPanCamera();
+            return 0;
+        }
+
+        int32_t results = RetailRaceCycleCommand(L, CCharacterCreation::m_character, command);
+        return results < 0 ? 0 : results;
+    }
+
     if (!lua_isnumber(L, 1) || !lua_isnumber(L, 2)) {
         luaL_error(L, "Usage: CycleCharCustomization(index, delta)");
         return 0;
@@ -802,6 +839,12 @@ static int32_t Script_SetSelectedClass(lua_State* L) {
 
     int32_t index = static_cast<int32_t>(lua_tonumber(L, 1)) - 1;
     ChrClassesRec* classRec = index >= 0 && index < g_chrClassesDB.m_numRecords ? &g_chrClassesDB.m_records[index] : nullptr;
+
+    // Custom: an out of range index used to dereference null
+    if (!classRec) {
+        return 0;
+    }
+
     CCharacterCreation::SetSelectedClass(classRec->m_id);
     return 0;
 }
@@ -900,6 +943,7 @@ static FrameScript_Method s_scriptFunctions[] = {
     { "SetViewingAlteredForm", &Script_SetViewingAlteredForm },
     { "IsMaleOnlyRace", &Script_IsMaleOnlyRace },
     { "CycleCharCustomization", &Script_CycleCharCustomization },
+    { "RetailLoadExisting", &Script_RetailLoadExisting },
     { "RandomizeCharCustomization", &Script_RandomizeCharCustomization },
     { "GetCharacterCreateFacing", &Script_GetCharacterCreateFacing },
     { "SetCharacterCreateFacing", &Script_SetCharacterCreateFacing },
