@@ -221,6 +221,12 @@ class CM2Model {
     /* 02E4 */ uint32_t m_hitTestGroup;
     /* 02E8 */ uint32_t m_handle;
     /* 02EC */ uint32_t unused_02EC;
+    // Not in the original: per-instance bind pose (6 floats per vertex: position, normal) used instead of the
+    // shared vertices when set. Owned by the model. Lets one model, the local player, reshape its mesh.
+    float* m_bodyShapeVertices;
+    // GPU copy of the above for the shader renderer, which skins from a vertex buffer shared by every instance.
+    CGxBuf* m_bodyShapeBuf;
+    CGxPool* m_bodyShapePool;
 
     static void (*s_transformVertices[5])(CM2Model*, M2SkinSection*, uint8_t*, int32_t);
     static TSGrowableArray<M2ModelCallback> s_sequenceCallbacks;
@@ -255,6 +261,20 @@ class CM2Model {
     void PickRandomSequenceVariation(uint32_t* variation, uint16_t* sequenceIndex);
     M2SequenceFallback* SequenceFallbackById(M2SequenceFallback* result, uint32_t id);
     void SetBoneProceduralTransform(uint32_t boneId, const C44Matrix& matrix);
+    // Raw bone-index access for the body-shape sliders. Key-bone ids only reach about 70 of a Retail
+    // skeleton's ~200 bones; these skip the id table. All are no-ops until the model has loaded.
+    bool IsLoaded() const;
+    uint32_t GetBoneCount();
+    uint32_t FindBoneIndexByKey(uint32_t boneId);
+    bool GetBoneInfoByIndex(uint32_t index, int32_t& boneId, int32_t& parent, C3Vector& pivot);
+    uint32_t GetBoneNameCrcByIndex(uint32_t index); // same bone, same hash, on every Retail skeleton; 0 if none
+    uint32_t GetBindVertexCount();
+    bool GetBindVertex(uint32_t index, C3Vector& position, C3Vector& normal);
+    void SetBodyShapeVertices(float* vertices); // takes ownership (delete[]); nullptr restores the shared pose
+    int32_t BindBodyShapeVertices(); // binds this model's own vertex buffer; 0 if it has none
+    void ReleaseBodyShapeBuffer();
+    void SetBoneFlagsByIndex(uint32_t index, uint32_t flags, uint32_t mask);
+    void SetBoneProceduralTransformByIndex(uint32_t index, const C44Matrix& matrix);
     void SetBoneSequenceSpeed(uint32_t boneId, float speed);
     void SetBoneSequenceTime(uint32_t boneId, uint32_t time);
     void SetupBoneSequence(uint16_t sequenceIndex, M2SequenceFallback fallback, uint32_t time, float speed, M2ModelBoneSeq* boneSequence);
@@ -297,6 +317,10 @@ class CM2Model {
     void UnsetBoneSequence(uint32_t boneId, int32_t blend, int32_t primary);
     void AnimateSM();
     void AttachToParent(CM2Model* parent, uint32_t id, const C3Vector* position, int32_t attachToRoot);
+    // Explicit collection skinning: the child must already be attached at the parent's root.
+    // No fields are added to the native model layout; null removes the pose binding.
+    bool SetSkinParent(CM2Model* parent);
+    bool HasSkinParent(const CM2Model* parent) const;
     C3Vector GetAttachmentPosition(uint32_t id);
     float GetAttachmentWorldScale(uint32_t id);
     C44Matrix GetAttachmentWorldTransform(uint32_t id);
@@ -342,6 +366,9 @@ class CM2Model {
     void SetRibbonsEnabled(uint32_t enabled);
     void SetSequenceCallback(void* callback, uint64_t param);
     void SetWorldTransform(const C44Matrix& matrix);
+    // Override this attached instance's socket with a parent bone-space frame. Returns true on change.
+    bool SetAttachmentFrame(uint32_t bone, const C3Vector& position, float scale = 1.0f);
+    bool CopyAttachmentFrameFrom(const CM2Model* source);
     void SetWorldTransform(const C3Vector& position, float rotation, float scale);
     void SetWorldTransform(const C3Vector& position, float rotation, float scale, const C3Vector& up, uint32_t flags);
     void UpdateLoaded();

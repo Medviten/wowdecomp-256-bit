@@ -1,8 +1,10 @@
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
+#include <vector>
 #include <malloc.h>
 #include <new>
+#include <limits>
 #include <typeinfo>
 #include <unordered_map>
 #include <vector>
@@ -26,6 +28,17 @@
 #include "Engine/Source/Storm/H/storm.h"
 #include "Engine/Source/Tempest/CImVector.h"
 #include "Engine/Source/Os/OsMemory.h"
+#if defined(WOWDECOMP_RETAIL_ASSETS)
+#include "Engine/Source/Retail/CascSource.h"
+#include "Engine/Source/Retail/RetailShader.h"
+#include "Engine/Source/Retail/RetailModel.h"
+#endif
+
+// Out of range / 0xFFFF coordinate combo indices (newer or converted models) read as coordinate set 0.
+static uint16_t SafeCoordCombo(const M2Data* data, uint32_t index) {
+    return index < data->m_textureCoordCombos.m_count ? data->m_textureCoordCombos[index] : 0;
+}
+
 
 // STATIC: 0x00A45644
 static const uint32_t s_skinProfileBoneCounts[4] = { 256, 64, 53, 21 };
@@ -44,6 +57,20 @@ static uint8_t* s_sequenceData;
 
 // STATIC: 0x00D4125C
 static uint32_t s_sequenceSize;
+
+#if defined(WOWDECOMP_RETAIL_ASSETS)
+static uint8_t* s_sequenceBoneData;
+static uint8_t* s_sequenceAttachmentData;
+
+class SequenceDataScope {
+    uint8_t* saved;
+public:
+    explicit SequenceDataScope(uint8_t* payload) : saved(s_sequenceData) {
+        if (payload) s_sequenceData = payload;
+    }
+    ~SequenceDataScope() { s_sequenceData = saved; }
+};
+#endif
 
 // VERIFY: eb5cb8e9 auto
 // OFFSET: 0x00835950
@@ -339,8 +366,22 @@ static void ConvertTextureComboEntry(TextureComboList* list, int32_t adjust, uin
 // OFFSET: 0x008360A0
 int32_t CM2Shared::SetIndices() {
     if (!this->m_indexPool) {
-        this->m_indexPool = g_theGxDevicePtr->PoolCreate(GxPoolTarget_Index, GxPoolUsage_Dynamic, sizeof(uint16_t) * this->m_instances * this->m_skinData->m_indices.m_count, GxPoolHintBit_Unk1, this->m_fileNameWithoutPath);
-        this->m_indexBuf = g_theGxDevicePtr->BufCreate(this->m_indexPool, sizeof(uint16_t), this->m_instances * this->m_skinData->m_indices.m_count, 0);
+        uint64_t indexCount = 0;
+        for (uint32_t i = 0; i < this->m_skinData->m_skinSections.m_count; ++i) {
+            const M2SkinSection& section = this->m_skinData->m_skinSections[i];
+            const uint32_t start = M2WideIndexStart(&section, this->m_skinData->m_indices.m_count);
+            if (start > this->m_skinData->m_indices.m_count
+                || section.m_indexCount > this->m_skinData->m_indices.m_count - start) return 0;
+            indexCount += section.m_indexCount;
+        }
+        const uint32_t maxIndexCount = std::numeric_limits<uint32_t>::max() / sizeof(uint16_t);
+        if (!indexCount || !this->m_instances || indexCount > maxIndexCount / this->m_instances) return 0;
+
+        // Sections may share source triangles; the packed output still emits each section for every instance.
+        const uint32_t packedCount = static_cast<uint32_t>(indexCount * this->m_instances);
+        this->m_indexPool = g_theGxDevicePtr->PoolCreate(GxPoolTarget_Index, GxPoolUsage_Dynamic,
+            sizeof(uint16_t) * packedCount, GxPoolHintBit_Unk1, this->m_fileNameWithoutPath);
+        this->m_indexBuf = g_theGxDevicePtr->BufCreate(this->m_indexPool, sizeof(uint16_t), packedCount, 0);
 
         if (!this->m_indexPool || !this->m_indexBuf) {
             return 0;
@@ -477,7 +518,15 @@ CShaderEffect* CM2Shared::GetEffect(uint32_t textureCount, uint16_t shader, uint
         } else {
             vertexShader = "Diffuse_T2";
 
-            if (!this->m_data->m_textureCoordCombos[textureCoordComboIndex]) {
+#if defined(WOWDECOMP_RETAIL_ASSETS)
+            // Retail batches carry no coordinate combo (0xFFFF); their 0x4000 bit selects the second UV set.
+            if (Retail::SourceForPath(this->m_fileName).Handles(this->m_fileName)) {
+                if (!(shader & 0x4000)) {
+                    vertexShader = "Diffuse_T1";
+                }
+            } else
+#endif
+            if (!SafeCoordCombo(this->m_data, textureCoordComboIndex)) {
                 vertexShader = "Diffuse_T1";
             }
         }
@@ -645,8 +694,18 @@ void CM2Shared::SubstituteSimpleShaders() {
 
         M2Material* material = &this->m_data->m_materials[batch->m_materialIndex];
 
+        // Models from newer clients / converters can carry 0xFFFF ("none") or otherwise out of range
+        // combo indices. The stock client reads past the array and crashes; fall back to coordinate set 0.
+        auto coordCombo = [this](uint32_t index) -> uint16_t {
+            return index < this->m_data->m_textureCoordCombos.m_count ? this->m_data->m_textureCoordCombos[index] : 0;
+        };
+
+        auto combinerCombo = [this](uint32_t index) -> uint32_t {
+            return index < this->m_data->m_textureCombinerCombos.m_count ? this->m_data->m_textureCombinerCombos[index] : 0;
+        };
+
         if (!(this->m_data->m_flags & 8)) {
-            uint16_t coord = this->m_data->m_textureCoordCombos[batch->m_textureCoordComboIndex];
+            uint16_t coord = coordCombo(batch->m_textureCoordComboIndex);
             uint16_t op = material->m_blendMode != 0;
 
             if (coord > 2) {
@@ -664,13 +723,13 @@ void CM2Shared::SubstituteSimpleShaders() {
             batch->m_shader = 0;
 
             for (uint32_t j = 0; j < batch->m_textureCount; j++) {
-                uint32_t op = this->m_data->m_textureCombinerCombos[combiner + j];
+                uint32_t op = combinerCombo(combiner + j);
 
                 if (j == 0 && !material->m_blendMode) {
                     op = 0;
                 }
 
-                uint16_t coord = this->m_data->m_textureCoordCombos[batch->m_textureCoordComboIndex + j];
+                uint16_t coord = coordCombo(batch->m_textureCoordComboIndex + j);
                 ops[j] = op;
 
                 if (coord > 2) {
@@ -713,6 +772,45 @@ int32_t M2Init<M2Texture>(uint8_t* base, uint32_t size, const M2Data& data, M2Ar
 CShaderEffect* CM2Shared::GetEffect(M2Batch* batch) {
     CShaderEffect* effect;
 
+#if defined(WOWDECOMP_RETAIL_ASSETS)
+    if (Retail::SourceForPath(this->m_fileName).Handles(this->m_fileName) && batch->m_shader == 0x8010) {
+        const char* name = "Retail_Opaque_Reflection_Glow";
+        if (auto* existing = CShaderEffectManager::GetEffect(name)) return existing;
+        effect = CShaderEffectManager::CreateEffect(name);
+        effect->InitEffect("Diffuse_T1_Env", "Combiners_Opaque_Mod2xNA_Alpha");
+        for (unsigned i = 0; i < 16; ++i) {
+            auto* original = effect->m_pixelShaders[i];
+            std::vector<uint8_t> input(original->m_code.m_data, original->m_code.m_data + original->m_code.m_count), code;
+            std::string error;
+            if (!Retail::AddGlowLayer(input, code, error)) {
+                DebugLog("Retail material: %s", error.c_str()); return nullptr;
+            }
+            char shaderName[80]; std::snprintf(shaderName, sizeof(shaderName), "%s:%u", name, i);
+            auto* shader = g_theGxDevicePtr->m_shaderList[GxSh_Pixel].New(shaderName, 0, 0);
+            shader->m_refCount = 1; shader->m_target = GxSh_Pixel;
+            shader->m_code.SetCount(uint32_t(code.size()));
+            std::memcpy(shader->m_code.m_data, code.data(), code.size());
+            g_theGxDevicePtr->ShaderDestroy(effect->m_pixelShaders[i]);
+            effect->m_pixelShaders[i] = shader;
+        }
+        return effect;
+    }
+    if (Retail::SourceForPath(this->m_fileName).Handles(this->m_fileName) && batch->m_shader == 0x8012) {
+        const char* name = "Retail_Mod_Mod_T1_T2";
+        if (auto* existing = CShaderEffectManager::GetEffect(name)) return existing;
+        effect = CShaderEffectManager::CreateEffect(name);
+        effect->InitEffect("Diffuse_T1_T2", "Combiners_Mod_Mod");
+        return effect;
+    }
+    if (Retail::SourceForPath(this->m_fileName).Handles(this->m_fileName) && batch->m_shader == 0x8011) {
+        const char* name = "Retail_Mod_Mod2x_T1_T2";
+        if (auto* existing = CShaderEffectManager::GetEffect(name)) return existing;
+        effect = CShaderEffectManager::CreateEffect(name);
+        effect->InitEffect("Diffuse_T1_T2", "Combiners_Mod_Mod2x");
+        return effect;
+    }
+#endif
+
     if (!(batch->m_shader & 0x8000)) {
         effect = this->GetEffect(batch->m_textureCount, batch->m_shader, batch->m_textureCoordComboIndex);
     } else {
@@ -743,7 +841,9 @@ CShaderEffect* CM2Shared::GetEffect(M2Batch* batch) {
                 alphaOp = static_cast<EGxTexOp>(3);
                 break;
             default:
-                break;
+                // Custom: modern M2 models use shader IDs beyond the three the 3.3.5a client knows. Use the
+                // standard fallback below instead of dereferencing the missing shader names.
+                return this->GetEffect(batch->m_textureCount, 0x11, batch->m_textureCoordComboIndex);
         }
 
         char effectName[256];
@@ -1059,9 +1159,7 @@ void CM2Shared::SubstituteSpecializedShaders() {
                 [[fallthrough]];
             case 0:
                 if (!material->m_blendMode && batch->m_textureCount == 2 && (op == 4 || op == 6)) {
-                    uint16_t* coords = &this->m_data->m_textureCoordCombos[batch->m_textureCoordComboIndex];
-
-                    if (!coords[0] && coords[1] > 2) {
+                    if (!SafeCoordCombo(this->m_data, batch->m_textureCoordComboIndex) && SafeCoordCombo(this->m_data, batch->m_textureCoordComboIndex + 1) > 2) {
                         state0 = 1;
                     }
                 }
@@ -1074,7 +1172,7 @@ void CM2Shared::SubstituteSpecializedShaders() {
             case 0:
                 break;
             case 1:
-                if ((material->m_blendMode == 4 || material->m_blendMode == 6) && batch->m_textureCount == 1 && this->m_data->m_textureCoordCombos[batch->m_textureCoordComboIndex] > 2 && this->m_data->m_textureWeightCombos[base->m_textureWeightComboIndex] == this->m_data->m_textureWeightCombos[batch->m_textureWeightComboIndex]) {
+                if ((material->m_blendMode == 4 || material->m_blendMode == 6) && batch->m_textureCount == 1 && SafeCoordCombo(this->m_data, batch->m_textureCoordComboIndex) > 2 && this->m_data->m_textureWeightCombos[base->m_textureWeightComboIndex] == this->m_data->m_textureWeightCombos[batch->m_textureWeightComboIndex]) {
                     batch->m_shader = 0x8000;
                     combined = true;
                     base->m_shader = material->m_blendMode != 4 ? 0xE : 0x8002;
@@ -1101,7 +1199,7 @@ void CM2Shared::SubstituteSpecializedShaders() {
                 continue;
         }
 
-        if (!material->m_blendMode && batch->m_textureCount == 1 && !this->m_data->m_textureCoordCombos[batch->m_textureCoordComboIndex]) {
+        if (!material->m_blendMode && batch->m_textureCount == 1 && !SafeCoordCombo(this->m_data, batch->m_textureCoordComboIndex)) {
             state1 = 1;
         }
     }
@@ -1544,8 +1642,16 @@ int32_t CM2Shared::InitializeSkinProfile() {
         }
     }
 
-    this->SubstituteSimpleShaders();
-    this->SubstituteSpecializedShaders();
+    // Retail's adapter has already resolved shader IDs and texture table runs.
+    // Legacy specialization packs pairs into one word and cannot preserve a
+    // three-layer material, so it must not process these native batches again.
+#if defined(WOWDECOMP_RETAIL_ASSETS)
+    if (!Retail::SourceForPath(this->m_fileName).Handles(this->m_fileName))
+#endif
+    {
+        this->SubstituteSimpleShaders();
+        this->SubstituteSpecializedShaders();
+    }
 
     if (this->m_skinData->m_indices.m_count) {
         for (uint32_t i = 0; i < this->m_skinData->m_batches.m_count; i++) {
@@ -1697,6 +1803,7 @@ int32_t CM2Shared::FinishLoadingSkinProfile(uint32_t size) {
 
     this->m_flags |= 2;
 
+
     while (this->m_callbackList) {
         CM2Model* model = this->m_callbackList;
         model->UnlinkFromCallbackList();
@@ -1710,6 +1817,9 @@ int32_t CM2Shared::FinishLoadingSkinProfile(uint32_t size) {
 // OFFSET: 0x008385A0
 template <>
 int32_t M2Init<M2CompBone>(uint8_t* base, uint32_t size, const M2Data& data, M2Array<M2CompBone>& array) {
+#if defined(WOWDECOMP_RETAIL_ASSETS)
+    SequenceDataScope source(s_sequenceBoneData);
+#endif
     if (s_sequenceIndex == 0xFFFFFFFF) {
         if (array.m_offset > size || array.m_offset + sizeof(M2CompBone) * array.m_count > size) {
             return 0;
@@ -1756,6 +1866,9 @@ int32_t M2Init<M2TextureTransform>(uint8_t* base, uint32_t size, const M2Data& d
 // OFFSET: 0x00839080
 template <>
 int32_t M2Init<M2Attachment>(uint8_t* base, uint32_t size, const M2Data& data, M2Array<M2Attachment>& array) {
+#if defined(WOWDECOMP_RETAIL_ASSETS)
+    SequenceDataScope source(s_sequenceAttachmentData);
+#endif
     if (s_sequenceIndex == 0xFFFFFFFF) {
         if (array.m_offset > size || array.m_offset + sizeof(M2Attachment) * array.m_count > size) {
             return 0;
@@ -1928,8 +2041,27 @@ int32_t M2Init(uint8_t* base, uint32_t size, M2Data& data) {
 // VERIFY: 8000b812 manual
 // OFFSET: 0x0083C6E0
 int32_t CM2Shared::FinishLoadingLowPrioritySequence(uint32_t sequenceIndex, uint8_t* buffer, uint32_t size) {
+#if defined(WOWDECOMP_RETAIL_ASSETS)
+    Retail::AnimationLayout layout;
+    const bool retail = Retail::IsCdnPath(this->m_fileName);
+    if (retail) {
+        std::string error;
+        if (!Retail::InspectAnimation(buffer, size, layout, error)) {
+            DebugLog("Invalid Retail sequence chunks: %s (%d): %s", this->m_fileName, sequenceIndex, error.c_str());
+            return 0;
+        }
+    }
+#endif
     s_sequenceIndex = sequenceIndex;
     s_sequenceData = buffer;
+    s_sequenceSize = size;
+#if defined(WOWDECOMP_RETAIL_ASSETS)
+    if (retail && layout.chunked) {
+        if (layout.model.present) s_sequenceData = buffer + layout.model.offset;
+        if (layout.bones.present) s_sequenceBoneData = buffer + layout.bones.offset;
+        if (layout.attachments.present) s_sequenceAttachmentData = buffer + layout.attachments.offset;
+    }
+#endif
 
     int32_t result = M2Init(reinterpret_cast<uint8_t*>(this->m_data), this->m_fileSize, *this->m_data);
     M2Sequence* sequence = &this->m_data->m_sequences[sequenceIndex];
@@ -1937,6 +2069,10 @@ int32_t CM2Shared::FinishLoadingLowPrioritySequence(uint32_t sequenceIndex, uint
     s_sequenceIndex = 0xFFFFFFFF;
     s_sequenceData = nullptr;
     s_sequenceSize = 0;
+#if defined(WOWDECOMP_RETAIL_ASSETS)
+    s_sequenceBoneData = nullptr;
+    s_sequenceAttachmentData = nullptr;
+#endif
 
     if (!result) {
         DebugLog("Corrupt model sequence data: %s (%d)", this->m_fileName, sequenceIndex);
@@ -1944,6 +2080,7 @@ int32_t CM2Shared::FinishLoadingLowPrioritySequence(uint32_t sequenceIndex, uint
     }
 
     sequence->m_flags = (sequence->m_flags & ~0x30u) | 0x20;
+
 
     return 1;
 }
@@ -2096,6 +2233,7 @@ int32_t CM2Shared::Initialize() {
         }
     }
 
+
     for (uint32_t i = 0; i < this->m_data->m_bones.m_count; i++) {
         if (this->m_data->m_bones[i].m_flags & 0x2F8) {
             this->m_billboardBoneCount++;
@@ -2135,6 +2273,7 @@ int32_t CM2Shared::FinishLoading() {
     this->m_lowPrioritySequenceCapacity = count;
     this->m_flags |= 1;
     this->m_lowPrioritySequenceCount = 0;
+
 
     return 1;
 }
@@ -2227,6 +2366,7 @@ void CM2Shared::CancelAllDeferredSequences() {
 // VERIFY: 7f65a462 manual
 // OFFSET: 0x0083D5B0
 CM2Shared::~CM2Shared() {
+
     this->CancelAllDeferredSequences();
 
     int32_t pending = 0;
@@ -2329,6 +2469,10 @@ CM2Shared::~CM2Shared() {
     if (!pending) {
         SIMD::FreeA16(this->m_data);
     }
+#if defined(WOWDECOMP_RETAIL_ASSETS)
+    // Drop the validation copy when the last native cache using this model lets go.
+    Retail::SourceForPath(this->m_fileName).ReleaseModel(this->m_fileName);
+#endif
 }
 
 // VERIFY: aeff737a manual

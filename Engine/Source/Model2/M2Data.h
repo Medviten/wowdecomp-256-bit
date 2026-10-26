@@ -173,6 +173,14 @@ class M2Event {
     /* 000A */ uint16_t unused_000A;
     /* 000C */ C3Vector m_position;
     /* 0018 */ M2TrackBase m_enabled;
+
+    M2Array<uint32_t>* TimesForSequence(uint32_t index)
+    {
+        if (m_enabled.m_loopIndex != 0xFFFF)
+            index = 0;
+
+        return index < m_enabled.m_sequenceTimes.m_count ? &m_enabled.m_sequenceTimes[index] : nullptr;
+    }
 };
 
 class M2Light {
@@ -377,6 +385,22 @@ class M2SkinProfile {
     /* 0024 */ M2Array<M2Batch> m_batches;
     /* 002C */ uint32_t m_boneCountMax;
 };
+
+// Esteria: models whose index lists exceed 65535 keep the high 16 bits of a section's index start in its level word
+// (+2); `totalIndices` validates it. Sections that were rewritten by M2Shared::SetIndices carry the processed start.
+inline uint32_t M2WideIndexStart(const M2SkinSection* section, uint32_t totalIndices) {
+    uint32_t wide = (section->m_skinSectionId >> 16 << 16) | section->m_indexStart;
+
+    if (wide <= totalIndices && section->m_indexCount <= totalIndices - wide) {
+        return wide;
+    }
+
+    return section->m_indexStart;
+}
+
+inline uint32_t M2ProcessedIndexStart(const M2SkinSection* section) {
+    return (section->m_skinSectionId >> 16 << 16) | section->m_indexStart;
+}
 
 // OFFSET: [0x0081CD50]
 template <class T>
