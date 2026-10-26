@@ -34,7 +34,11 @@ His design notes: `Kalibros-decomp/docs/retail-race-handoff.md`, `retail-casc.md
    (`RetailRaceEnumTail`), `RLK1` footer on create / customize / race / faction change. Kalibro's eye-effect and
    body-slider footers (`BSH1`, `BSE1`) are not sent.
 3. **Creator UI.** Our GlueXML panel for the retail options (his `EA_*` contract under our own names),
-   choice names, random, preview.
+   choice names, random, preview. Done as `RetailRace_CharacterCreate.lua` in WHE-256-bit's
+   `data/patch-A.MPQ/Interface/GlueXML` (also in the squished client's patch-B): scrolling option panel in place of
+   the stock rows, Two Forms tabs and "Show both forms", Randomize via `EA_RANDOM`, `RetailLoadExisting()` for
+   paid customization, wheel zoom / right-drag pan for all races. Not done: hover preview of choices
+   (`EA_PREVIEW_*`).
 4. **Persistence.** His later commits (78ac78e7 body sliders, 566014cd Two Forms) already carry the full look:
    `Engine/Source/Retail/RetailLookWire.h`, shared verbatim with his server (`EsteriaWow`,
    `src/server/shared/RetailLookWire.h`): 132-byte payload (version, race, sex/form, count, 64 u16 choice
