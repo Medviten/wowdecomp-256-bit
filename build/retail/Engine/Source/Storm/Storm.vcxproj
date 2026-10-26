@@ -1,0 +1,427 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{DBBBF8CB-22D5-3727-9B6A-B3B53217F8D0}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>Storm</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\GitHub\wowdecomp-256-bit\build\retail\lib\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Storm.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Storm</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\GitHub\wowdecomp-256-bit\build\retail\lib\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Storm.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Storm</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\GitHub\wowdecomp-256-bit\build\retail\lib\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Storm.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Storm</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\GitHub\wowdecomp-256-bit\build\retail\lib\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Storm.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Storm</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.lib</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\GitHub\wowdecomp-256-bit;D:\GitHub\wowdecomp-256-bit\ThirdParty\zlib\contrib\blast;D:\GitHub\wowdecomp-256-bit\ThirdParty\bzip2;D:\GitHub\wowdecomp-256-bit\ThirdParty\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;WOWDECOMP_ARCH_64=1;NOMINMAX;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;WOWDECOMP_ARCH_64=1;NOMINMAX;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\GitHub\wowdecomp-256-bit;D:\GitHub\wowdecomp-256-bit\ThirdParty\zlib\contrib\blast;D:\GitHub\wowdecomp-256-bit\ThirdParty\bzip2;D:\GitHub\wowdecomp-256-bit\ThirdParty\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\GitHub\wowdecomp-256-bit;D:\GitHub\wowdecomp-256-bit\ThirdParty\zlib\contrib\blast;D:\GitHub\wowdecomp-256-bit\ThirdParty\bzip2;D:\GitHub\wowdecomp-256-bit\ThirdParty\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\GitHub\wowdecomp-256-bit;D:\GitHub\wowdecomp-256-bit\ThirdParty\zlib\contrib\blast;D:\GitHub\wowdecomp-256-bit\ThirdParty\bzip2;D:\GitHub\wowdecomp-256-bit\ThirdParty\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;WOWDECOMP_ARCH_64=1;NOMINMAX;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;WOWDECOMP_ARCH_64=1;NOMINMAX;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\GitHub\wowdecomp-256-bit;D:\GitHub\wowdecomp-256-bit\ThirdParty\zlib\contrib\blast;D:\GitHub\wowdecomp-256-bit\ThirdParty\bzip2;D:\GitHub\wowdecomp-256-bit\ThirdParty\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\GitHub\wowdecomp-256-bit;D:\GitHub\wowdecomp-256-bit\ThirdParty\zlib\contrib\blast;D:\GitHub\wowdecomp-256-bit\ThirdParty\bzip2;D:\GitHub\wowdecomp-256-bit\ThirdParty\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\GitHub\wowdecomp-256-bit;D:\GitHub\wowdecomp-256-bit\ThirdParty\zlib\contrib\blast;D:\GitHub\wowdecomp-256-bit\ThirdParty\bzip2;D:\GitHub\wowdecomp-256-bit\ThirdParty\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;WOWDECOMP_ARCH_64=1;NOMINMAX;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR="MinSizeRel"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;WOWDECOMP_ARCH_64=1;NOMINMAX;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR=\"MinSizeRel\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\GitHub\wowdecomp-256-bit;D:\GitHub\wowdecomp-256-bit\ThirdParty\zlib\contrib\blast;D:\GitHub\wowdecomp-256-bit\ThirdParty\bzip2;D:\GitHub\wowdecomp-256-bit\ThirdParty\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\GitHub\wowdecomp-256-bit;D:\GitHub\wowdecomp-256-bit\ThirdParty\zlib\contrib\blast;D:\GitHub\wowdecomp-256-bit\ThirdParty\bzip2;D:\GitHub\wowdecomp-256-bit\ThirdParty\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\GitHub\wowdecomp-256-bit;D:\GitHub\wowdecomp-256-bit\ThirdParty\zlib\contrib\blast;D:\GitHub\wowdecomp-256-bit\ThirdParty\bzip2;D:\GitHub\wowdecomp-256-bit\ThirdParty\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;WOWDECOMP_ARCH_64=1;NOMINMAX;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR="RelWithDebInfo"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;WOWDECOMP_ARCH_64=1;NOMINMAX;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR=\"RelWithDebInfo\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\GitHub\wowdecomp-256-bit;D:\GitHub\wowdecomp-256-bit\ThirdParty\zlib\contrib\blast;D:\GitHub\wowdecomp-256-bit\ThirdParty\bzip2;D:\GitHub\wowdecomp-256-bit\ThirdParty\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\GitHub\wowdecomp-256-bit;D:\GitHub\wowdecomp-256-bit\ThirdParty\zlib\contrib\blast;D:\GitHub\wowdecomp-256-bit\ThirdParty\bzip2;D:\GitHub\wowdecomp-256-bit\ThirdParty\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule D:/GitHub/wowdecomp-256-bit/Engine/Source/Storm/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/GitHub/wowdecomp-256-bit -BD:/GitHub/wowdecomp-256-bit/build/retail --check-stamp-file D:/GitHub/wowdecomp-256-bit/build/retail/Engine/Source/Storm/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\GitHub\wowdecomp-256-bit\build\retail\CMakeFiles\cmake.verify_globs;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\GitHub\wowdecomp-256-bit\build\retail\Engine\Source\Storm\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule D:/GitHub/wowdecomp-256-bit/Engine/Source/Storm/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/GitHub/wowdecomp-256-bit -BD:/GitHub/wowdecomp-256-bit/build/retail --check-stamp-file D:/GitHub/wowdecomp-256-bit/build/retail/Engine/Source/Storm/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\GitHub\wowdecomp-256-bit\build\retail\CMakeFiles\cmake.verify_globs;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\GitHub\wowdecomp-256-bit\build\retail\Engine\Source\Storm\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule D:/GitHub/wowdecomp-256-bit/Engine/Source/Storm/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/GitHub/wowdecomp-256-bit -BD:/GitHub/wowdecomp-256-bit/build/retail --check-stamp-file D:/GitHub/wowdecomp-256-bit/build/retail/Engine/Source/Storm/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\GitHub\wowdecomp-256-bit\build\retail\CMakeFiles\cmake.verify_globs;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\GitHub\wowdecomp-256-bit\build\retail\Engine\Source\Storm\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule D:/GitHub/wowdecomp-256-bit/Engine/Source/Storm/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/GitHub/wowdecomp-256-bit -BD:/GitHub/wowdecomp-256-bit/build/retail --check-stamp-file D:/GitHub/wowdecomp-256-bit/build/retail/Engine/Source/Storm/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\GitHub\wowdecomp-256-bit\build\retail\CMakeFiles\cmake.verify_globs;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\GitHub\wowdecomp-256-bit\build\retail\Engine\Source\Storm\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\DebugLog.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\IOUnit\IOFileUnit.cpp">
+      <ObjectFileName>$(IntDir)Source/IOUnit/IOFileUnit.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\MD5.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\RSA.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\SArc4.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\SBig.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\SCmd.cpp">
+      <ObjectFileName>$(IntDir)Source/SCmd.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\SComp.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\SCrc.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\SEvt.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\SMem.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\SOption.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\SRgn.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\SService.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\SSignature.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\SStr.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\SUni.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\Sha1.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\Storm.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\StormRtl.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\Win32\IOFileUnit.cpp">
+      <ObjectFileName>$(IntDir)Source/Win32/IOFileUnit.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\Win32\MachineState.cpp">
+      <ObjectFileName>$(IntDir)Source/Win32/MachineState.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\Win32\SCmd.cpp">
+      <ObjectFileName>$(IntDir)Source/Win32/SCmd.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\Win32\SCritSect.cpp">
+      <ObjectFileName>$(IntDir)Source/Win32/SCritSect.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\Win32\SErr.cpp">
+      <ObjectFileName>$(IntDir)Source/Win32/SErr.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\Win32\SLock.cpp">
+      <ObjectFileName>$(IntDir)Source/Win32/SLock.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\Win32\SLog.cpp">
+      <ObjectFileName>$(IntDir)Source/Win32/SLog.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\Win32\SMsg.cpp">
+      <ObjectFileName>$(IntDir)Source/Win32/SMsg.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\Win32\SReg.cpp">
+      <ObjectFileName>$(IntDir)Source/Win32/SReg.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\Win32\SServer.cpp">
+      <ObjectFileName>$(IntDir)Source/Win32/SServer.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\Win32\SThread.cpp">
+      <ObjectFileName>$(IntDir)Source/Win32/SThread.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\Win64\IOFileUnit.cpp">
+      <ObjectFileName>$(IntDir)Source/Win64/IOFileUnit.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\Win64\MachineState.cpp">
+      <ObjectFileName>$(IntDir)Source/Win64/MachineState.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\Win64\SCmd.cpp">
+      <ObjectFileName>$(IntDir)Source/Win64/SCmd.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\Win64\SCritSect.cpp">
+      <ObjectFileName>$(IntDir)Source/Win64/SCritSect.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\Win64\SErr.cpp">
+      <ObjectFileName>$(IntDir)Source/Win64/SErr.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\Win64\SLock.cpp">
+      <ObjectFileName>$(IntDir)Source/Win64/SLock.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\Win64\SLog.cpp">
+      <ObjectFileName>$(IntDir)Source/Win64/SLog.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\Win64\SMsg.cpp">
+      <ObjectFileName>$(IntDir)Source/Win64/SMsg.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\Win64\SReg.cpp">
+      <ObjectFileName>$(IntDir)Source/Win64/SReg.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\Win64\SServer.cpp">
+      <ObjectFileName>$(IntDir)Source/Win64/SServer.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\Win64\SThread.cpp">
+      <ObjectFileName>$(IntDir)Source/Win64/SThread.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Storm\Source\soprintf.cpp" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\ZERO_CHECK.vcxproj">
+      <Project>{9CB8C370-8842-3531-BCBC-44F7260AE198}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\ThirdParty\blast.vcxproj">
+      <Project>{B9B15827-EBBA-3A40-9EAC-18960E3C1DF7}</Project>
+      <Name>blast</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\ThirdParty\bzip2.vcxproj">
+      <Project>{B9438601-8796-38C8-A41A-9B82E54FABB0}</Project>
+      <Name>bzip2</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\ThirdParty\zlib.vcxproj">
+      <Project>{608B93A3-DA93-3F68-AB97-C2EC29760A62}</Project>
+      <Name>zlib</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

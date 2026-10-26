@@ -56,10 +56,5 @@ add_executable(CdnAssetDownload "${CMAKE_SOURCE_DIR}/Tools/RetailAssets/download
 target_link_libraries(CdnAssetDownload PRIVATE RetailAssets)
 add_executable(CdnSourceSmoke "${CMAKE_SOURCE_DIR}/Tools/RetailAssets/source_smoke.cpp")
 target_link_libraries(CdnSourceSmoke PRIVATE RetailAssets)
-if (WIN32)
-    add_executable(RetailShaderProbe "${CMAKE_SOURCE_DIR}/Tools/RetailAssets/shader_probe.cpp"
-        "${CMAKE_SOURCE_DIR}/Engine/Source/Gx/CGxDeviceD3d11/ShaderTranslator.cpp")
-    target_link_libraries(RetailShaderProbe PRIVATE RetailAssets d3dcompiler)
-endif ()
 enable_testing()
 add_test(NAME retail-assets COMMAND RetailAssetTests)

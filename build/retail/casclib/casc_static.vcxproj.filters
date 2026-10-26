@@ -1,0 +1,177 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\common\Common.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\common\Directory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\common\Csv.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\common\FileStream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\common\FileTree.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\common\ListFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\common\Mime.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\common\RootHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\common\Sockets.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\hashes\md5.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\hashes\sha1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\jenkins\lookup3.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\overwatch\apm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\overwatch\cmf.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\overwatch\aes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\CascDecompress.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\CascDecrypt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\CascDumpData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\CascFiles.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\CascFindFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\CascIndexFiles.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\CascOpenFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\CascOpenStorage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\CascReadFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\CascRootFile_Diablo3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\CascRootFile_Install.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\CascRootFile_MNDX.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\CascRootFile_Text.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\CascRootFile_TVFS.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\CascRootFile_OW.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\CascRootFile_WoW.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\zlib\adler32.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\zlib\crc32.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\zlib\inffast.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\zlib\inflate.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\zlib\inftrees.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\zlib\zutil.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\CascCommon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\CascLib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\CascPort.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\common\Array.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\common\Common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\common\Csv.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\common\Directory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\common\FileStream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\common\FileTree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\common\ListFile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\common\Map.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\common\Mime.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\common\Path.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\common\RootHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\common\Sockets.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\src\jenkins\lookup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\GitHub\wowdecomp-256-bit\build\retail\_deps\wow_casclib-src\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{0C4C6DE9-9AC6-386B-AB52-F32550D810D8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{3830524B-52B7-3108-81BF-3D889CD4683D}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

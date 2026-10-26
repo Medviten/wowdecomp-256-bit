@@ -1,0 +1,12 @@
+# This is a generated file and its contents are an internal implementation detail.
+# The download step will be re-executed if anything in this file changes.
+# No other meaning or use of this file is supported.
+
+method=url
+command=C:/Program Files/CMake/bin/cmake.exe;-DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE;-P;D:/GitHub/wowdecomp-256-bit/build/retail/_deps/wow_casclib-subbuild/wow_casclib-populate-prefix/src/wow_casclib-populate-stamp/download-wow_casclib-populate.cmake;COMMAND;C:/Program Files/CMake/bin/cmake.exe;-DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE;-P;D:/GitHub/wowdecomp-256-bit/build/retail/_deps/wow_casclib-subbuild/wow_casclib-populate-prefix/src/wow_casclib-populate-stamp/verify-wow_casclib-populate.cmake;COMMAND;C:/Program Files/CMake/bin/cmake.exe;-DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE;-P;D:/GitHub/wowdecomp-256-bit/build/retail/_deps/wow_casclib-subbuild/wow_casclib-populate-prefix/src/wow_casclib-populate-stamp/extract-wow_casclib-populate.cmake
+source_dir=D:/GitHub/wowdecomp-256-bit/build/retail/_deps/wow_casclib-src
+work_dir=D:/GitHub/wowdecomp-256-bit/build/retail/_deps
+url(s)=https://codeload.github.com/ladislav-zezula/CascLib/zip/38a34665624b8775bb875274b36191b21c38d97b
+hash=SHA256=1b59deebc82a4eb75c6e9ef463a7644b22231a4b3b0657ad9afe0dd5205fee3f
+      no_extract=
+

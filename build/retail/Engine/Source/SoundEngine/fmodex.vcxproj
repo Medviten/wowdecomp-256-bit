@@ -1,0 +1,537 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{DBF44111-5988-37E0-88AF-3E1CB28C5D1A}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>fmodex</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\GitHub\wowdecomp-256-bit\build\retail\lib\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fmodex.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fmodex</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\GitHub\wowdecomp-256-bit\build\retail\lib\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fmodex.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fmodex</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\GitHub\wowdecomp-256-bit\build\retail\lib\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">fmodex.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">fmodex</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\GitHub\wowdecomp-256-bit\build\retail\lib\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">fmodex.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">fmodex</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.lib</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\ogg\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\lib;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\flac-1.1.4\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\flac-1.1.4\src\libFLAC\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\openal\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\lib\wmsdk\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\sfx\foreverb;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\freeverb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;FLAC__NO_DLL;FLAC__HAS_OGG=1;WOWDECOMP_ARCH_64=1;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;FLAC__NO_DLL;FLAC__HAS_OGG=1;WOWDECOMP_ARCH_64=1;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\ogg\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\lib;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\flac-1.1.4\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\flac-1.1.4\src\libFLAC\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\openal\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\lib\wmsdk\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\sfx\foreverb;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\freeverb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\ogg\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\lib;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\flac-1.1.4\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\flac-1.1.4\src\libFLAC\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\openal\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\lib\wmsdk\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\sfx\foreverb;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\freeverb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\ogg\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\lib;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\flac-1.1.4\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\flac-1.1.4\src\libFLAC\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\openal\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\lib\wmsdk\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\sfx\foreverb;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\freeverb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;FLAC__NO_DLL;FLAC__HAS_OGG=1;WOWDECOMP_ARCH_64=1;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;FLAC__NO_DLL;FLAC__HAS_OGG=1;WOWDECOMP_ARCH_64=1;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\ogg\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\lib;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\flac-1.1.4\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\flac-1.1.4\src\libFLAC\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\openal\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\lib\wmsdk\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\sfx\foreverb;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\freeverb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\ogg\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\lib;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\flac-1.1.4\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\flac-1.1.4\src\libFLAC\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\openal\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\lib\wmsdk\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\sfx\foreverb;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\freeverb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\ogg\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\lib;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\flac-1.1.4\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\flac-1.1.4\src\libFLAC\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\openal\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\lib\wmsdk\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\sfx\foreverb;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\freeverb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;FLAC__NO_DLL;FLAC__HAS_OGG=1;WOWDECOMP_ARCH_64=1;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR="MinSizeRel"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;FLAC__NO_DLL;FLAC__HAS_OGG=1;WOWDECOMP_ARCH_64=1;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR=\"MinSizeRel\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\ogg\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\lib;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\flac-1.1.4\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\flac-1.1.4\src\libFLAC\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\openal\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\lib\wmsdk\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\sfx\foreverb;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\freeverb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\ogg\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\lib;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\flac-1.1.4\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\flac-1.1.4\src\libFLAC\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\openal\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\lib\wmsdk\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\sfx\foreverb;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\freeverb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\ogg\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\lib;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\flac-1.1.4\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\flac-1.1.4\src\libFLAC\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\openal\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\lib\wmsdk\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\sfx\foreverb;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\freeverb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;FLAC__NO_DLL;FLAC__HAS_OGG=1;WOWDECOMP_ARCH_64=1;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR="RelWithDebInfo"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;FLAC__NO_DLL;FLAC__HAS_OGG=1;WOWDECOMP_ARCH_64=1;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR=\"RelWithDebInfo\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\ogg\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\lib;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\flac-1.1.4\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\flac-1.1.4\src\libFLAC\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\openal\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\lib\wmsdk\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\sfx\foreverb;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\freeverb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\ogg\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\lib;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\flac-1.1.4\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\flac-1.1.4\src\libFLAC\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\openal\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\lib\wmsdk\include;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\sfx\foreverb;D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\freeverb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule D:/GitHub/wowdecomp-256-bit/Engine/Source/SoundEngine/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/GitHub/wowdecomp-256-bit -BD:/GitHub/wowdecomp-256-bit/build/retail --check-stamp-file D:/GitHub/wowdecomp-256-bit/build/retail/Engine/Source/SoundEngine/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\GitHub\wowdecomp-256-bit\build\retail\CMakeFiles\cmake.verify_globs;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\GitHub\wowdecomp-256-bit\build\retail\Engine\Source\SoundEngine\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule D:/GitHub/wowdecomp-256-bit/Engine/Source/SoundEngine/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/GitHub/wowdecomp-256-bit -BD:/GitHub/wowdecomp-256-bit/build/retail --check-stamp-file D:/GitHub/wowdecomp-256-bit/build/retail/Engine/Source/SoundEngine/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\GitHub\wowdecomp-256-bit\build\retail\CMakeFiles\cmake.verify_globs;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\GitHub\wowdecomp-256-bit\build\retail\Engine\Source\SoundEngine\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule D:/GitHub/wowdecomp-256-bit/Engine/Source/SoundEngine/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/GitHub/wowdecomp-256-bit -BD:/GitHub/wowdecomp-256-bit/build/retail --check-stamp-file D:/GitHub/wowdecomp-256-bit/build/retail/Engine/Source/SoundEngine/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\GitHub\wowdecomp-256-bit\build\retail\CMakeFiles\cmake.verify_globs;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\GitHub\wowdecomp-256-bit\build\retail\Engine\Source\SoundEngine\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule D:/GitHub/wowdecomp-256-bit/Engine/Source/SoundEngine/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/GitHub/wowdecomp-256-bit -BD:/GitHub/wowdecomp-256-bit/build/retail --check-stamp-file D:/GitHub/wowdecomp-256-bit/build/retail/Engine/Source/SoundEngine/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\GitHub\wowdecomp-256-bit\build\retail\CMakeFiles\cmake.verify_globs;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\GitHub\wowdecomp-256-bit\build\retail\Engine\Source\SoundEngine\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\flac-1.1.4\src\libFLAC\bitmath.c" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\flac-1.1.4\src\libFLAC\bitreader.c" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\flac-1.1.4\src\libFLAC\cpu.c" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\flac-1.1.4\src\libFLAC\crc.c" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\flac-1.1.4\src\libFLAC\fixed.c" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\flac-1.1.4\src\libFLAC\float.c" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\flac-1.1.4\src\libFLAC\format.c" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\flac-1.1.4\src\libFLAC\lpc.c">
+      <ObjectFileName>$(IntDir)fmodex/lib/flac-1.1.4/src/libFLAC/lpc.c.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\flac-1.1.4\src\libFLAC\md5.c" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\flac-1.1.4\src\libFLAC\memory.c" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\flac-1.1.4\src\libFLAC\metadata_iterators.c" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\flac-1.1.4\src\libFLAC\metadata_object.c" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\flac-1.1.4\src\libFLAC\ogg_decoder_aspect.c" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\flac-1.1.4\src\libFLAC\ogg_mapping.c" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\flac-1.1.4\src\libFLAC\stream_decoder.c" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\flac-1.1.4\src\libFLAC\window.c">
+      <ObjectFileName>$(IntDir)fmodex/lib/flac-1.1.4/src/libFLAC/window.c.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\freeverb\allpass.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\freeverb\comb.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\freeverb\revmodel.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\ogg\src\bitwise.c" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\ogg\src\framing.c" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\lib\block.c" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\lib\codebook.c" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\lib\envelope.c" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\lib\floor0.c" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\lib\floor1.c" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\lib\info.c" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\lib\lookup.c" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\lib\lpc.c">
+      <ObjectFileName>$(IntDir)fmodex/lib/ogg_vorbis/vorbis/lib/lpc.c.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\lib\lsp.c" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\lib\mapping0.c" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\lib\mdct.c" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\lib\psy.c" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\lib\registry.c" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\lib\res0.c" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\lib\sharedbook.c" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\lib\smallft.c" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\lib\synthesis.c" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\lib\vorbisfile.c" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\ogg_vorbis\vorbis\lib\window.c">
+      <ObjectFileName>$(IntDir)fmodex/lib/ogg_vorbis/vorbis/lib/window.c.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\openal\utils\LoadOAL.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\lib\sfx\foreverb\aSfxDsp.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_async.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_channel.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_channel_emulated.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_channel_real.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_channel_realmanual3d.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_channel_software.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_channel_stream.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_channelgroup.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_channelgroupi.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_channeli.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_channelpool.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_cmdlog.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_codec.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_codec_aiff.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_codec_dls.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_codec_flac.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_codec_fsb.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_codec_it.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_codec_midi.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_codec_mod.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_codec_mpeg.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_codec_mpeg_decode.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_codec_mpeg_layer2.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_codec_mpeg_layer3.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_codec_oggvorbis.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_codec_playlist.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_codec_raw.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_codec_s3m.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_codec_sf2.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_codec_swvag.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_codec_tag.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_codec_tremor.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_codec_user.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_codec_wav.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_codec_wav_imaadpcm.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_codec_wav_riff.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_codec_xm.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_debug.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_dsp.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_dsp_chorus.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_dsp_codec.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_dsp_codecpool.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_dsp_compressor.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_dsp_connectioni.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_dsp_connectionpool.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_dsp_convert.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_dsp_echo.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_dsp_fft.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_dsp_filter.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_dsp_flange.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_dsp_highpass.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_dsp_itecho.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_dsp_lowpass.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_dsp_lowpass2.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_dsp_lowpass_simple.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_dsp_normalize.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_dsp_oscillator.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_dsp_parameq.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_dsp_pitchshift.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_dsp_resampler.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_dsp_resampler_cubic.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_dsp_resampler_multiinput.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_dsp_resampler_nointerp.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_dsp_resampler_spline.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_dsp_reverb.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_dsp_sfxreverb.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_dsp_soundcard.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_dsp_vstplugin.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_dsp_wavetable.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_dspi.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_dspnet.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_file.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_file_disk.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_file_memory.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_file_net.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_file_null.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_file_user.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_geometry.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_geometry_mgr.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_geometryi.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_globals.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_historybuffer_pool.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_listener.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_memory.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_memorytracker.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_metadata.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_music.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_net.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_octree.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_output.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_output_emulated.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_output_nosound.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_output_nosound_nrt.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_output_polled.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_output_software.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_output_wavwriter.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_output_wavwriter_nrt.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_plugin.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_pluginfactory.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_reverb.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_reverbi.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_sample_software.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_sound.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_sound_sample.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_sound_stream.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_soundgroup.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_soundgroupi.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_soundi.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_speakerlevels_pool.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_stack.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_string.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_stringw.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_system.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_systemi.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_thread.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\src\fmod_time.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\MeteredSection.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\asio\asio.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\asio\asiodrivers.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\asio\asiolist.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\fmod_channel_dsound.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\fmod_channel_dsound_eax2.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\fmod_channel_dsound_eax3.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\fmod_channel_dsound_eax4.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\fmod_channel_dsound_i3dl2.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\fmod_channel_openal.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\fmod_channel_openal_eax2.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\fmod_channel_openal_eax3.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\fmod_channel_openal_eax4.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\fmod_channel_openal_eax5.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\fmod_codec_asf.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\fmod_codec_cdda.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\fmod_dllmain.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\fmod_dsp_distortion.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\fmod_dsp_resampler_linear.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\fmod_dsp_winampplugin.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\fmod_file_cdda.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\fmod_os_cdda.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\fmod_os_misc.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\fmod_os_net.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\fmod_os_output.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\fmod_output_asio.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\fmod_output_dsound.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\fmod_output_dsound_eax2.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\fmod_output_dsound_eax3.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\fmod_output_dsound_eax4.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\fmod_output_dsound_i3dl2.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\fmod_output_dsound_record.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\fmod_output_openal.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\fmod_output_openal_eax2.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\fmod_output_openal_eax3.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\fmod_output_openal_eax4.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\fmod_output_openal_eax5.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\fmod_output_timer.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\fmod_output_wasapi.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\fmod_output_winmm.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\fmod_sample_dsound.cpp" />
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\SoundEngine\fmodex\win32\src\fmod_sample_openal.cpp" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\ZERO_CHECK.vcxproj">
+      <Project>{9CB8C370-8842-3531-BCBC-44F7260AE198}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,441 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ResolveNugetPackages>false</ResolveNugetPackages>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{13E9A15F-3A54-38E2-B9F4-3D3A4810618C}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>ALL_BUILD</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\GitHub\wowdecomp-256-bit\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule D:/GitHub/wowdecomp-256-bit/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/GitHub/wowdecomp-256-bit -BD:/GitHub/wowdecomp-256-bit/build/retail --check-stamp-file D:/GitHub/wowdecomp-256-bit/build/retail/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\CMake\share\cmake-4.5\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Compiler\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\ExternalProject\shared_internal_commands.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\FetchContent.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\FetchContent\CMakeLists.cmake.in;C:\Program Files\CMake\share\cmake-4.5\Modules\Internal\CMakeCLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Internal\CMakeCXXLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Internal\CMakeCommonLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Linker\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Linker\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Linker\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Platform\Linker\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Platform\Linker\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Platform\Linker\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Platform\Windows-Initialize.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Platform\WindowsPaths.cmake;D:\GitHub\wowdecomp-256-bit\build\retail\CMakeFiles\4.5.0-rc1\CMakeCCompiler.cmake;D:\GitHub\wowdecomp-256-bit\build\retail\CMakeFiles\4.5.0-rc1\CMakeCXXCompiler.cmake;D:\GitHub\wowdecomp-256-bit\build\retail\CMakeFiles\4.5.0-rc1\CMakeRCCompiler.cmake;D:\GitHub\wowdecomp-256-bit\build\retail\CMakeFiles\4.5.0-rc1\CMakeSystem.cmake;D:\GitHub\wowdecomp-256-bit\build\retail\CMakeFiles\cmake.verify_globs;D:\GitHub\wowdecomp-256-bit\cmake\RetailAssets.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\GitHub\wowdecomp-256-bit\build\retail\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule D:/GitHub/wowdecomp-256-bit/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/GitHub/wowdecomp-256-bit -BD:/GitHub/wowdecomp-256-bit/build/retail --check-stamp-file D:/GitHub/wowdecomp-256-bit/build/retail/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Program Files\CMake\share\cmake-4.5\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Compiler\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\ExternalProject\shared_internal_commands.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\FetchContent.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\FetchContent\CMakeLists.cmake.in;C:\Program Files\CMake\share\cmake-4.5\Modules\Internal\CMakeCLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Internal\CMakeCXXLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Internal\CMakeCommonLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Linker\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Linker\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Linker\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Platform\Linker\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Platform\Linker\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Platform\Linker\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Platform\Windows-Initialize.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Platform\WindowsPaths.cmake;D:\GitHub\wowdecomp-256-bit\build\retail\CMakeFiles\4.5.0-rc1\CMakeCCompiler.cmake;D:\GitHub\wowdecomp-256-bit\build\retail\CMakeFiles\4.5.0-rc1\CMakeCXXCompiler.cmake;D:\GitHub\wowdecomp-256-bit\build\retail\CMakeFiles\4.5.0-rc1\CMakeRCCompiler.cmake;D:\GitHub\wowdecomp-256-bit\build\retail\CMakeFiles\4.5.0-rc1\CMakeSystem.cmake;D:\GitHub\wowdecomp-256-bit\build\retail\CMakeFiles\cmake.verify_globs;D:\GitHub\wowdecomp-256-bit\cmake\RetailAssets.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\GitHub\wowdecomp-256-bit\build\retail\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule D:/GitHub/wowdecomp-256-bit/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/GitHub/wowdecomp-256-bit -BD:/GitHub/wowdecomp-256-bit/build/retail --check-stamp-file D:/GitHub/wowdecomp-256-bit/build/retail/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Program Files\CMake\share\cmake-4.5\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Compiler\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\ExternalProject\shared_internal_commands.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\FetchContent.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\FetchContent\CMakeLists.cmake.in;C:\Program Files\CMake\share\cmake-4.5\Modules\Internal\CMakeCLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Internal\CMakeCXXLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Internal\CMakeCommonLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Linker\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Linker\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Linker\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Platform\Linker\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Platform\Linker\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Platform\Linker\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Platform\Windows-Initialize.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Platform\WindowsPaths.cmake;D:\GitHub\wowdecomp-256-bit\build\retail\CMakeFiles\4.5.0-rc1\CMakeCCompiler.cmake;D:\GitHub\wowdecomp-256-bit\build\retail\CMakeFiles\4.5.0-rc1\CMakeCXXCompiler.cmake;D:\GitHub\wowdecomp-256-bit\build\retail\CMakeFiles\4.5.0-rc1\CMakeRCCompiler.cmake;D:\GitHub\wowdecomp-256-bit\build\retail\CMakeFiles\4.5.0-rc1\CMakeSystem.cmake;D:\GitHub\wowdecomp-256-bit\build\retail\CMakeFiles\cmake.verify_globs;D:\GitHub\wowdecomp-256-bit\cmake\RetailAssets.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\GitHub\wowdecomp-256-bit\build\retail\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule D:/GitHub/wowdecomp-256-bit/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/GitHub/wowdecomp-256-bit -BD:/GitHub/wowdecomp-256-bit/build/retail --check-stamp-file D:/GitHub/wowdecomp-256-bit/build/retail/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Program Files\CMake\share\cmake-4.5\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Compiler\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\ExternalProject\shared_internal_commands.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\FetchContent.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\FetchContent\CMakeLists.cmake.in;C:\Program Files\CMake\share\cmake-4.5\Modules\Internal\CMakeCLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Internal\CMakeCXXLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Internal\CMakeCommonLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Linker\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Linker\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Linker\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Platform\Linker\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Platform\Linker\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Platform\Linker\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Platform\Windows-Initialize.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-4.5\Modules\Platform\WindowsPaths.cmake;D:\GitHub\wowdecomp-256-bit\build\retail\CMakeFiles\4.5.0-rc1\CMakeCCompiler.cmake;D:\GitHub\wowdecomp-256-bit\build\retail\CMakeFiles\4.5.0-rc1\CMakeCXXCompiler.cmake;D:\GitHub\wowdecomp-256-bit\build\retail\CMakeFiles\4.5.0-rc1\CMakeRCCompiler.cmake;D:\GitHub\wowdecomp-256-bit\build\retail\CMakeFiles\4.5.0-rc1\CMakeSystem.cmake;D:\GitHub\wowdecomp-256-bit\build\retail\CMakeFiles\cmake.verify_globs;D:\GitHub\wowdecomp-256-bit\cmake\RetailAssets.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\GitHub\wowdecomp-256-bit\build\retail\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\ZERO_CHECK.vcxproj">
+      <Project>{9CB8C370-8842-3531-BCBC-44F7260AE198}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\Engine\Source\BLPFile\BLPFile.vcxproj">
+      <Project>{572BB431-21A7-344A-B2CE-529F43B54F91}</Project>
+      <Name>BLPFile</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\Engine\Source\Base\Base.vcxproj">
+      <Project>{7DB2B8D8-A1E4-3E14-8751-EF49689B591B}</Project>
+      <Name>Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\WoW\Source\Battlenet\Battlenet.vcxproj">
+      <Project>{0F172BE0-FCDD-3C03-8ADE-049A6C728663}</Project>
+      <Name>Battlenet</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\Engine\Source\BlizzardCore\BlizzardCore.vcxproj">
+      <Project>{8AE0BB6A-A8DD-3D7D-B0DD-D13523BCD917}</Project>
+      <Name>BlizzardCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\CdnAssetDownload.vcxproj">
+      <Project>{6E4E77A5-BD16-30E3-AF51-635C1B76241F}</Project>
+      <Name>CdnAssetDownload</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\CdnSourceSmoke.vcxproj">
+      <Project>{F85A6CC6-E6F0-3A73-A6EA-682D5F5289CC}</Project>
+      <Name>CdnSourceSmoke</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\Engine\Source\ComSat\ComSat.vcxproj">
+      <Project>{ED3B562E-2946-3A3C-A1DD-2EE625F2D70E}</Project>
+      <Name>ComSat</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\WoW\Source\Console\Console.vcxproj">
+      <Project>{FB24EE2F-32C3-3C70-9100-D2723B6669B4}</Project>
+      <Name>Console</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\Engine\Source\ConsoleBase\ConsoleBase.vcxproj">
+      <Project>{37FB67E8-318E-348B-8B26-15E483871E57}</Project>
+      <Name>ConsoleBase</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\WoW\Source\ConsoleDevice\ConsoleDevice.vcxproj">
+      <Project>{009737D1-4491-3790-8F75-55A3BAC7A358}</Project>
+      <Name>ConsoleDevice</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\WoW\Source\DB\DB.vcxproj">
+      <Project>{EF920C65-2139-35EE-86A6-AF7B66433412}</Project>
+      <Name>DB</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\Engine\Source\Event\Event.vcxproj">
+      <Project>{EB68320D-4521-34F5-8958-F3404D374359}</Project>
+      <Name>Event</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\Engine\Source\FFX\FFX.vcxproj">
+      <Project>{8D548434-7093-33FC-8C0E-56EC951C94AB}</Project>
+      <Name>FFX</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\Engine\Source\Frame\Frame.vcxproj">
+      <Project>{89264CEB-CBEF-3EC6-826F-A1428327BA6E}</Project>
+      <Name>Frame</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\Engine\Source\FrameScript\FrameScript.vcxproj">
+      <Project>{736033F7-6FAD-332C-8EB7-18DDDAFF8F26}</Project>
+      <Name>FrameScript</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\Engine\Source\FrameXML\FrameXML.vcxproj">
+      <Project>{447D6B82-9BA7-34A9-99EF-83E43B58A64C}</Project>
+      <Name>FrameXML</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\WoW\Source\Game\Game.vcxproj">
+      <Project>{930A5AAC-9C0A-33BB-AB91-2B803A8FBB1D}</Project>
+      <Name>Game</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\WoW\Source\Glue\Glue.vcxproj">
+      <Project>{81DBD0F3-EA99-37FF-8D1C-B6D2BCB1A16C}</Project>
+      <Name>Glue</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\Engine\Source\Gx\Gx.vcxproj">
+      <Project>{760C310C-D361-3256-9006-ABD01BE81B3D}</Project>
+      <Name>Gx</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\Engine\Source\Gxu\Gxu.vcxproj">
+      <Project>{E634D2BB-FBCD-37FD-BE65-2F12ED443D38}</Project>
+      <Name>Gxu</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\Engine\Source\Images\Images.vcxproj">
+      <Project>{1F208529-3DF9-3961-A842-F1A428949BB5}</Project>
+      <Name>Images</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\WoW\Source\LiquidSystem\LiquidSystem.vcxproj">
+      <Project>{C8405020-C776-3664-9CA1-928A7F05E2A4}</Project>
+      <Name>LiquidSystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\WoW\Source\Magic\Magic.vcxproj">
+      <Project>{9CB6B5B5-5664-34D6-9583-06363DB11039}</Project>
+      <Name>Magic</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\WoW\Source\Minigame\Minigame.vcxproj">
+      <Project>{21C2AF3B-F11F-34BF-8BD5-454B0C9206DA}</Project>
+      <Name>Minigame</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\Engine\Source\Model2\Model2.vcxproj">
+      <Project>{FAE74713-D301-399E-986F-A31F3AEC8F57}</Project>
+      <Name>Model2</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\WoW\Source\Net\Net.vcxproj">
+      <Project>{73B0FA8D-4866-3FE4-8483-62BB1D0A4FF6}</Project>
+      <Name>Net</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\WoW\Source\Object\Object.vcxproj">
+      <Project>{EC25AB76-DA62-3034-B994-B29B096D1A68}</Project>
+      <Name>Object</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\WoW\Source\ObjectAlloc\ObjectAlloc.vcxproj">
+      <Project>{638AB633-318A-36D8-AC82-586363BF623F}</Project>
+      <Name>ObjectAlloc</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\WoW\Source\ObjectMgrClient\ObjectMgrClient.vcxproj">
+      <Project>{CEFB9BF1-FB0B-3852-B349-CFE2A4FB059D}</Project>
+      <Name>ObjectMgrClient</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\Engine\Source\Os\Os.vcxproj">
+      <Project>{E50464BD-CCF4-3733-8937-48EE94F7281F}</Project>
+      <Name>Os</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\RetailAssetAcquire.vcxproj">
+      <Project>{B15AE879-532E-379F-AE48-8B39B7EF89F5}</Project>
+      <Name>RetailAssetAcquire</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\RetailAssetProbe.vcxproj">
+      <Project>{1FF6608E-990C-37DF-9EB3-743D412372DE}</Project>
+      <Name>RetailAssetProbe</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\RetailAssetTests.vcxproj">
+      <Project>{7644D409-7653-3EF9-B7FA-5908540107F9}</Project>
+      <Name>RetailAssetTests</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\RetailAssets.vcxproj">
+      <Project>{E19C5C3E-AA76-3956-8CF1-EDF0251A2051}</Project>
+      <Name>RetailAssets</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\RetailComposeProbe.vcxproj">
+      <Project>{A67D8180-85EC-3B31-ACDB-E0BC0BEA0D48}</Project>
+      <Name>RetailComposeProbe</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\RetailRaceProbe.vcxproj">
+      <Project>{ECD63CB8-0513-3D6C-8388-C815459CDD2C}</Project>
+      <Name>RetailRaceProbe</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\Engine\Source\Scrn\Scrn.vcxproj">
+      <Project>{34A718AD-36C4-331E-B36E-4D93795F650E}</Project>
+      <Name>Scrn</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\Engine\Source\Services\Services.vcxproj">
+      <Project>{C798A06C-294C-3425-9921-986ABFDF5C97}</Project>
+      <Name>Services</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\Engine\Source\ShaderEffect\ShaderEffect.vcxproj">
+      <Project>{6195F49C-DC99-3406-A1B4-F071B67BD976}</Project>
+      <Name>ShaderEffect</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\Engine\Source\SoundEngine\SoundEngine.vcxproj">
+      <Project>{212A2534-EF40-3894-92A9-BE8CD6771A0D}</Project>
+      <Name>SoundEngine</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\WoW\Source\SoundInterface\SoundInterface.vcxproj">
+      <Project>{8D959F77-F838-3FF9-A232-E60A67216EA2}</Project>
+      <Name>SoundInterface</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\Engine\Source\SteelseriesMouse\SteelseriesMouse.vcxproj">
+      <Project>{20D7C8F9-39AF-3A7C-8C35-97B8C37B192A}</Project>
+      <Name>SteelseriesMouse</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\Engine\Source\Storm\Storm.vcxproj">
+      <Project>{DBBBF8CB-22D5-3727-9B6A-B3B53217F8D0}</Project>
+      <Name>Storm</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\Engine\Source\Tempest\Tempest.vcxproj">
+      <Project>{6A3E0EA2-805C-39DB-9292-0E017262FE85}</Project>
+      <Name>Tempest</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\WoW\Source\UIUtil\UIUtil.vcxproj">
+      <Project>{8A2DF09E-B8CA-3F95-A5CB-F2F60EEF9B96}</Project>
+      <Name>UIUtil</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\WoW\Source\Ui\Ui.vcxproj">
+      <Project>{7C098239-7866-3E1E-A92A-7461954222F5}</Project>
+      <Name>Ui</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\WoW\Common\WoWCommon.vcxproj">
+      <Project>{779324FB-E6C1-3167-B4C2-79AC19D70C3A}</Project>
+      <Name>WoWCommon</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\WoW\Source\WorldClient\WorldClient.vcxproj">
+      <Project>{C7498E80-ADAD-3517-8420-3832F337A2BA}</Project>
+      <Name>WorldClient</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\WoW\Source\Wow.vcxproj">
+      <Project>{9D353CCF-8FFD-33F9-B98F-AAFE5A8AF8C1}</Project>
+      <Name>Wow</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\Tools\WowClient\WowClient.vcxproj">
+      <Project>{D7FBDF21-FFA6-3CF5-BD6F-9C9DBF58ECBA}</Project>
+      <Name>WowClient</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\WoW\Source\WowServices\WowServices.vcxproj">
+      <Project>{25229219-269A-3EBC-8CCA-AF3A84E96AD2}</Project>
+      <Name>WowServices</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\WoW\Source\WowSvcs\WowSvcs.vcxproj">
+      <Project>{48D74C63-1518-34B8-BB8F-1DAFDF8A35D6}</Project>
+      <Name>WowSvcs</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\Tools\XvidDecoder\XvidDecoder.vcxproj">
+      <Project>{46ABE1F8-7922-358F-B203-D11565C83824}</Project>
+      <Name>XvidDecoder</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\ThirdParty\blast.vcxproj">
+      <Project>{B9B15827-EBBA-3A40-9EAC-18960E3C1DF7}</Project>
+      <Name>blast</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\ThirdParty\bzip2.vcxproj">
+      <Project>{B9438601-8796-38C8-A41A-9B82E54FABB0}</Project>
+      <Name>bzip2</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\ThirdParty\expat.vcxproj">
+      <Project>{B3C82264-1153-3245-94D9-FCD6996DDBCD}</Project>
+      <Name>expat</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\Engine\Source\SoundEngine\fmodex.vcxproj">
+      <Project>{DBF44111-5988-37E0-88AF-3E1CB28C5D1A}</Project>
+      <Name>fmodex</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\ThirdParty\freetype.vcxproj">
+      <Project>{A073B277-E858-3FF1-AB4E-CC52CA40A714}</Project>
+      <Name>freetype</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\Engine\Source\jpeg\jpeg.vcxproj">
+      <Project>{259BED80-5E6E-3020-8E8F-7520DA730606}</Project>
+      <Name>jpeg</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\ThirdParty\lgLcd.vcxproj">
+      <Project>{6011150F-D335-368E-9B3F-E82F5F48BC5E}</Project>
+      <Name>lgLcd</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\Engine\Source\lua-5.1\lua.vcxproj">
+      <Project>{8119E53C-7EAB-3567-9BEA-C88B9925C4A2}</Project>
+      <Name>lua</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\ThirdParty\lzma.vcxproj">
+      <Project>{A5E6C939-1613-3247-8729-A883CBB92ADB}</Project>
+      <Name>lzma</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\ThirdParty\pcre.vcxproj">
+      <Project>{E641F513-BE5D-32BA-972E-05BB007E30B2}</Project>
+      <Name>pcre</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\Engine\Source\pcre\pcreposix.vcxproj">
+      <Project>{92D5CB3A-0B56-3564-8F93-EF9DBB9834FE}</Project>
+      <Name>pcreposix</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\ThirdParty\zlib.vcxproj">
+      <Project>{608B93A3-DA93-3F68-AB97-C2EC29760A62}</Project>
+      <Name>zlib</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

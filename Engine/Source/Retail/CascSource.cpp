@@ -97,6 +97,8 @@ struct CascSource::Impl {
     HANDLE storage = nullptr;
     HANDLE cacheMutex = nullptr;
     std::string path, product = "wow", region = "us", build, keys, tables, cache, tablePolicy = "tables";
+    // Custom: shipped original files (<FileDataID>.bin), read before the decoded cache and CASC in every mode
+    std::string pack;
     SourceKind kind = SourceKind::Retail;
     Statistics stats;
     std::string Prefix() const { return kind == SourceKind::Forever ? "forever/" : "retail/"; }
@@ -165,7 +167,28 @@ struct CascSource::Impl {
         return true;
     }
 
+    // Custom: the shipped original of a FileDataID reference, if the pack has it
+    std::filesystem::path PackPath(const Reference& ref) const {
+        if (pack.empty() || !ref.id) return {};
+        return std::filesystem::path(pack) / (std::to_string(ref.id) + ".bin");
+    }
+
+    bool ReadPack(const Reference& ref, std::vector<uint8_t>& bytes) const {
+        const auto file = PackPath(ref);
+        if (file.empty()) return false;
+        std::ifstream input(file, std::ios::binary | std::ios::ate);
+        if (!input) return false;
+        const auto size = input.tellg();
+        if (size < 0 || size > 128 * 1024 * 1024) return false;
+        bytes.resize(static_cast<size_t>(size));
+        input.seekg(0);
+        if (!input.read(reinterpret_cast<char*>(bytes.data()), bytes.size())) { bytes.clear(); return false; }
+        return true;
+    }
+
     bool Fetch(const Reference& ref, const std::string& internal, std::vector<uint8_t>& bytes, std::string& error, bool lenient = false) {
+        // Custom: files first; the cache and CASC/CDN only for what the pack lacks
+        if (ReadPack(ref, bytes)) { ++stats.reused; return true; }
         if (files) {
             if (!configured || !ref.id) return Failure(error, "Offline Retail packs require configured FileDataID references");
             std::ifstream input(std::filesystem::path(path) / (std::to_string(ref.id) + ".bin"), std::ios::binary | std::ios::ate);
@@ -281,7 +304,8 @@ bool CascSource::Configure(const char* configPath, std::string& error) {
     }
     for (const auto& value : values) {
         if (value.first != "mode" && value.first != "path" && value.first != "product" && value.first != "region" &&
-            value.first != "build" && value.first != "locale" && value.first != "aliases" && value.first != "listfile" && value.first != "keys" && value.first != "equipment" && value.first != "tables" && value.first != "cache" && value.first != "cdn" && value.first != "version")
+            value.first != "build" && value.first != "locale" && value.first != "aliases" && value.first != "listfile" && value.first != "keys" && value.first != "equipment" && value.first != "tables" && value.first != "cache" && value.first != "cdn" && value.first != "version" &&
+            value.first != "pack") // Custom: shipped original files
             return Failure(error, "Unknown Retail CASC config key");
     }
     if (values["mode"] != "online" && values["mode"] != "local" && values["mode"] != "files") return Failure(error, "mode must be online, local or files");
@@ -354,6 +378,7 @@ bool CascSource::Configure(const char* configPath, std::string& error) {
         }
     } else if (!values["version"].empty()) return Failure(error, "version requires a pinned CDN config key");
     s.tables = values["tables"].empty() ? "" : absolute(values["tables"]).string();
+    s.pack = values["pack"].empty() ? "" : absolute(values["pack"]).string(); // Custom
     s.keys = values["keys"].empty() ? "" : absolute(values["keys"]).string();
     if (!s.files && (s.online || !s.build.empty())) {
         auto cache = values["cache"].empty() ? (s.online ? path / "decoded" : base / "CdnCache" / (s.product + "-" + s.build))
@@ -492,6 +517,9 @@ bool CascSource::Exists(const char* name, std::string& error) {
     std::string internal;
     File file;
     if (!m_impl->Resolve(Normalize(name ? name : ""), ref, internal, error)) return false;
+    // Custom: shipped original files
+    const auto packed = m_impl->PackPath(ref);
+    if (!packed.empty() && std::filesystem::is_regular_file(packed)) return true;
     if (m_impl->files) return ref.id && std::filesystem::is_regular_file(std::filesystem::path(m_impl->path) / (std::to_string(ref.id) + ".bin"));
     std::vector<uint8_t> cached;
     const auto path = m_impl->CachePath(ref, internal, false);
@@ -607,6 +635,13 @@ bool CascSource::CachedOriginalSize(const char* name, uint32_t& size) {
     Reference ref;
     std::string internal, error;
     if (!m_impl->Resolve(key, ref, internal, error)) return false;
+    // Custom: shipped original files
+    const auto packed = m_impl->PackPath(ref);
+    if (!packed.empty()) {
+        std::error_code ec;
+        const auto length = std::filesystem::file_size(packed, ec);
+        if (!ec && length <= 128 * 1024 * 1024) { size = static_cast<uint32_t>(length); return true; }
+    }
     if (m_impl->files) {
         std::error_code ec;
         const auto length = std::filesystem::file_size(std::filesystem::path(m_impl->path) / (std::to_string(ref.id) + ".bin"), ec);

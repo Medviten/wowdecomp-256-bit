@@ -386,10 +386,10 @@ class M2SkinProfile {
     /* 002C */ uint32_t m_boneCountMax;
 };
 
-// Esteria: models whose index lists exceed 65535 keep the high 16 bits of a section's index start in its level word
-// (+2); `totalIndices` validates it. Sections that were rewritten by M2Shared::SetIndices carry the processed start.
+// Custom (Kalibro's retail models): a section's full index start (M2SkinSection::IndexStart), validated against the
+// skin's index count; out of range level bits fall back to the 16-bit start.
 inline uint32_t M2WideIndexStart(const M2SkinSection* section, uint32_t totalIndices) {
-    uint32_t wide = (section->m_skinSectionId >> 16 << 16) | section->m_indexStart;
+    uint32_t wide = section->IndexStart();
 
     if (wide <= totalIndices && section->m_indexCount <= totalIndices - wide) {
         return wide;
@@ -398,8 +398,9 @@ inline uint32_t M2WideIndexStart(const M2SkinSection* section, uint32_t totalInd
     return section->m_indexStart;
 }
 
+// Custom: the index start of a section rewritten by CM2Shared::SetIndices
 inline uint32_t M2ProcessedIndexStart(const M2SkinSection* section) {
-    return (section->m_skinSectionId >> 16 << 16) | section->m_indexStart;
+    return section->IndexStart();
 }
 
 // OFFSET: [0x0081CD50]

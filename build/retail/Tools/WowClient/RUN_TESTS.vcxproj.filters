@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="D:\GitHub\wowdecomp-256-bit\build\retail\CMakeFiles\e9e57b631c2b2121b4bec9176a9f270a\RUN_TESTS_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{A0236BD6-DEBC-3198-879B-632B678773A1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

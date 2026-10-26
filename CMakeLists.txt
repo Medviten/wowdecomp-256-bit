@@ -58,6 +58,11 @@ endif ()
 if (WOWDECOMP_DISABLE_SIGNATURE_CHECKS)
     add_compile_definitions(DISABLE_SIGNATURE_CHECKS=1)
 endif ()
+# Custom: retail race models and customization (Kalibro's Engine/Source/Retail, docs/retail-races-plan.md)
+option(WOWDECOMP_RETAIL_ASSETS "Read Retail assets from files, local CASC or Blizzard's CDN" OFF)
+if (WOWDECOMP_RETAIL_ASSETS)
+    include(cmake/RetailAssets.cmake)
+endif ()
 
 # Third-party code is linked, not decompiled, for now.
 if (EXISTS ${CMAKE_SOURCE_DIR}/ThirdParty/CMakeLists.txt)

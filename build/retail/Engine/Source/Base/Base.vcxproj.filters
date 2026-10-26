@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Base\Base.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Base\BitArray.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Base\CDataAllocator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Base\CDataRecycler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Base\CDataStore.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Base\Clamp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Base\CmdLine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Base\ConvertUTF.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Base\Coordinate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Base\DynamicString.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Base\FileCache.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Base\Handle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Base\Prop.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Base\RCString.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Base\RefCount.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Base\SIMD.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Base\Sort.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Base\Status.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\GitHub\wowdecomp-256-bit\Engine\Source\Base\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{3830524B-52B7-3108-81BF-3D889CD4683D}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

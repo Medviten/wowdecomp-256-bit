@@ -23,6 +23,11 @@ if(WIN32)
     )
 endif()
 
+# Custom: SFile reads retail/<FileDataID> files through the retail source
+if (WOWDECOMP_RETAIL_ASSETS)
+    target_link_libraries(BlizzardCore PUBLIC RetailAssets)
+endif ()
+
 target_include_directories(BlizzardCore
     PRIVATE
         ${CMAKE_SOURCE_DIR}/Engine/Source/SoundEngine/fmodex/lib/ogg_vorbis/ogg/include

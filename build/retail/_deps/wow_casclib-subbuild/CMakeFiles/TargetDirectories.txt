@@ -1,0 +1,3 @@
+D:/GitHub/wowdecomp-256-bit/build/retail/_deps/wow_casclib-subbuild/CMakeFiles/wow_casclib-populate.dir
+D:/GitHub/wowdecomp-256-bit/build/retail/_deps/wow_casclib-subbuild/CMakeFiles/ALL_BUILD.dir
+D:/GitHub/wowdecomp-256-bit/build/retail/_deps/wow_casclib-subbuild/CMakeFiles/ZERO_CHECK.dir

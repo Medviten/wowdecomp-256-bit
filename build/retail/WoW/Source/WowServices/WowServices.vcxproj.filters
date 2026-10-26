@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\WowServices\BattlenetLogin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\WowServices\BigInteger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\WowServices\Grunt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\WowServices\GruntLogin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\WowServices\HMAC.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\WowServices\Login.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\WowServices\PatchFiles.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\WowServices\RealmConnection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\WowServices\SRP6_Client.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\WowServices\SRP6_Random.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\WowServices\TSFixedArray.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\WowServices\WDataStore.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\WowServices\Win32\WowConnection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\WowServices\Win32\WowConnectionNet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\WowServices\Win64\BattlenetLogin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\WowServices\Win64\WowConnection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\WowServices\Win64\WowConnectionNet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\WowServices\WowConnection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\WowServices\WowConnectionNet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\GitHub\wowdecomp-256-bit\WoW\Source\WowServices\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{3830524B-52B7-3108-81BF-3D889CD4683D}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
