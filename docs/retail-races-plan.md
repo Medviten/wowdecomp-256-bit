@@ -45,8 +45,17 @@ His design notes: `Kalibros-decomp/docs/retail-race-handoff.md`, `retail-casc.md
    indices), client footer `RLK1` on create/customize, `RLE1` block after SMSG_CHAR_ENUM, and
    SMSG_ESTERIA_RETAIL_LOOK for other players. Port that to azerothcore-wotlk-256-bit; keep the five stock
    bytes filled for bots/tools.
+   Done (uncompiled): `src/server/shared/RetailLookWire.h`, opcodes 0x524-0x526 (`SMSG_RETAIL_LOOK`,
+   `CMSG_RETAIL_FORM_LOOK`, `SMSG_RETAIL_FORM_LOOK_ACK`), tables `character_retail_look` / `character_form_look`
+   (pending characters update), footers read on create / customize / race and faction change (a change without
+   one drops the saved look), RLE1/RLP1 enum tails, look sent on login and when a player comes into view,
+   `Player::ToggleRetailForm` for an in-world form spell, `RetailLook.TwoFormsRaces` (default `22=1,52=3,70=3`).
 5. **Dracthyr modpaks.** WHE F-0xx for Alliance 52 / Horde 70 (70 is above 64: second race-mask word),
    retail asset pack tool, CoA's Dracthyr racials (CoA races 54/58) activated.
+   Done: WHE F-073/F-074 from `tools/races/dracthyr_modpaks.py` (Home/Kin Human/Orc, their stock model and
+   CharSections rows as what non-Retail clients see), CoA racials via `coa_racials.py` (ids appended after the
+   others), manifest entries off by default. GlueXML already had the slots/icons/race info. Not done: retail asset
+   pack tool, an in-world Visage spell calling `ToggleRetailForm`.
 6. **More races** opt in (Haranir, Earthen, Mechagnome, Vulpera, Highmountain ...).
 
 ## Risks
