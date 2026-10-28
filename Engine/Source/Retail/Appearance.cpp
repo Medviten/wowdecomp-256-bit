@@ -672,7 +672,7 @@ namespace Retail::Db2::appearance
                 State().choice.Text(*choice, "Name_lang"));
     }
 
-    bool CollectCharacterAssets(uint32_t race, uint32_t sex, CharacterAssets& assets, std::string& error)
+    bool CollectCharacterAssets(uint32_t race, uint32_t sex, CharacterAssets& assets, std::string& error, uint32_t form)
     {
         assets = {};
         error.clear();
@@ -691,10 +691,10 @@ namespace Retail::Db2::appearance
             return true;
         }
         Recipe base;
-        if (!BuildForCharacter(race, sex, nullptr, 0, base)) { error = "No character model for requested race/sex"; return false; }
+        if (!BuildForCharacter(race, sex, nullptr, 0, base, form)) { error = "No character model for requested race/sex"; return false; }
         std::set<uint32_t> models{base.modelFileDataId}, textures, skeletons, choices;
         if (base.skeletonFileDataId) skeletons.insert(base.skeletonFileDataId);
-        const uint32_t model = ChrModelForRace(race, sex);
+        const uint32_t model = ChrModelForRace(race, sex, form);
         for (uint32_t i = 0; i < OptionCount(model); ++i) {
             ChrOption option{};
             if (!OptionAt(model, i, option)) return false;

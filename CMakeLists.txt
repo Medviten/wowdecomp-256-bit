@@ -47,9 +47,9 @@ add_compile_definitions(
     _CRT_SECURE_NO_WARNINGS
 )
 
-# Off by default: the client checks MPQ file MD5s (signaturefile) and GlueXML/FrameXML/AddOn .toc.sig files like the
-# original. ON accepts unsigned or modified game data and interface files.
-option(WOWDECOMP_DISABLE_SIGNATURE_CHECKS "Skip MPQ file signature and .toc signature checks" OFF)
+# Custom: on by default in this fork, whose custom races need modified MPQs and GlueXML. OFF checks MPQ file MD5s
+# (signaturefile) and GlueXML/FrameXML/AddOn .toc.sig files like the original.
+option(WOWDECOMP_DISABLE_SIGNATURE_CHECKS "Skip MPQ file signature and .toc signature checks" ON)
 # Custom: DebugLog output (OutputDebugString) in optimized builds, for diagnosing with a debugger attached
 option(WOWDECOMP_DEBUG_LOG "Keep DebugLog output in optimized builds" OFF)
 if (WOWDECOMP_DEBUG_LOG)

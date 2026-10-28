@@ -6,6 +6,7 @@ D:/GitHub/wowdecomp-256-bit/build/retail/CMakeFiles/RetailAssetTests.dir
 D:/GitHub/wowdecomp-256-bit/build/retail/CMakeFiles/RetailAssetAcquire.dir
 D:/GitHub/wowdecomp-256-bit/build/retail/CMakeFiles/CdnAssetDownload.dir
 D:/GitHub/wowdecomp-256-bit/build/retail/CMakeFiles/CdnSourceSmoke.dir
+D:/GitHub/wowdecomp-256-bit/build/retail/CMakeFiles/RetailPackBuild.dir
 D:/GitHub/wowdecomp-256-bit/build/retail/CMakeFiles/RUN_TESTS.dir
 D:/GitHub/wowdecomp-256-bit/build/retail/CMakeFiles/INSTALL.dir
 D:/GitHub/wowdecomp-256-bit/build/retail/CMakeFiles/ALL_BUILD.dir

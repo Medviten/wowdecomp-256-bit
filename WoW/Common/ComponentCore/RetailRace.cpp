@@ -1205,6 +1205,12 @@ void RetailFormCommitCreateResult(bool success) {
 bool RetailFormCommitOffer(const char* name, uint32_t race, uint32_t sex, uint64_t guid) {
     if (g_commit.state != PendingCommit::AwaitList || !name || _stricmp(name, g_commit.name.c_str()) ||
         race != g_commit.race || sex != g_commit.sex) return false;
+    // Custom: a server without the retail look opcodes disconnects on CMSG_RETAIL_FORM_LOOK
+    if (!RetailRaceServerLooks()) {
+        Log("form commit dropped: the server sent no RLE1 block, so it has no retail look support");
+        g_commit = PendingCommit();
+        return true;
+    }
     g_commit.guid = guid;
     g_commit.state = PendingCommit::Sent;
     g_commit.attempts = 0;
@@ -1983,10 +1989,19 @@ void RetailRaceSectionArguments(int32_t, int32_t, int32_t*, int32_t*) {}
 // Custom: the server side of the retail looks. Kept outside the Retail build switch so a client without Retail
 // support still strips the tail blocks from the character list instead of rejecting it as over-long.
 
+// A server with the retail look opcodes always ends the list with an RLE1 block (count 0 when no character has a
+// look); a server without them drops the connection on CMSG_RETAIL_FORM_LOOK, so nothing is sent to it.
+static bool s_serverRetailLooks = false;
+
+bool RetailRaceServerLooks() {
+    return s_serverRetailLooks;
+}
+
 // Strips the RLE1 / RLP1 tail blocks (per character guid(8) + payload, then count(u32) + magic) that the server
 // appends to SMSG_ENUM_CHARACTERS_RESULT, and keeps their looks by guid.
 void RetailRaceEnumTail(CDataStore* packet) {
     RetailRaceClearLooks();
+    s_serverRetailLooks = false;
     if (!packet || !packet->m_data || packet->m_size < packet->m_base) {
         return;
     }
@@ -2009,6 +2024,10 @@ void RetailRaceEnumTail(CDataStore* packet) {
         const uint32_t stride = static_cast<uint32_t>(CharacterRetailLook::EnumStride);
         if (count > 255 || count > (size - 8) / stride) {
             break;
+        }
+
+        if (magic == CharacterRetailLook::EnumMagic) {
+            s_serverRetailLooks = true;
         }
 
         const uint32_t start = size - 8 - count * stride;

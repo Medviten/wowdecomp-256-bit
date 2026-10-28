@@ -56,5 +56,8 @@ add_executable(CdnAssetDownload "${CMAKE_SOURCE_DIR}/Tools/RetailAssets/download
 target_link_libraries(CdnAssetDownload PRIVATE RetailAssets)
 add_executable(CdnSourceSmoke "${CMAKE_SOURCE_DIR}/Tools/RetailAssets/source_smoke.cpp")
 target_link_libraries(CdnSourceSmoke PRIVATE RetailAssets)
+# Custom: per-file retail race packs from wago.tools (pack.cpp)
+add_executable(RetailPackBuild "${CMAKE_SOURCE_DIR}/Tools/RetailAssets/pack.cpp")
+target_link_libraries(RetailPackBuild PRIVATE RetailAssets urlmon)
 enable_testing()
 add_test(NAME retail-assets COMMAND RetailAssetTests)

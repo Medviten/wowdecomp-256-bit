@@ -110,6 +110,8 @@ void RetailRaceClearLooks();
 // Custom: SMSG_ENUM_CHARACTERS_RESULT tail blocks (RLE1 looks, RLP1 parked looks): read and stripped before stock
 // parsing. Also clears the looks of the previous list.
 void RetailRaceEnumTail(CDataStore* packet);
+// Custom: whether the last list came from a server with the retail look opcodes (it carried an RLE1 block)
+bool RetailRaceServerLooks();
 // Custom: SMSG_RETAIL_LOOK and SMSG_RETAIL_FORM_LOOK_ACK bodies. False when the message is malformed.
 bool RetailRaceReceiveLook(CDataStore* msg);
 bool RetailRaceReceiveFormAck(CDataStore* msg);

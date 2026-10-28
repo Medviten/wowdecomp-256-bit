@@ -314,6 +314,10 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <Project>{A67D8180-85EC-3B31-ACDB-E0BC0BEA0D48}</Project>
       <Name>RetailComposeProbe</Name>
     </ProjectReference>
+    <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\RetailPackBuild.vcxproj">
+      <Project>{F351878A-94D4-3E53-BEB3-122B9B99379F}</Project>
+      <Name>RetailPackBuild</Name>
+    </ProjectReference>
     <ProjectReference Include="D:\GitHub\wowdecomp-256-bit\build\retail\RetailRaceProbe.vcxproj">
       <Project>{ECD63CB8-0513-3D6C-8388-C815459CDD2C}</Project>
       <Name>RetailRaceProbe</Name>

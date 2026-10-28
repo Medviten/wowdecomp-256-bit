@@ -52,6 +52,10 @@ static const char* s_specialUnitEffectNames[] = {
     "HARDCODED Reputation",
     "HARDCODED Resist Spell",
     "HARDCODED Achievement Base",
+    // Custom: Cataclysm's altered form effects (special unit effects 12 and 13 there), for the altered form transition
+    // (see CGUnit_C::BeginAlteredFormTransition). Shown only when SpellVisualEffectName has rows by these names
+    "HARDCODED Altered Form Poof",
+    "HARDCODED Altered Form Animation Poof",
 };
 
 // STATIC: 0x00CA0504
@@ -542,7 +546,8 @@ void CEffect::AddAnimKitEffect(int32_t spellId, const SpellVisualKitRec* kit, co
 }
 
 // STATIC: 0x00A32AF4
-static const int32_t s_specialUnitEffectAttachments[] = { 50, 50, 17, 17, 19, 19, 19, 17, 19, 19, 34, 19 };
+// Custom: plus Cataclysm's attachments for the altered form effects (see s_specialUnitEffectNames)
+static const int32_t s_specialUnitEffectAttachments[] = { 50, 50, 17, 17, 19, 19, 19, 17, 19, 19, 34, 19, 19, 53 };
 
 // VERIFY: f48d6796 auto
 // OFFSET: 0x006F8F40
@@ -557,7 +562,8 @@ void CEffect::ReleaseLightningRef() {
 void CEffect::AddSpecialEffect(int32_t type, const WOWGUID& target, void (*callback)(CM2Model* model, uint32_t boneId, uint32_t sequenceId, int32_t interrupted, uint32_t time, uint64_t param)) {
     CGUnit_C* unit = static_cast<CGUnit_C*>(ClntObjMgrObjectPtr(target, TYPEMASK_UNIT, __FILE__, __LINE__));
 
-    if (!unit || static_cast<uint32_t>(type) >= 12) {
+    // Custom: bounded by the table rather than 12, which now has the altered form effects too
+    if (!unit || static_cast<uint32_t>(type) >= sizeof(s_specialUnitEffectAttachments) / sizeof(s_specialUnitEffectAttachments[0])) {
         return;
     }
 

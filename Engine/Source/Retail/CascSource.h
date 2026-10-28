@@ -57,5 +57,10 @@ private:
 CascSource& Source();
 CascSource& SourceForPath(const char* name);
 
+// Custom: called by a mode=files source for a FileDataID its folder lacks, with the file it reads (<id>.bin); returns
+// true once that file exists. RetailPackBuild downloads the original there; the client leaves it unset.
+using PackMissHandler = bool (*)(uint32_t fileDataId, const std::string& file);
+void SetPackMissHandler(PackMissHandler handler);
+
 }
 #endif

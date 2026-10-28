@@ -131,7 +131,9 @@ bool ComponentValidateBase(st_race* lookup, int32_t raceID, int32_t sexID, COMPO
 
     int32_t numColors = list.m_variation[variationIndex].m_numColors;
 
-    return colorIndex < numColors && numColors;
+    // Custom: also require the row itself. numColors is the highest colour index + 1, so a gap in CharSections.dbc
+    // (a skin with no matching face or underwear row) passed and LoadBaseVariation read through a null record.
+    return colorIndex < numColors && numColors && list.m_variation[variationIndex].m_color[colorIndex];
 }
 
 // VERIFY: 04a6cba3 manual

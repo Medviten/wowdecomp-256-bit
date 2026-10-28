@@ -18,7 +18,8 @@ cmake --build build/x64 --config Release --target WowClient --parallel
 
 - Output goes to `bin/Win/` (`WowClient64.exe`, `XvidDecoder.dll`). Game `Data/` must be copied there to run.
 - `WowClient` = client + crash logger (console, `WowClient_crash.log`); `Wow` = same without it.
-- Options: `-DWOWDECOMP_DISABLE_SIGNATURE_CHECKS=ON` (needed for modified MPQs / interface `.toc` files),
+- Options: `-DWOWDECOMP_DISABLE_SIGNATURE_CHECKS=OFF` to restore the signature checks (default ON: modified MPQs /
+  interface `.toc` files need them off),
   `-DWOWCLIENT_CRASH_LOG=OFF`, `-DWOWCLIENT_OUTPUT_OVERRIDE=<name>`.
 - Win32 still builds (needs NASM + `ThirdParty/DivxDecoder/DivxDecoder.dll`); it exists to check struct layouts
   against the 32-bit original. Arch macros: `WOWDECOMP_ARCH_64` / `WOWDECOMP_ARCH_32`.

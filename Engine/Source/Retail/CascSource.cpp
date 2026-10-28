@@ -20,6 +20,7 @@
 
 namespace Retail {
 namespace {
+PackMissHandler packMissHandler = nullptr; // Custom: SetPackMissHandler
 std::string Normalize(std::string name) {
     for (auto& c : name) {
         if (c == '\\') c = '/';
@@ -191,7 +192,11 @@ struct CascSource::Impl {
         if (ReadPack(ref, bytes)) { ++stats.reused; return true; }
         if (files) {
             if (!configured || !ref.id) return Failure(error, "Offline Retail packs require configured FileDataID references");
-            std::ifstream input(std::filesystem::path(path) / (std::to_string(ref.id) + ".bin"), std::ios::binary | std::ios::ate);
+            const auto packed = std::filesystem::path(path) / (std::to_string(ref.id) + ".bin");
+            // Custom: let a pack builder supply what the folder lacks (SetPackMissHandler)
+            std::error_code code;
+            if (packMissHandler && !std::filesystem::exists(packed, code)) packMissHandler(ref.id, packed.string());
+            std::ifstream input(packed, std::ios::binary | std::ios::ate);
             if (!input) return Failure(error, "Missing original asset in offline Retail pack");
             const auto size = input.tellg();
             if (size < 0 || size > 128 * 1024 * 1024) return Failure(error, "Invalid offline Retail asset size");
@@ -706,4 +711,5 @@ CascSource& SourceForPath(const char* name) {
     SourceScope scope(key.compare(0, 8, "forever/") == 0 ? SourceKind::Forever : SourceKind::Retail);
     return Source();
 }
+void SetPackMissHandler(PackMissHandler handler) { packMissHandler = handler; }
 }

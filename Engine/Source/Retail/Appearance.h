@@ -104,7 +104,9 @@ namespace Retail::Db2::appearance
     // Every reachable choice's acquisition roots, including related-choice combinations.
     // The downloader follows M2/SKEL edges from these roots separately.
     struct CharacterAssets { std::vector<uint32_t> models, textures, skeletons; };
-    bool CollectCharacterAssets(uint32_t race, uint32_t sex, CharacterAssets& assets, std::string& error);
+    // Custom: form picks one Two Forms model (RetailPackBuild collects each form)
+    bool CollectCharacterAssets(uint32_t race, uint32_t sex, CharacterAssets& assets, std::string& error,
+                                uint32_t form = FormDefault);
 
     /// The options a ChrModel offers, in the tables' own order. Enumerated rather than reduced to
     /// fixed slots: the table that used to map the stock client's five customization bytes onto

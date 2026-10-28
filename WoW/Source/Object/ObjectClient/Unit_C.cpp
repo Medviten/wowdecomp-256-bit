@@ -1,5 +1,6 @@
 #include "Unit_C.h"
 #include <cmath>
+#include <map>
 #include <new>
 #include <typeinfo>
 #include <cstring>
@@ -145,6 +146,20 @@
 #include "WoW/Source/WorldClient/FrameTime.h"
 #include "WoW/Source/WorldClient/Map.h"
 #include "WoW/Source/WowSvcs/WowSvcsClient/ClientServices.h"
+
+// Custom: an altered form transition in progress (see BeginAlteredFormTransition): the unit's old model, kept with its
+// component, drawn until the unit's new model is ready (begun) and then, if it plays the anim (animate), carrying the
+// new model until its $ALT event (swap). endTime is when waiting for either gives up.
+struct AlteredFormTransition {
+    CM2Model* model;
+    CCharacterComponent* component;
+    uint32_t endTime;
+    bool animate;
+    bool begun;
+    bool swap;
+};
+
+static std::map<const CGUnit_C*, AlteredFormTransition> s_alteredFormTransitions;
 
 // STATIC: 0x00ADAC04
 static INVENTORY_SLOTS s_virtualItemInvSlots[2] = { INVSLOT_MAINHAND, INVSLOT_OFFHAND };
@@ -861,6 +876,7 @@ void CGUnit_C::UpdateDisplay(uint32_t time) {
     }
 
     World::TickObject(this->m_worldObject);
+    this->UpdateAlteredFormTransition(); // Custom
 
     if (this->m_obj->m_guid == CGUnit_C::s_activeMover && !(this->m_obj->m_type & TYPEMASK_PLAYER) && this->IsAutoTracking()) {
         this->HandleTracking(0.0f, 0.0f);
@@ -1044,6 +1060,9 @@ void CGUnit_C::UpdateDisplayInfo(int32_t force) {
     if (!force && !this->DisplayInfoNeedsUpdate()) {
         return;
     }
+
+    // Custom: the model about to be replaced may be carried by an altered form transition's old model
+    this->StopAlteredFormTransition(false);
 
     int32_t deathAnim = ANIM_COUNT;
     this->m_wheelMask = 0;
@@ -1242,14 +1261,18 @@ int32_t CGUnit_C::Animate(float elapsed) {
 void CGUnit_C::ShouldRender(uint32_t flags, int32_t& culled, int32_t& hidden) {
     this->CGObject_C::ShouldRender(flags, culled, hidden);
 
+    // Custom: while an altered form transition waits for the new model and its component, the old model is drawn in
+    // their place, so the unit is not hidden for them (see BeginAlteredFormTransition)
+    bool keepOldModel = !hidden && this->IsAlteredFormTransitionPending();
+
     if ((this->m_clientFlags & 0x400000) && !this->InitializeComponent()) {
-        hidden = 1;
+        hidden = !keepOldModel;
     } else if (culled || hidden) {
         if (this->m_characterComponent) {
             this->m_characterComponent->Prep();
         }
     } else if (this->m_characterComponent && !this->m_characterComponent->RenderPrep(0)) {
-        hidden = 1;
+        hidden = !keepOldModel;
     } else {
         CM2Model* model = this->m_worldModel;
         CM2Model* child = nullptr;
@@ -5666,6 +5689,15 @@ CM2Model* CGUnit_C::GetObjectModel() const {
         return this->m_mountModel;
     }
 
+    // Custom: the old model carries the unit's during an altered form transition (see BeginAlteredFormTransition)
+    if (!s_alteredFormTransitions.empty()) {
+        auto it = s_alteredFormTransitions.find(this);
+
+        if (it != s_alteredFormTransitions.end()) {
+            return it->second.model;
+        }
+    }
+
     return this->m_worldModel;
 }
 
@@ -7280,6 +7312,228 @@ int32_t CGUnit_C::GetLocalDisplayID() const {
     }
 
     return displayId;
+}
+
+// Custom: Cataclysm's altered form transition. Cataclysm (UpdateAlteredForm 0x005BC0D0, CUnitDisplayTransition_C
+// 0x005FF040 on) makes a second, dressed model of the new form and changes nothing until that model and its component
+// are ready (IsReadyToBegin). It then attaches the new model to the unit's model at attachment 50
+// (MirrorTransformToSwapModel) while both play ToAltered, swaps the unit to it at the old model's $ALT event and plays
+// ToAlteredPostSwap. This client has no anim kits to drive that, so the roles are turned around for the same picture:
+// the unit swaps to the new form at once, and the old model (already dressed, kept with its component) takes its place
+// in the unit's world object (see GetObjectModel), so the unit is not left invisible while the new form's component is
+// built (see ShouldRender). Once that is ready, the old model either goes away, or carries the new one at attachment
+// 50 (like a mount carries its rider) until its $ALT event. Only the change back to the native form has the anim
+// (Cataclysm's ToAltered: human to Worgen); the other way swaps without one, as Cataclysm's FromAltered is missing
+// from the models. The transitions in progress are in s_alteredFormTransitions (top of the file).
+
+// Custom: the attachment of the old model that carries the new one (Cataclysm's UpdateAlteredForm)
+static const uint32_t s_alteredFormAttachment = 50;
+
+// Custom: the old model's swap event ('$ALT')
+static const uint32_t s_alteredFormSwapEvent = 0x544C4124;
+
+// Custom: how long the old model waits for the new one to be ready, and how long ToAltered is (the old model goes away
+// then even without its $ALT event)
+static const uint32_t s_alteredFormReadyTimeout = 10000;
+static const uint32_t s_alteredFormAnimLength = 5000;
+
+// Custom: Cataclysm's special unit effects for the swap without and with the anim ("HARDCODED Altered Form Poof" and
+// "HARDCODED Altered Form Animation Poof", see s_specialUnitEffectNames in Effect_C.cpp)
+static const int32_t s_alteredFormPoof = 12;
+static const int32_t s_alteredFormAnimationPoof = 13;
+
+// Custom: Cataclysm's CUnitDisplayTransition_C::BeginTransition effect, played on the unit's model. Skipped when
+// SpellVisualEffectName has no such effect, as AddSpecialEffect needs its record
+static void PlayAlteredFormEffect(CGUnit_C* unit, int32_t type) {
+    if (!GetSpecialSpellVisualEffectNameRec(type)) {
+        return;
+    }
+
+    void* memory = SMemAlloc(sizeof(CEffect), __FILE__, __LINE__, 0);
+    CEffect* effect = memory ? new (memory) CEffect() : nullptr;
+
+    if (!effect) {
+        return;
+    }
+
+    WOWGUID guid = unit->m_obj->m_guid;
+    effect->AddSpecialEffect(type, guid, CGObject_C::EffectOnceHandler);
+    effect->m_flags |= 0x20;
+    effect->Release();
+}
+
+// Custom: see Unit_C.h. The client is not told why the aura went away, so a change while fighting (the aura breaks on
+// attack), casting, moving or mounted swaps without the anim.
+bool CGUnit_C::CanPlayAlteredFormTransition() {
+    if (!(this->m_obj->m_type & TYPEMASK_PLAYER) || this->IsDeadOrAttachmentDying()) {
+        return false;
+    }
+
+    if ((this->m_unit->m_unitFieldFlags & 0x80000) || this->IsInCombat()) {
+        return false;
+    }
+
+    if (this->m_castingSpellId || this->m_channelSpellId || this->m_unit->m_unitChannelSpell) {
+        return false;
+    }
+
+    if (this->m_mountDisplayId > 0 || this->m_vehiclePassenger) {
+        return false;
+    }
+
+    uint32_t moving = MOVEMENTFLAG_FORWARD | MOVEMENTFLAG_BACKWARD | MOVEMENTFLAG_STRAFE_LEFT | MOVEMENTFLAG_STRAFE_RIGHT | MOVEMENTFLAG_FALLING | MOVEMENTFLAG_SWIMMING | MOVEMENTFLAG_FLYING;
+    return !(this->m_movementData.m_flags & moving);
+}
+
+// Custom: see Unit_C.h. Takes over the caller's reference to oldModel and the component.
+void CGUnit_C::BeginAlteredFormTransition(CM2Model* oldModel, CCharacterComponent* oldComponent, bool animate) {
+    this->StopAlteredFormTransition(false);
+
+    // The unit no longer owns the old model: its anim ending must not reach the unit. Its events still do, for $ALT
+    // (see HandleAlteredFormTransitionEvent)
+    oldModel->SetSequenceCallback(nullptr, 0);
+
+    AlteredFormTransition transition;
+    transition.model = oldModel;
+    transition.component = oldComponent;
+    transition.endTime = OsGetAsyncTimeMs() + s_alteredFormReadyTimeout;
+    transition.animate = animate;
+    transition.begun = false;
+    transition.swap = false;
+    s_alteredFormTransitions[this] = transition;
+
+    // Until the new model is ready, the old one is drawn in its place
+    if (this->m_worldObject) {
+        World::ObjectSetModel(this->m_worldObject, this->GetObjectModel());
+    }
+}
+
+// Custom: see Unit_C.h. Cataclysm's CUnitDisplayTransition_C::IsReadyToBegin, HandleComponentPrep and
+// HandleComponentRenderPrep, for the unit's own new model and component
+bool CGUnit_C::IsAlteredFormTransitionReady() {
+    if (!this->m_worldModel || !this->m_worldModel->IsLoaded(0, 0) || (this->m_clientFlags & 0x400000)) {
+        return false;
+    }
+
+    return !this->m_characterComponent || this->m_characterComponent->RenderPrep(0);
+}
+
+// Custom: see Unit_C.h
+bool CGUnit_C::IsAlteredFormTransitionPending() const {
+    auto it = s_alteredFormTransitions.find(this);
+    return it != s_alteredFormTransitions.end() && !it->second.begun;
+}
+
+// Custom: see Unit_C.h. Cataclysm's CUnitDisplayTransition_C::UpdateState and BeginAnimation
+void CGUnit_C::UpdateAlteredFormTransition() {
+    auto it = s_alteredFormTransitions.find(this);
+
+    if (it == s_alteredFormTransitions.end()) {
+        return;
+    }
+
+    AlteredFormTransition& transition = it->second;
+    bool timedOut = static_cast<int32_t>(OsGetAsyncTimeMs() - transition.endTime) >= 0;
+
+    if (transition.begun) {
+        if (transition.swap || timedOut) {
+            this->StopAlteredFormTransition(transition.swap);
+        }
+
+        return;
+    }
+
+    if (!this->IsAlteredFormTransitionReady()) {
+        if (timedOut) {
+            this->StopAlteredFormTransition(false);
+        }
+
+        return;
+    }
+
+    CM2Model* oldModel = transition.model;
+
+    // Without the anim, the swap comes with its poof at once (Cataclysm waits 250 ms after starting the poof, but here
+    // the new model is not drawn until the swap, so neither is a poof on it)
+    if (!transition.animate || !this->CanPlayAlteredFormTransition() || !oldModel->IsLoaded(0, 0) || !oldModel->HasSequence(ANIM_TO_ALTERED)) {
+        this->StopAlteredFormTransition(false);
+        PlayAlteredFormEffect(this, s_alteredFormPoof);
+        return;
+    }
+
+    transition.begun = true;
+    transition.endTime = OsGetAsyncTimeMs() + s_alteredFormAnimLength;
+
+    // Falls back to the old model's root when it has no attachment 50 (models older than Cataclysm's). An attached
+    // model's transform is relative to the attachment, and UpdateWorldTransform places the old model, so the new one's
+    // world transform is identity (Cataclysm's MirrorTransformToSwapModel)
+    this->m_worldModel->AttachToParent(oldModel, s_alteredFormAttachment, nullptr, 1);
+
+    C44Matrix identity;
+    identity.Identity();
+    this->m_worldModel->SetWorldTransform(identity);
+
+    // The new model starts ToAltered without blending (0x1): blended in from its stand, it would show whole above the
+    // old one for a moment, its body being hidden and lowered only by ToAltered (Cataclysm's swap model is a fresh model
+    // with nothing to blend from)
+    oldModel->SetBoneSequence(0xFFFFFFFF, ANIM_TO_ALTERED, 0xFFFFFFFF, 0, 1.0f, 1, 1);
+    this->PlayBaseAnimation(ANIM_TO_ALTERED, 0x1);
+    PlayAlteredFormEffect(this, s_alteredFormAnimationPoof);
+}
+
+// Custom: see Unit_C.h. Cataclysm's CUnitDisplayTransition_C::PerformSwap, for the part this client still needs:
+// the old model goes away and, after the anim's swap, the new form plays ToAlteredPostSwap
+void CGUnit_C::StopAlteredFormTransition(bool swap) {
+    auto it = s_alteredFormTransitions.find(this);
+
+    if (it == s_alteredFormTransitions.end()) {
+        return;
+    }
+
+    AlteredFormTransition transition = it->second;
+    s_alteredFormTransitions.erase(it);
+
+    // The unit's model leaves the old one and goes back into the world object, placed right away rather than on the
+    // next frame
+    if (this->m_worldModel && this->m_worldModel->m_attachParent == transition.model) {
+        this->m_worldModel->DetachFromParent();
+    }
+
+    if (this->m_worldObject) {
+        World::ObjectSetModel(this->m_worldObject, this->GetObjectModel());
+    }
+
+    if (this->m_worldModel && !this->m_worldModel->m_attachParent) {
+        this->UpdateWorldTransform(0.0f);
+    }
+
+    transition.model->SetEventCallback(nullptr, 0);
+    transition.model->Release();
+
+    if (transition.component) {
+        CCharacterComponent::FreeComponent(transition.component);
+    }
+
+    if (swap && this->GetCurrentTorsoAnimId() == ANIM_TO_ALTERED) {
+        this->PlayBaseAnimation(ANIM_TO_ALTERED_POST_SWAP, 0);
+    }
+}
+
+// Custom: see Unit_C.h. Cataclysm's CUnitDisplayTransition_C::HandleAnimSwapEvent: the swap waits for the next update,
+// as the old model cannot go away from within its own event. Its other events are dropped, since the new form's
+// ToAltered has its own.
+bool CGUnit_C::HandleAlteredFormTransitionEvent(CGUnit_C* unit, CM2Model* model, uint32_t eventId) {
+    auto it = s_alteredFormTransitions.find(unit);
+
+    if (it == s_alteredFormTransitions.end() || it->second.model != model) {
+        return false;
+    }
+
+    if (eventId == s_alteredFormSwapEvent) {
+        it->second.swap = true;
+    }
+
+    return true;
 }
 
 // Custom: see Unit_C.h. Cataclysm 0x005BEEA0 without the display transition and casting checks
@@ -10482,6 +10736,7 @@ CGUnit_C::~CGUnit_C() {
     }
 
     RetailRaceBindOwner(this->m_characterComponent, nullptr); // Custom
+    this->StopAlteredFormTransition(false); // Custom
     this->RemoveMountModel();
     SI2::StopSound(&this->m_npcInteractSound, 1, -1.0f, 1);
     this->KillCreatureLoopSound();
@@ -10579,6 +10834,7 @@ CGUnit_C::~CGUnit_C() {
 // VERIFY: 1ffc0186 manual
 // OFFSET: 0x00734FD0
 void CGUnit_C::Disable() {
+    this->StopAlteredFormTransition(false); // Custom
     CGObject_C::Disable();
     CMissileCollision::RemoveUnitFromSystem(this);
 
@@ -13743,11 +13999,30 @@ void CGUnit_C::OnAuraUpdate(CDataStore* msg, bool updateAll) {
     this->UpdateAuraEffectMask();
     bool changed = false;
 
-    // Custom: the altered form aura changes the drawn display (Cataclysm's UpdateAlteredForm, without the transition:
-    // Cataclysm's ToAltered on the native model only fades in an overlay meant to be drawn over the altered model's
-    // own ToAltered, which these human models do not have)
+    // Custom: the altered form aura changes the drawn display (Cataclysm's UpdateAlteredForm). A change seen as it
+    // happens keeps the old model and its component from UpdateDisplayInfo, which would otherwise free them, to draw
+    // until the new form is ready and, going back to the native form, to play the transition with (see
+    // BeginAlteredFormTransition). Not while mounted or a passenger, where the model is carried by another
     if (wasAltered != this->HasAuraEffect(s_alteredFormAura) && this->m_worldModel) {
+        this->StopAlteredFormTransition(false);
+
+        CM2Model* oldModel = nullptr;
+        CCharacterComponent* oldComponent = nullptr;
+        bool animate = false;
+
+        if (!updateAll && (this->m_obj->m_type & TYPEMASK_PLAYER) && !this->m_mountModel && !this->m_vehiclePassenger && !this->m_worldModel->m_attachParent) {
+            oldModel = this->m_worldModel;
+            oldModel->m_refCount++;
+            oldComponent = this->m_characterComponent;
+            this->m_characterComponent = nullptr;
+            animate = wasAltered && this->CanPlayAlteredFormTransition();
+        }
+
         this->UpdateDisplayInfo(0);
+
+        if (oldModel) {
+            this->BeginAlteredFormTransition(oldModel, oldComponent, animate);
+        }
     }
 
     for (uint32_t i = 0; i < oldCount; i++) {
@@ -18789,6 +19064,11 @@ void CGUnit_C::AnimEventCallback(CM2Model* model, uint32_t boneId, uint32_t even
         unit->GetUnitName(nullptr, 1);
     }
 
+    // Custom: events of the old model kept for the altered form transition
+    if (CGUnit_C::HandleAlteredFormTransitionEvent(unit, model, eventId)) {
+        return;
+    }
+
     unit->HandleAnimEvent(boneId, eventId, data, position, time);
 }
 
@@ -22365,6 +22645,9 @@ void CGUnit_C::OnMountDisplayChanged(int32_t displayId) {
     if (displayId == current) {
         return;
     }
+
+    // Custom: a mount carries the unit's model, so an altered form transition carrying it ends first
+    this->StopAlteredFormTransition(false);
 
     if (!displayId && this->m_vehicle && this->m_vehicle->m_passengers.Head()) {
         this->m_clientFlags |= 0x10000000;
