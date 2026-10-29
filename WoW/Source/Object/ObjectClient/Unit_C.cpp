@@ -7496,6 +7496,22 @@ void CGUnit_C::BeginAlteredFormTransition(CM2Model* oldModel, CCharacterComponen
     }
 }
 
+// Custom: a display change that comes while a transition still waits for its new model (e.g. a shapeshift from the
+// altered form, which removes the altered form aura and changes the display) takes over that transition's old model,
+// the one drawn, rather than the unit's model, whose component may not be ready (drawn untextured). True when it did.
+static bool TakeOverPendingAlteredFormTransition(const CGUnit_C* unit, CM2Model** oldModel, CCharacterComponent** oldComponent) {
+    auto it = s_alteredFormTransitions.find(unit);
+
+    if (it == s_alteredFormTransitions.end() || it->second.begun) {
+        return false;
+    }
+
+    *oldModel = it->second.model;
+    *oldComponent = it->second.component;
+    s_alteredFormTransitions.erase(it);
+    return true;
+}
+
 // Custom: see Unit_C.h. Like the altered form change in OnAuraUpdate, without its anim, poof or sound. Cataclysm only
 // keeps the old model while the new one's file loads (CGUnit_C::m_pendingDisplayModel), then hides the unit until its
 // character component is ready, as this client does; the transition's old model covers that wait as well
@@ -7507,7 +7523,10 @@ void CGUnit_C::UpdateDisplayInfoKeepingModel() {
     CM2Model* oldModel = nullptr;
     CCharacterComponent* oldComponent = nullptr;
 
-    if ((this->m_obj->m_type & TYPEMASK_PLAYER) && this->m_worldModel && this->m_worldModel->IsLoaded(0, 0) && !this->m_mountModel && !this->m_vehiclePassenger && !this->m_worldModel->m_attachParent) {
+    // Taking over a waiting transition, the unit's own model and component go as UpdateDisplayInfo replaces them
+    bool tookOver = TakeOverPendingAlteredFormTransition(this, &oldModel, &oldComponent);
+
+    if (!tookOver && (this->m_obj->m_type & TYPEMASK_PLAYER) && this->m_worldModel && this->m_worldModel->IsLoaded(0, 0) && !this->m_mountModel && !this->m_vehiclePassenger && !this->m_worldModel->m_attachParent) {
         this->StopAlteredFormTransition(false);
         oldModel = this->m_worldModel;
         oldModel->m_refCount++;
@@ -14152,13 +14171,19 @@ void CGUnit_C::OnAuraUpdate(CDataStore* msg, bool updateAll) {
     // until the new form is ready and, going back to the native form, to play the transition with (see
     // BeginAlteredFormTransition). Not while mounted or a passenger, where the model is carried by another
     if (wasAltered != this->HasAuraEffect(s_alteredFormAura) && this->m_worldModel) {
-        this->StopAlteredFormTransition(false);
-
         CM2Model* oldModel = nullptr;
         CCharacterComponent* oldComponent = nullptr;
         bool animate = false;
 
-        if (!updateAll && (this->m_obj->m_type & TYPEMASK_PLAYER) && !this->m_mountModel && !this->m_vehiclePassenger && !this->m_worldModel->m_attachParent) {
+        // A transition still waiting (e.g. for a shapeshift's display change, which can come before this) keeps the
+        // model it draws, and the change swaps without the poof, as that change does (see UpdateDisplayInfoKeepingModel)
+        bool tookOver = TakeOverPendingAlteredFormTransition(this, &oldModel, &oldComponent);
+
+        if (!tookOver) {
+            this->StopAlteredFormTransition(false);
+        }
+
+        if (!tookOver && !updateAll && (this->m_obj->m_type & TYPEMASK_PLAYER) && !this->m_mountModel && !this->m_vehiclePassenger && !this->m_worldModel->m_attachParent) {
             oldModel = this->m_worldModel;
             oldModel->m_refCount++;
             oldComponent = this->m_characterComponent;
@@ -14169,7 +14194,7 @@ void CGUnit_C::OnAuraUpdate(CDataStore* msg, bool updateAll) {
         this->UpdateDisplayInfo(0);
 
         if (oldModel) {
-            this->BeginAlteredFormTransition(oldModel, oldComponent, animate, true);
+            this->BeginAlteredFormTransition(oldModel, oldComponent, animate, !tookOver);
         }
     }
 
@@ -22794,8 +22819,15 @@ void CGUnit_C::OnMountDisplayChanged(int32_t displayId) {
         return;
     }
 
-    // Custom: a mount carries the unit's model, so an altered form transition carrying it ends first
-    this->StopAlteredFormTransition(false);
+    // Custom: a mount carries the unit's model, so an altered form transition carrying it ends first. Not one that still
+    // waits for the new model, when no mount model is made or goes (mounting itself, e.g. Running Wild, which also ends
+    // the altered form; or getting off itself): the old model stays drawn until the new one is ready (see IsMountSelf)
+    bool mountSelf = displayId > 0 && (displayId == static_cast<int32_t>(this->m_unit->m_unitFieldNativedisplayid) || displayId == this->GetLocalDisplayID());
+    bool noMountModel = !this->m_mountModel && (displayId <= 0 || mountSelf);
+
+    if (!(noMountModel && this->IsAlteredFormTransitionPending())) {
+        this->StopAlteredFormTransition(false);
+    }
 
     if (!displayId && this->m_vehicle && this->m_vehicle->m_passengers.Head()) {
         this->m_clientFlags |= 0x10000000;
