@@ -161,6 +161,13 @@ struct AlteredFormTransition {
 
 static std::map<const CGUnit_C*, AlteredFormTransition> s_alteredFormTransitions;
 
+// Custom: the sound of a transition's anim (see PlayAlteredFormSound), kept apart from the transition, which is copied
+static std::map<const CGUnit_C*, SE2SoundKitObject> s_alteredFormSounds;
+
+// Custom: the key bone (Waist) of the old model's legs, which walk or run through the transition's anim when the unit
+// moves (see PlayBaseAnimation)
+static const uint32_t s_alteredFormLegsKeyBone = 5;
+
 // STATIC: 0x00ADAC04
 static INVENTORY_SLOTS s_virtualItemInvSlots[2] = { INVSLOT_MAINHAND, INVSLOT_OFFHAND };
 
@@ -4002,6 +4009,12 @@ uint32_t CGUnit_C::ResolveAnimForModel(uint32_t animId, CM2Model* model) {
         model = this->GetObjectModel();
     }
 
+    // Custom: anims past what AnimationData covers (Cataclysm's, e.g. MountSelfStart in Running Wild's spell visual kit)
+    // have no fallbacks to follow and would resolve to the stand anim; the model plays them directly when it has them
+    if (animId >= ANIM_COUNT && model->HasSequence(animId)) {
+        return animId;
+    }
+
     uint32_t result = static_cast<uint16_t>(animId);
     int32_t visited[ANIM_COUNT];
     memset(visited, 0, sizeof(visited));
@@ -4393,6 +4406,44 @@ void CGUnit_C::PlayBaseAnimation(uint32_t animId, int32_t flags) {
         return;
     }
 
+    // Custom: through an altered form transition's anim, the unit's anims would cut ToAltered short on the old model,
+    // which then never reaches its swap event ($ALT, on a bone of the root). They are held off until the transition stops
+    // (see StopAlteredFormTransition), except that the anim plays while walking or running: then the old model's legs
+    // (the waist key bone, which has the hips and legs under it) take the movement anim, at its speed, and the rest keeps
+    // ToAltered (attachment 50, which carries the new model, hangs off the pelvis, not the waist). Any other anim gives
+    // the legs back to ToAltered
+    if (!s_alteredFormTransitions.empty() && animId != ANIM_TO_ALTERED && !IsDeadOrDyingAnim(animId)) {
+        auto transition = s_alteredFormTransitions.find(this);
+
+        if (transition != s_alteredFormTransitions.end() && transition->second.begun) {
+            CM2Model* oldModel = transition->second.model;
+            uint32_t legs = this->ResolveAnimForModel(animId, oldModel);
+
+            uint32_t moving = MOVEMENTFLAG_FORWARD | MOVEMENTFLAG_BACKWARD | MOVEMENTFLAG_STRAFE_LEFT | MOVEMENTFLAG_STRAFE_RIGHT;
+
+            if (IsLocomotionAnimId(legs) && (this->m_movementData.m_flags & moving)) {
+                float speed = 1.0f;
+                M2SequenceInfo info;
+                info.Clear();
+                oldModel->GetSequenceInfo(legs, 0, info);
+
+                if (0.0f != info.m_moveSpeed) {
+                    speed = this->m_movementData.GetBaseSpeed(0) / fabsf(info.m_moveSpeed);
+                }
+
+                if (oldModel->GetBoneSequenceId(s_alteredFormLegsKeyBone) == legs) {
+                    oldModel->SetBoneSequenceSpeed(s_alteredFormLegsKeyBone, speed);
+                } else {
+                    oldModel->SetBoneSequence(s_alteredFormLegsKeyBone, legs, 0xFFFFFFFF, 0, speed, 1, 1);
+                }
+            } else {
+                oldModel->UnsetBoneSequence(s_alteredFormLegsKeyBone, 1, 1);
+            }
+
+            return;
+        }
+    }
+
     if (this->GetObjectModel()->m_lastAnimTime || (this->GetVehicleRec() && this->m_vehicle->IsSpecialBoneAnimPlaying())) {
         return;
     }
@@ -4433,9 +4484,12 @@ void CGUnit_C::PlayBaseAnimation(uint32_t animId, int32_t flags) {
     }
 
     // Custom: a unit that is its own mount plays the MountSelf versions of its anims. Done after resolving, since the
-    // MountSelf IDs are past what AnimationData and the fallback lookups cover; the model plays them directly.
+    // MountSelf IDs are past what AnimationData and the fallback lookups cover; the model plays them directly. The
+    // requested anim is tried first, as resolving can turn it into another (MountSpecial, played on a jump while
+    // standing, is missing from these models and falls back to a stand anim, not to MountSelfSpecial)
     if (this->IsMountSelf()) {
-        anim = this->GetMountSelfAnim(anim);
+        uint32_t mountSelfAnim = this->GetMountSelfAnim(animId);
+        anim = mountSelfAnim != animId ? mountSelfAnim : this->GetMountSelfAnim(anim);
     }
 
     M2BoneSequenceInfo mount;
@@ -7343,7 +7397,12 @@ static const int32_t s_alteredFormPoof = 12;
 static const int32_t s_alteredFormAnimationPoof = 13;
 
 // Custom: Cataclysm's CUnitDisplayTransition_C::BeginTransition effect, played on the unit's model. Skipped when
-// SpellVisualEffectName has no such effect, as AddSpecialEffect needs its record
+// SpellVisualEffectName has no such effect, as AddSpecialEffect needs its record. The animation poof is placed where
+// the unit stands instead: its model starts at the ground, and Cataclysm plays it on the old model, which lacks its
+// attachment (53) and so takes the base. Here the unit's model is the new one, riding the old one at attachment 50
+// (see UpdateAlteredFormTransition), whose attachment 53 is high above the feet. The anim also plays while walking or
+// running (CanPlayAlteredFormTransition), so the effect follows the unit's position (0x4000, as root spells' world
+// effects do)
 static void PlayAlteredFormEffect(CGUnit_C* unit, int32_t type) {
     if (!GetSpecialSpellVisualEffectNameRec(type)) {
         return;
@@ -7357,13 +7416,40 @@ static void PlayAlteredFormEffect(CGUnit_C* unit, int32_t type) {
     }
 
     WOWGUID guid = unit->m_obj->m_guid;
-    effect->AddSpecialEffect(type, guid, CGObject_C::EffectOnceHandler);
+
+    if (type == s_alteredFormAnimationPoof) {
+        effect->AddSpecialByPosition(type, unit->GetPosition(), &guid, 0x4020, CGObject_C::EffectOnceHandler);
+    } else {
+        effect->AddSpecialEffect(type, guid, CGObject_C::EffectOnceHandler);
+    }
+
     effect->m_flags |= 0x20;
     effect->Release();
 }
 
+// Custom: Cataclysm's transform sounds, CreatureSoundData's TransformSoundID (the swap without the anim) and
+// TransformAnimatedSoundID (with it), which this client's CreatureSoundData lacks. Looked up by name in SoundEntries
+// instead, so the same two sounds play for every race; nothing plays without them
+static const char* s_alteredFormSoundName = "(DONOTRENAME)Altered Form Transform";
+static const char* s_alteredFormAnimationSoundName = "(DONOTRENAME)Altered Form Transform Animated";
+
+// Custom: Cataclysm's CGUnit_C::OnDisplayTransitionBeginAnimation sound, played where the unit stands. The anim's
+// sound is kept in s_alteredFormSounds, to be faded out if the transition stops before the swap
+static void PlayAlteredFormSound(CGUnit_C* unit, bool animate) {
+    C3Vector position = unit->GetPosition();
+    SE2SoundKitProperties properties;
+    properties.ResetToDefaults();
+
+    if (animate) {
+        SI2::PlaySoundKit(s_alteredFormAnimationSoundName, &position, &s_alteredFormSounds[unit], &properties);
+    } else {
+        SI2::PlaySoundKit(s_alteredFormSoundName, &position, nullptr, &properties);
+    }
+}
+
 // Custom: see Unit_C.h. The client is not told why the aura went away, so a change while fighting (the aura breaks on
-// attack), casting, moving or mounted swaps without the anim.
+// attack), casting, falling, swimming, flying or mounted swaps without the anim. Walking or running does not: the anim
+// plays as the unit moves, holding off its movement anims (see PlayBaseAnimation).
 bool CGUnit_C::CanPlayAlteredFormTransition() {
     if (!(this->m_obj->m_type & TYPEMASK_PLAYER) || this->IsDeadOrAttachmentDying()) {
         return false;
@@ -7381,8 +7467,7 @@ bool CGUnit_C::CanPlayAlteredFormTransition() {
         return false;
     }
 
-    uint32_t moving = MOVEMENTFLAG_FORWARD | MOVEMENTFLAG_BACKWARD | MOVEMENTFLAG_STRAFE_LEFT | MOVEMENTFLAG_STRAFE_RIGHT | MOVEMENTFLAG_FALLING | MOVEMENTFLAG_SWIMMING | MOVEMENTFLAG_FLYING;
-    return !(this->m_movementData.m_flags & moving);
+    return !(this->m_movementData.m_flags & (MOVEMENTFLAG_FALLING | MOVEMENTFLAG_SWIMMING | MOVEMENTFLAG_FLYING));
 }
 
 // Custom: see Unit_C.h. Takes over the caller's reference to oldModel and the component.
@@ -7437,6 +7522,8 @@ void CGUnit_C::UpdateAlteredFormTransition() {
 
     if (transition.begun) {
         if (transition.swap || timedOut) {
+            // The anim is through: its sound plays on
+            s_alteredFormSounds.erase(this);
             this->StopAlteredFormTransition(transition.swap);
         }
 
@@ -7458,6 +7545,7 @@ void CGUnit_C::UpdateAlteredFormTransition() {
     if (!transition.animate || !this->CanPlayAlteredFormTransition() || !oldModel->IsLoaded(0, 0) || !oldModel->HasSequence(ANIM_TO_ALTERED)) {
         this->StopAlteredFormTransition(false);
         PlayAlteredFormEffect(this, s_alteredFormPoof);
+        PlayAlteredFormSound(this, false);
         return;
     }
 
@@ -7478,7 +7566,16 @@ void CGUnit_C::UpdateAlteredFormTransition() {
     // with nothing to blend from)
     oldModel->SetBoneSequence(0xFFFFFFFF, ANIM_TO_ALTERED, 0xFFFFFFFF, 0, 1.0f, 1, 1);
     this->PlayBaseAnimation(ANIM_TO_ALTERED, 0x1);
+
+    // Begun while walking or running: the old model's legs take up the movement anim at once (see PlayBaseAnimation)
+    uint32_t moving = MOVEMENTFLAG_FORWARD | MOVEMENTFLAG_BACKWARD | MOVEMENTFLAG_STRAFE_LEFT | MOVEMENTFLAG_STRAFE_RIGHT;
+
+    if (this->m_movementData.m_flags & moving) {
+        this->UpdateBaseAnimation(0, -1);
+    }
+
     PlayAlteredFormEffect(this, s_alteredFormAnimationPoof);
+    PlayAlteredFormSound(this, true);
 }
 
 // Custom: see Unit_C.h. Cataclysm's CUnitDisplayTransition_C::PerformSwap, for the part this client still needs:
@@ -7492,6 +7589,14 @@ void CGUnit_C::StopAlteredFormTransition(bool swap) {
 
     AlteredFormTransition transition = it->second;
     s_alteredFormTransitions.erase(it);
+
+    // Cut short before the swap, the anim's sound fades out (Cataclysm's CGUnit_C::StopDisplayTransition)
+    auto sound = s_alteredFormSounds.find(this);
+
+    if (sound != s_alteredFormSounds.end()) {
+        SI2::StopSound(&sound->second, 0, 0.5f, 1);
+        s_alteredFormSounds.erase(sound);
+    }
 
     // The unit's model leaves the old one and goes back into the world object, placed right away rather than on the
     // next frame
@@ -7514,7 +7619,13 @@ void CGUnit_C::StopAlteredFormTransition(bool swap) {
         CCharacterComponent::FreeComponent(transition.component);
     }
 
-    if (swap && this->GetCurrentTorsoAnimId() == ANIM_TO_ALTERED) {
+    // A unit that moved through the anim takes up its movement anims again, held off until now (see
+    // PlayBaseAnimation); ToAlteredPostSwap is for standing
+    uint32_t moving = MOVEMENTFLAG_FORWARD | MOVEMENTFLAG_BACKWARD | MOVEMENTFLAG_STRAFE_LEFT | MOVEMENTFLAG_STRAFE_RIGHT;
+
+    if (transition.begun && (this->m_movementData.m_flags & moving)) {
+        this->UpdateBaseAnimation(0, -1);
+    } else if (swap && this->GetCurrentTorsoAnimId() == ANIM_TO_ALTERED) {
         this->PlayBaseAnimation(ANIM_TO_ALTERED_POST_SWAP, 0);
     }
 }
@@ -7562,6 +7673,7 @@ static const uint32_t s_mountSelfAnims[][2] = {
     { ANIM_JUMP_END, 642 },
     { ANIM_JUMP_LAND_RUN, 644 },
     { ANIM_FALL, 648 },
+    { ANIM_MOUNT_SPECIAL, 636 },
 };
 
 // Custom: see Unit_C.h. Keeps the anim when the model has no MountSelf version of it (e.g. female Worgen have no
