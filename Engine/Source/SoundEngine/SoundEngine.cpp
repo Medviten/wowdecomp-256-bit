@@ -3225,6 +3225,23 @@ int32_t SE2::Init(int32_t maxChannels, bool (*positionCallback)(uint64_t, C3Vect
         s_system->getDriverName(driver, s_gameOutputDeviceName, sizeof(s_gameOutputDeviceName));
         result = s_system->setDriver(driver);
 
+        // Custom: OpenAL output that cannot start (e.g. no OpenAL runtime of the client's architecture: a 32-bit
+        // OpenAL32.dll beside the 64-bit client) no longer disables all sound. The output goes back to the one detected
+        // before OpenAL was chosen, and Sound_EnableOpenAL is turned off as Sound_EnableMode2 is below when unsupported
+        if (result != FMOD_OK && openAL && hardware) {
+            SE_ERRCHECK(result);
+            SE2::Log_Write(__LINE__, __FILE__, FMOD_OK, " -###########################################################################################");
+            SE2::Log_Write(__LINE__, __FILE__, FMOD_OK, " -# NOTICE:   OpenAL output failed. Reverting to the default output and disabling OpenAL.");
+            SE2::Log_Write(__LINE__, __FILE__, FMOD_OK, " -###########################################################################################");
+            s_system->setOutput(FMOD_OUTPUTTYPE_AUTODETECT);
+            s_system->getDriverName(driver, s_gameOutputDeviceName, sizeof(s_gameOutputDeviceName));
+            result = s_system->setDriver(driver);
+
+            if (result == FMOD_OK) {
+                s_enableOpenAL->Set("0", true, false, false, true);
+            }
+        }
+
         if (result != FMOD_OK) {
             SE_ERRCHECK(result);
             SE_LOG_INIT_FAILED(result);
