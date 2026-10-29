@@ -155,6 +155,7 @@ struct AlteredFormTransition {
     CCharacterComponent* component;
     uint32_t endTime;
     bool animate;
+    bool poof;
     bool begun;
     bool swap;
 };
@@ -407,7 +408,8 @@ int32_t DisplayIDUpdateHandler(WOWGUID guid, uint32_t fieldOffset, uint32_t fiel
             CGBarberShop::DisableBarberShop();
         }
 
-        unit->UpdateDisplayInfo(0);
+        // Custom: the old model stays drawn until the new one is ready (e.g. leaving a shapeshift form)
+        unit->UpdateDisplayInfoKeepingModel();
     }
 
     return 1;
@@ -7471,7 +7473,7 @@ bool CGUnit_C::CanPlayAlteredFormTransition() {
 }
 
 // Custom: see Unit_C.h. Takes over the caller's reference to oldModel and the component.
-void CGUnit_C::BeginAlteredFormTransition(CM2Model* oldModel, CCharacterComponent* oldComponent, bool animate) {
+void CGUnit_C::BeginAlteredFormTransition(CM2Model* oldModel, CCharacterComponent* oldComponent, bool animate, bool poof) {
     this->StopAlteredFormTransition(false);
 
     // The unit no longer owns the old model: its anim ending must not reach the unit. Its events still do, for $ALT
@@ -7483,6 +7485,7 @@ void CGUnit_C::BeginAlteredFormTransition(CM2Model* oldModel, CCharacterComponen
     transition.component = oldComponent;
     transition.endTime = OsGetAsyncTimeMs() + s_alteredFormReadyTimeout;
     transition.animate = animate;
+    transition.poof = poof;
     transition.begun = false;
     transition.swap = false;
     s_alteredFormTransitions[this] = transition;
@@ -7490,6 +7493,32 @@ void CGUnit_C::BeginAlteredFormTransition(CM2Model* oldModel, CCharacterComponen
     // Until the new model is ready, the old one is drawn in its place
     if (this->m_worldObject) {
         World::ObjectSetModel(this->m_worldObject, this->GetObjectModel());
+    }
+}
+
+// Custom: see Unit_C.h. Like the altered form change in OnAuraUpdate, without its anim, poof or sound. Cataclysm only
+// keeps the old model while the new one's file loads (CGUnit_C::m_pendingDisplayModel), then hides the unit until its
+// character component is ready, as this client does; the transition's old model covers that wait as well
+void CGUnit_C::UpdateDisplayInfoKeepingModel() {
+    if (!this->DisplayInfoNeedsUpdate()) {
+        return;
+    }
+
+    CM2Model* oldModel = nullptr;
+    CCharacterComponent* oldComponent = nullptr;
+
+    if ((this->m_obj->m_type & TYPEMASK_PLAYER) && this->m_worldModel && this->m_worldModel->IsLoaded(0, 0) && !this->m_mountModel && !this->m_vehiclePassenger && !this->m_worldModel->m_attachParent) {
+        this->StopAlteredFormTransition(false);
+        oldModel = this->m_worldModel;
+        oldModel->m_refCount++;
+        oldComponent = this->m_characterComponent;
+        this->m_characterComponent = nullptr;
+    }
+
+    this->UpdateDisplayInfo(0);
+
+    if (oldModel) {
+        this->BeginAlteredFormTransition(oldModel, oldComponent, false, false);
     }
 }
 
@@ -7541,11 +7570,17 @@ void CGUnit_C::UpdateAlteredFormTransition() {
     CM2Model* oldModel = transition.model;
 
     // Without the anim, the swap comes with its poof at once (Cataclysm waits 250 ms after starting the poof, but here
-    // the new model is not drawn until the swap, so neither is a poof on it)
+    // the new model is not drawn until the swap, so neither is a poof on it). A display change that is no altered form
+    // change (e.g. leaving a shapeshift form, see UpdateDisplayInfoKeepingModel) swaps without it
     if (!transition.animate || !this->CanPlayAlteredFormTransition() || !oldModel->IsLoaded(0, 0) || !oldModel->HasSequence(ANIM_TO_ALTERED)) {
+        bool poof = transition.poof;
         this->StopAlteredFormTransition(false);
-        PlayAlteredFormEffect(this, s_alteredFormPoof);
-        PlayAlteredFormSound(this, false);
+
+        if (poof) {
+            PlayAlteredFormEffect(this, s_alteredFormPoof);
+            PlayAlteredFormSound(this, false);
+        }
+
         return;
     }
 
@@ -7750,7 +7785,8 @@ void CGUnit_C::PreemptivelyCancelShapeshift() {
         for (uint32_t i = 0; i < 4; i++) {
             if (unit->m_unitFieldDisplayid == shapeshift->m_creatureDisplayID[i]) {
                 this->m_displayId = unit->m_unitFieldNativedisplayid;
-                this->UpdateDisplayInfo(0);
+                // Custom: the form's model stays drawn until the character's is ready
+                this->UpdateDisplayInfoKeepingModel();
                 break;
             }
         }
@@ -14133,7 +14169,7 @@ void CGUnit_C::OnAuraUpdate(CDataStore* msg, bool updateAll) {
         this->UpdateDisplayInfo(0);
 
         if (oldModel) {
-            this->BeginAlteredFormTransition(oldModel, oldComponent, animate);
+            this->BeginAlteredFormTransition(oldModel, oldComponent, animate, true);
         }
     }
 

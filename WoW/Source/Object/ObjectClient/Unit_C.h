@@ -593,9 +593,12 @@ class CGUnit_C : public CGObject_C, public CGUnit {
     // ready (IsAlteredFormTransitionReady; while pending, ShouldRender does not hide the unit for them). Then, for the
     // change back to the native form when CanPlayAlteredFormTransition, both play ToAltered and, after the old model's
     // $ALT event, StopAlteredFormTransition removes it and the new form plays ToAlteredPostSwap; otherwise the old
-    // model just goes away. UpdateAlteredFormTransition drives this each frame.
+    // model just goes away, with the altered form poof when `poof`. UpdateAlteredFormTransition drives this each frame.
+    // UpdateDisplayInfoKeepingModel uses it, without anim or poof, for a player's other display changes (e.g. leaving
+    // a shapeshift form), so the unit is not hidden while its new model and component are made.
     bool CanPlayAlteredFormTransition();
-    void BeginAlteredFormTransition(CM2Model* oldModel, CCharacterComponent* oldComponent, bool animate);
+    void BeginAlteredFormTransition(CM2Model* oldModel, CCharacterComponent* oldComponent, bool animate, bool poof);
+    void UpdateDisplayInfoKeepingModel();
     bool IsAlteredFormTransitionReady();
     bool IsAlteredFormTransitionPending() const;
     void UpdateAlteredFormTransition();
