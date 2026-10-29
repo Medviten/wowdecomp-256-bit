@@ -48,6 +48,8 @@ struct ITEMSWAP {
     /* 0014 */ uint32_t m_dstSlot;
     /* 0018 */ int32_t m_itemId;
     /* 001C */ CGItem_C* m_item;
+
+    ITEMSWAP();
 };
 
 struct TRADESKILLLINE : public TSHashObject<TRADESKILLLINE, HASHKEY_NONE> {

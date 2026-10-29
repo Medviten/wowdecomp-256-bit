@@ -2581,6 +2581,10 @@ void DayNight::LoadMap(int32_t mapId) {
     DayNight::g_forceFullUpdate = 1;
 }
 
+// INLINED
+DayNight::DNOverrideSky::DNOverrideSky() : m_model(nullptr), m_animLengthMs(0), m_lastTimeOfDay(static_cast<uint32_t>(-2)), m_flags(0) {
+}
+
 // VERIFY: a23a774f manual
 // OFFSET: 0x007F30C0
 DayNight::DNOverrideSky* DayNight::GetOverrideSky(const char* path, uint32_t flags) {

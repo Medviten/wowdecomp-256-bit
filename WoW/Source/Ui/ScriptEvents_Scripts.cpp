@@ -3358,9 +3358,9 @@ static int32_t Script_UnitAttackPower(lua_State* L) {
     }
 
     float multiplier = unit->m_unit->m_unitFieldAttackPowerMultiplier + 1.0f;
-    lua_pushnumber(L, multiplier * unit->m_unit->m_unitFieldAttackPower);
-    lua_pushnumber(L, (unit->m_unit->m_unitFieldAttackPowerMultiplier + 1.0f) * unit->m_unit->m_unitFieldAttackPowerMods[0]);
-    lua_pushnumber(L, (unit->m_unit->m_unitFieldAttackPowerMultiplier + 1.0f) * unit->m_unit->m_unitFieldAttackPowerMods[1]);
+    lua_pushnumber(L, CMath::fint_(multiplier * unit->m_unit->m_unitFieldAttackPower));
+    lua_pushnumber(L, CMath::fint_((unit->m_unit->m_unitFieldAttackPowerMultiplier + 1.0f) * unit->m_unit->m_unitFieldAttackPowerMods[0]));
+    lua_pushnumber(L, CMath::fint_((unit->m_unit->m_unitFieldAttackPowerMultiplier + 1.0f) * unit->m_unit->m_unitFieldAttackPowerMods[1]));
     return 3;
 }
 
@@ -3382,9 +3382,9 @@ static int32_t Script_UnitRangedAttackPower(lua_State* L) {
     }
 
     float multiplier = unit->m_unit->m_unitFieldRangedAttackPowerMultiplier + 1.0f;
-    lua_pushnumber(L, multiplier * unit->m_unit->m_unitFieldRangedAttackPower);
-    lua_pushnumber(L, (unit->m_unit->m_unitFieldRangedAttackPowerMultiplier + 1.0f) * unit->m_unit->m_unitFieldRangedAttackPowerMods[0]);
-    lua_pushnumber(L, (unit->m_unit->m_unitFieldRangedAttackPowerMultiplier + 1.0f) * unit->m_unit->m_unitFieldRangedAttackPowerMods[1]);
+    lua_pushnumber(L, CMath::fint_(multiplier * unit->m_unit->m_unitFieldRangedAttackPower));
+    lua_pushnumber(L, CMath::fint_((unit->m_unit->m_unitFieldRangedAttackPowerMultiplier + 1.0f) * unit->m_unit->m_unitFieldRangedAttackPowerMods[0]));
+    lua_pushnumber(L, CMath::fint_((unit->m_unit->m_unitFieldRangedAttackPowerMultiplier + 1.0f) * unit->m_unit->m_unitFieldRangedAttackPowerMods[1]));
     return 3;
 }
 

@@ -744,6 +744,10 @@ TalentGroupItem_C* TalentInfoGetTalentItem(uint32_t group, int32_t talentId, int
     return talentGroup->GetTalentItem(talentId);
 }
 
+// INLINED
+TalentGroupItem_C::TalentGroupItem_C() : m_talentId(0), m_rank(-1), m_previewRank(-1) {
+}
+
 // VERIFY: ebac1df8 auto
 // OFFSET: 0x005C8DE0
 TalentGroupTier_C::TalentGroupTier_C() : m_tier(-1) {

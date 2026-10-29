@@ -221,6 +221,10 @@ void UpdateModelForUI(const WOWGUID& guid, uint32_t flags) {
 // STATIC: 0x00AD6628
 const char* s_sexNames[3] = { "Male", "Female", "NOSEX" };
 
+// INLINED
+PORTRAITCACHE::PORTRAITCACHE() : m_dirty(1), m_texture(nullptr), m_prev(nullptr), m_next(nullptr) {
+}
+
 // VERIFY: 3458775d auto
 // OFFSET: 0x00616950
 static void PortraitCacheTouch(PORTRAITCACHE** head, PORTRAITCACHE* entry) {

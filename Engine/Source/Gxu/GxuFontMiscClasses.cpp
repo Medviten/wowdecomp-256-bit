@@ -487,6 +487,7 @@ CHARCODEDESC* TEXTURECACHEROW::CreateNewDesc(GLYPHBITMAPDATA* data, uint32_t row
             desc->m_bitmapData.CopyFrom(data);
             desc->GenerateTextureCoords(rowNumber, cellHeight);
             inserted = 1;
+            next = desc;
         } else if (!next) {
             return nullptr;
         }
