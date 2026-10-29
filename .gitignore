@@ -410,3 +410,6 @@ FodyWeavers.xsd
 
 # Local Visual Studio CMake settings (absolute paths to re/tools)
 CMakeSettings.json
+
+# CMake build directories (build/x64, build/retail, ...)
+build/
