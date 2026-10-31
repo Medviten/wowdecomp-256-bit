@@ -92,7 +92,7 @@ match; a 256-bit DBC or packet is unreadable by a 32-bit build and vice versa. S
 | Part | 32-bit | 256-bit |
 | --- | --- | --- |
 | Client | `wowdecomp` (upstream here; also the 32-bit client, carrying the same race/retail work on stock masks) | `wowdecomp-256-bit` (this repo) |
-| Server | `azerothcore-wotlk-32-bit` (stock masks; git `upstream` = mod-playerbots/azerothcore-wotlk, branch `Playerbot`) for developing and testing WHE-32-bit's `integration/whe-acore.patch` (and `whe-playerbots.patch`) | `azerothcore-wotlk-256-bit` fork (256-bit `RaceMask` throughout) + WHE-256-bit's `patches/whe-acore.patch` for the module hooks |
+| Server | `azerothcore-wotlk-32-bit` (stock masks; git `upstream` = mod-playerbots/azerothcore-wotlk, branch `Playerbot`) for developing and testing WHE-32-bit's `patches/whe-acore.patch` (and `whe-playerbots.patch`) | `azerothcore-wotlk-256-bit` fork (256-bit `RaceMask` throughout) + WHE-256-bit's `patches/whe-acore.patch` for the module hooks |
 | Server modules | stock mod-playerbots + patch | `mod-playerbots-256-bit`, `mod-transmog-256-bit`, `mod-ale-256-bit` |
 | DBC tool | `DBCTool-32-bit` | `DBCTool-256-bit` (four 64-bit race-mask columns) |
 | Race module (DBC SQL modpaks, world SQL, scripts) | WHE-32-bit = `mod-worgoblin-high-elf`, checked out at `C:\Users\Medviten\Desktop\WoW Mod Folder\GitHub\mod-worgoblin-high-elf` (not in `d:\GitHub`) | `WHE-256-bit` (git `upstream` = mod-worgoblin-high-elf) |
