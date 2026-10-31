@@ -83,9 +83,25 @@ Key pieces:
 To see the full fork delta: `git diff 4119c4b HEAD -- WoW Engine` (4119c4b is the last pure-upstream commit before
 the fork's work), or grep for `// Custom`.
 
-## Related repos (sibling checkouts in `d:\GitHub`)
+## Related repos (sibling checkouts in `d:\GitHub` unless noted)
 
-- `wowdecomp` — upstream decomp.
-- `DBCTool-256-bit` — DBC ⇄ MySQL tool producing the 256-bit race-mask DBCs this client reads.
-- `azerothcore-wotlk-256-bit`, `mod-playerbots-256-bit` — server side with matching 256-bit protocol.
-- `WHE-256-bit` / `mod-worgoblin-high-elf` — AzerothCore module adding the custom races (DBCs + world SQL).
+The project ships in two parallel flavours: **32-bit** race masks (stock DBC/packet layout, at most 31 playable races)
+and **256-bit** race masks (this fork's layout, races up to 255). Each flavour's server, client, DBCTool and WHE must
+match; a 256-bit DBC or packet is unreadable by a 32-bit build and vice versa. Shared client assets live once.
+
+| Part | 32-bit | 256-bit |
+| --- | --- | --- |
+| Client | `wowdecomp` (upstream here; also the 32-bit client, carrying the same race/retail work on stock masks) | `wowdecomp-256-bit` (this repo) |
+| Server | stock AzerothCore + WHE-32-bit's `integration/whe-acore.patch` (and `whe-playerbots.patch`) | `azerothcore-wotlk-256-bit` fork (256-bit `RaceMask` throughout) + WHE-256-bit's `patches/whe-acore.patch` for the module hooks |
+| Server modules | stock mod-playerbots + patch | `mod-playerbots-256-bit`, `mod-transmog-256-bit`, `mod-ale-256-bit` |
+| DBC tool | `DBCTool-32-bit` | `DBCTool-256-bit` (four 64-bit race-mask columns) |
+| Race module (DBC SQL modpaks, world SQL, scripts) | WHE-32-bit = `mod-worgoblin-high-elf`, checked out at `C:\Users\Medviten\Desktop\WoW Mod Folder\GitHub\mod-worgoblin-high-elf` (not in `d:\GitHub`) | `WHE-256-bit` (git `upstream` = mod-worgoblin-high-elf) |
+| Client assets (`patch-A.MPQ/` folder: models, textures, interface; `Optional/patch-J.MPQ`) | `WHE-common` | `WHE-common` |
+
+- Modpaks (`modpaks/F-0xx_*`) exist in both WHE repos with the same ids; a fix to a modpak's SQL usually has to be
+  made in both checkouts (only the race-mask columns differ). Race ids are assigned by manifest order
+  (`tools/scripts/build-dbc.manifest`), so they can differ between checkouts — look them up, don't assume.
+- WHE modpaks can carry `patches/client/*.patch` for this repo and `patches/core/` for the server; `build-dbc.sh`
+  combines them per target.
+- Assets are not in either WHE repo: add or fix BLP/M2 files in `WHE-common/patch-A.MPQ/`, never per flavour.
+- A change to client code here usually needs porting to `wowdecomp` too (and vice versa), minus the mask layout.
