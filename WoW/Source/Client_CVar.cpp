@@ -749,7 +749,7 @@ uint32_t ClientGetRetailRace(uint32_t race) {
 
 // Custom: shapeshiftSkinColorRaces lists the races whose shapeshift form models follow skin (fur) color rather than
 // hair color in player_shapeshift_model (retail IDs "6,24,25,26,28,35": Tauren, Pandaren, Highmountain Tauren, Vulpera),
-// matching the server's rule
+// matching the server's Shapeshift.SkinColorRaces default
 static bool s_shapeshiftSkinColorRace[256];
 
 bool ShapeshiftSkinColorRacesCallback(CVar* var, const char* oldValue, const char* value, void* arg) {
