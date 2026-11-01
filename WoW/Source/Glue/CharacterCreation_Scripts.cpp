@@ -20,8 +20,10 @@
 #include "WoW/Source/DB/Rec/CreatureDisplayInfoRec.h"
 #include "WoW/Source/DB/Rec/CreatureModelDataRec.h"
 #include "Engine/Source/Base/Handle.h"
+#include "Engine/Source/Model2/M2Data.h"
 #include "Engine/Source/Model2/M2Model.h"
 #include "Engine/Source/Model2/M2Scene.h"
+#include "Engine/Source/Model2/M2Shared.h"
 #include "Engine/Source/Services/Camera.h"
 #include "Engine/Source/Tempest/CAaSphere.h"
 #include <cstdlib>
@@ -275,8 +277,31 @@ static int32_t GetShapeshiftDisplay(int32_t form, const CharacterPreferences& pr
     return model ? model : formRec->m_creatureDisplayID[0];
 }
 
+// Custom: the bounding sphere of a model's stand animation (its first sequence with animation ID 0). The model's own
+// bounds (GetBoundingSphere) cover every animation, a cat's pounce or a flight form's take-off, so framing them put
+// forms low or high in the preview and made some of them tiny; falls back to them for models without a usable stand.
+static CAaSphere GetStandBoundingSphere(CM2Model* model) {
+    const M2Data* data = model->m_shared->m_data;
+
+    for (uint32_t i = 0; i < data->m_sequences.m_count; i++) {
+        const M2Sequence& sequence = data->m_sequences[i];
+
+        if (sequence.m_id != 0 || sequence.m_bounds.m_radius <= 0.1f || sequence.m_bounds.m_extent.IsInverted()) {
+            continue;
+        }
+
+        const CAaBox& extent = sequence.m_bounds.m_extent;
+        CAaSphere sphere;
+        sphere.c = C3Vector((extent.b.x + extent.t.x) * 0.5f, (extent.b.y + extent.t.y) * 0.5f, (extent.b.z + extent.t.z) * 0.5f);
+        sphere.r = sequence.m_bounds.m_radius;
+        return sphere;
+    }
+
+    return model->GetBoundingSphere();
+}
+
 // Custom: SetModelCreatureDisplay("frameName", displayID[, zoom]) shows a creature display (model plus its skins) in a
-// Model frame, lit by the frame's own light and framed whole by a camera aimed at its bounding sphere; 0 clears the
+// Model frame, lit by the frame's own light and framed whole by a camera aimed at its stand animation's bounds; 0 clears the
 // frame. zoom (default 1) brings the camera closer: the model's size on screen follows the frame's diagonal divided by
 // the camera distance, so a frame shrunk by some factor keeps the model's size with zoom = 1 / factor. Used by the druid
 // form preview. (A plain Model frame draws only in its own rectangle; a ModelFFX would clear the whole screen.)
@@ -323,19 +348,22 @@ static int32_t Script_SetModelCreatureDisplay(lua_State* L) {
     frame->SetModel(model);
     model->SetBoneSequence(0xFFFFFFFF, 0, 0xFFFFFFFF, 0, 1.0f, 1, 1);
 
-    // Like CGCharacterModelBase::ConfigureCamera's fallback, scaled to the model: about 3.4 radii in front, a little above (closer than the paperdoll framing, so the form fills the preview)
-    CAaSphere sphere = model->GetBoundingSphere();
-    float radius = sphere.r > 0.1f ? sphere.r : 1.0f;
+    // Like CGCharacterModelBase::ConfigureCamera's fallback, scaled to the stand pose: about 4.6 of its radii in front, a little above (closer than the paperdoll framing, so the form fills the preview). 4.6 stand radii keep the Worgen cat as large as 3.4 of its overall radii did
+    CAaSphere sphere = GetStandBoundingSphere(model);
+    float radius = sphere.r > 0.1f ? sphere.r * (4.6f / 3.4f) : 1.0f;
     float zoom = lua_isnumber(L, 3) ? static_cast<float>(lua_tonumber(L, 3)) : 1.0f;
 
     if (zoom > 0.1f) {
         radius /= zoom;
     }
 
+    // The frame shows about 1.8 radii top to bottom; aim an eighth of that (0.225 radii) below the centre, so the form sits in the middle instead of low with empty space above
+    C3Vector target(sphere.c.x, sphere.c.y, sphere.c.z - radius * 0.225f);
+
     CCamera* camera = CameraCreate();
     CameraSetFloat(camera, 4, 0.5f);
-    CameraSetCoord(camera, 8, sphere.c, 0);
-    CameraSetCoord(camera, 7, C3Vector(sphere.c.x + radius * 3.4f, sphere.c.y, sphere.c.z + radius * 0.9f), 0);
+    CameraSetCoord(camera, 8, target, 0);
+    CameraSetCoord(camera, 7, C3Vector(target.x + radius * 3.4f, target.y, target.z + radius * 0.9f), 0);
     CameraSetFloat(camera, 3, 0.027777778f);
     frame->SetCamera(camera);
     HandleClose(reinterpret_cast<HOBJECT>(camera));
