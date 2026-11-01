@@ -1,3 +1,5 @@
+#include <cctype>
+#include <cstdarg>
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
@@ -145,6 +147,32 @@ static void MakeAnimFileName(const char* fileName, uint32_t id, uint32_t variati
     }
 
     sprintf(&result[strlen(result)], "%04d-%02d.anim", id, variation);
+}
+
+// Custom: TEMP diagnostics for invisible Vrykul: why a model never finished loading, to Logs\Drawable.log. Remove once found.
+static void LoadDiag(const char* fileName, const char* format, ...) {
+    char lower[260];
+    size_t i = 0;
+
+    for (; fileName[i] && i < sizeof(lower) - 1; i++) {
+        lower[i] = static_cast<char>(tolower(static_cast<unsigned char>(fileName[i])));
+    }
+
+    lower[i] = '\0';
+
+    if (!strstr(lower, "vrykul")) {
+        return;
+    }
+
+    if (FILE* file = std::fopen("Logs/Drawable.log", "a")) {
+        std::fprintf(file, "%s: ", fileName);
+        va_list args;
+        va_start(args, format);
+        std::vfprintf(file, format, args);
+        va_end(args);
+        std::fprintf(file, "\n");
+        std::fclose(file);
+    }
 }
 
 // VERIFY: 90b40e33 manual
@@ -1787,17 +1815,20 @@ int32_t CM2Shared::FinishLoadingSkinProfile(uint32_t size) {
 
     if (!M2Init(base, size, *data, skinData->m_vertices) || !M2Init(base, size, *data, skinData->m_indices) || !M2Init(base, size, *data, skinData->m_bones) || !M2Init(base, size, *data, skinData->m_skinSections) || !M2Init(base, size, *data, skinData->m_batches)) {
         DebugLog("Corrupt skin profile data: %s", this->m_fileName);
+        LoadDiag(this->m_fileName, "corrupt skin profile data (size %u)", size); // Custom: TEMP diagnostics
         return 0;
     }
 
     // Custom: models from later clients can have sections with more bones than one draw can upload
     if (!this->SplitSkinSectionsToBoneBudget()) {
         DebugLog("Failed to split model skin sections: %s", this->m_fileName);
+        LoadDiag(this->m_fileName, "failed to split skin sections (maxBones %u)", this->m_maxBones); // Custom: TEMP diagnostics
         return 0;
     }
 
     if (!this->InitializeSkinProfile()) {
         DebugLog("Failed to initialize model skin profile: %s", this->m_fileName);
+        LoadDiag(this->m_fileName, "failed to initialize skin profile"); // Custom: TEMP diagnostics
         return 0;
     }
 
@@ -2122,6 +2153,7 @@ int32_t CM2Shared::LoadSkinProfile(uint32_t profile) {
 
     if (!SFile::OpenEx(nullptr, fileName, (this->m_flags & 4) >> 2, &file)) {
         DebugLog("Model2: File not found: %s\n", fileName);
+        LoadDiag(this->m_fileName, "skin file not found: %s", fileName); // Custom: TEMP diagnostics
         return 0;
     }
 
@@ -2188,11 +2220,13 @@ int32_t CM2Shared::Initialize() {
 
     if (profile == 0xFFFFFFFF) {
         DebugLog("Failed to choose skin profile: %s", this->m_fileName);
+        LoadDiag(this->m_fileName, "failed to choose skin profile (maxBones %u, profiles %u)", maxBones, this->m_data->m_numSkinProfiles); // Custom: TEMP diagnostics
         return 0;
     }
 
     if (!this->LoadSkinProfile(profile)) {
         DebugLog("Failed to load skin profile: %s", this->m_fileName);
+        LoadDiag(this->m_fileName, "failed to load skin profile %u (maxBones %u)", profile, maxBones); // Custom: TEMP diagnostics
         return 0;
     }
 
@@ -2251,6 +2285,7 @@ int32_t CM2Shared::FinishLoading() {
 
     if (!M2Init(reinterpret_cast<uint8_t*>(this->m_data), this->m_fileSize, *this->m_data)) {
         DebugLog("Corrupt model data: %s", this->m_fileName);
+        LoadDiag(this->m_fileName, "corrupt model data (M2Init failed, size %u)", this->m_fileSize); // Custom: TEMP diagnostics
         return 0;
     }
 
@@ -2258,6 +2293,7 @@ int32_t CM2Shared::FinishLoading() {
 
     if (!this->Initialize()) {
         DebugLog("Failed to initialize model: %s", this->m_fileName);
+        LoadDiag(this->m_fileName, "failed to initialize model"); // Custom: TEMP diagnostics
         return 0;
     }
 

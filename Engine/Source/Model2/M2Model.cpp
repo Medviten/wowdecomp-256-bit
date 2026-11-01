@@ -4,6 +4,9 @@
 #include <cstdlib>
 #include <cstdint>
 #include <cstring>
+#include <cctype>
+#include <cstdio>
+#include <string>
 #include <new>
 #include <map>
 #include <mutex>
@@ -712,6 +715,41 @@ uint32_t CM2Model::IsLoaded(int32_t wait, int32_t recursive) {
     return 1;
 }
 
+// Custom: TEMP diagnostics for invisible Vrykul: Logs\Drawable.log, a line whenever the reason a Vrykul model isn't
+// drawable changes. Remove once found.
+static void DrawableDiag(CM2Model* model, const char* reason) {
+    static std::map<CM2Model*, std::string> s_last;
+    static std::mutex s_mutex;
+
+    const char* name = model->m_shared ? model->m_shared->m_fileName : "";
+    char lower[260];
+    size_t i = 0;
+
+    for (; name[i] && i < sizeof(lower) - 1; i++) {
+        lower[i] = static_cast<char>(tolower(static_cast<unsigned char>(name[i])));
+    }
+
+    lower[i] = '\0';
+
+    if (!strstr(lower, "vrykul")) {
+        return;
+    }
+
+    std::lock_guard<std::mutex> lock(s_mutex);
+    std::string& last = s_last[model];
+
+    if (last == reason) {
+        return;
+    }
+
+    last = reason;
+
+    if (FILE* file = std::fopen("Logs/Drawable.log", "a")) {
+        std::fprintf(file, "%p %s: %s\n", static_cast<void*>(model), name, reason);
+        std::fclose(file);
+    }
+}
+
 // VERIFY: 1574132e auto
 // OFFSET: 0x00824FC0
 int32_t CM2Model::IsDrawable(int32_t wait, int32_t recursive) {
@@ -719,13 +757,21 @@ int32_t CM2Model::IsDrawable(int32_t wait, int32_t recursive) {
         this->WaitForLoad(nullptr);
     }
 
+    char diag[600]; // Custom: TEMP diagnostics
+
     if (!(this->m_fFlags & 2)) {
         if (!(this->m_fFlags & 1)) {
+            // Custom: TEMP diagnostics
+            std::snprintf(diag, sizeof(diag), "not loaded (fFlags %#x, shared flags %#x, data %p, skin %p, async %p)", this->m_fFlags, this->m_shared ? this->m_shared->m_flags : 0, this->m_shared ? static_cast<void*>(this->m_shared->m_data) : nullptr, this->m_shared ? static_cast<void*>(this->m_shared->m_skinData) : nullptr, this->m_shared ? static_cast<void*>(this->m_shared->m_asyncObject) : nullptr);
+            DrawableDiag(this, diag);
             return 0;
         }
 
         for (uint32_t i = 0; i < this->m_shared->m_data->m_textures.m_count; i++) {
             if (this->m_textures[i] && !TextureGetGxTex(this->m_textures[i], wait, nullptr)) {
+                // Custom: TEMP diagnostics
+                std::snprintf(diag, sizeof(diag), "texture %u (type %u) not ready: '%s' flags %#x async %p gxTex %p", i, this->m_shared->m_data->m_textures[i].m_type, this->m_textures[i]->m_filename, this->m_textures[i]->m_flags, static_cast<void*>(this->m_textures[i]->m_asyncObject), static_cast<void*>(this->m_textures[i]->m_gxTex));
+                DrawableDiag(this, diag);
                 return 0;
             }
         }
@@ -736,12 +782,17 @@ int32_t CM2Model::IsDrawable(int32_t wait, int32_t recursive) {
     if (recursive && !(this->m_fFlags & 0x200)) {
         for (CM2Model* model = this->m_attachList; model; model = model->m_attachNext) {
             if (!model->IsDrawable(wait, 1)) {
+                // Custom: TEMP diagnostics
+                std::snprintf(diag, sizeof(diag), "attachment not drawable: %s", model->m_shared ? model->m_shared->m_fileName : "?");
+                DrawableDiag(this, diag);
                 return 0;
             }
         }
 
         this->m_fFlags |= 0x200;
     }
+
+    DrawableDiag(this, "drawable"); // Custom: TEMP diagnostics
 
     return 1;
 }
