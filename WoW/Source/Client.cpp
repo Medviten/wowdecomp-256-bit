@@ -1721,7 +1721,7 @@ bool InitializeGlobal() {
     CreatureSkinRacesCallback(creatureSkinRaces, nullptr, creatureSkinRaces->m_stringValue.m_str, nullptr);
     // Custom: retail models and customization per race (builds with WOWDECOMP_RETAIL_ASSETS; ignored otherwise).
     // Defaults: Dracthyr (Alliance 52, Horde 70) at their retail IDs.
-    CVar* retailRaces = CVar::Register("retailRaces", "Races drawn with retail models: \"race=retailRaceID\", or race=centaur / race=slimegiant", 0, "52=52,70=70", RetailRacesCallback, CATEGORY_DEFAULT, false, nullptr, false);
+    CVar* retailRaces = CVar::Register("retailRaces", "Races drawn with retail models: \"race=retailRaceID\", or race=centaur / race=slimegiant", 0, "37=37,52=52,70=70", RetailRacesCallback, CATEGORY_DEFAULT, false, nullptr, false);
     RetailRacesCallback(retailRaces, nullptr, retailRaces->m_stringValue.m_str, nullptr);
     CVar::Register("druidFormPreview", "Show the druid form preview in character creation", 0, "1", nullptr, CATEGORY_DEFAULT, false, nullptr, false);
 
