@@ -5542,8 +5542,16 @@ int32_t CGGameUI::StartCinematicCamera() {
         return 0;
     }
 
+    // Custom: if the model is still loading, SetModelCamera can't tell that it has no camera (a missing file becomes
+    // the ErrorCube). Returning 0 makes the callers end the cinematic, which also releases the model.
+    void* cameraObject = camera->m_model->GetCameraByIndex(0);
+
+    if (!cameraObject) {
+        return 0;
+    }
+
     C3Vector position(0.0f, 0.0f, 0.0f);
-    DataMgrGetCoord(static_cast<CDataMgr*>(camera->m_model->GetCameraByIndex(0)), 7, &position);
+    DataMgrGetCoord(static_cast<CDataMgr*>(cameraObject), 7, &position);
 
     if ((previous.x - position.x) * (previous.x - position.x) + (previous.y - position.y) * (previous.y - position.y) + (previous.z - position.z) * (previous.z - position.z) > 900.0f) {
         World::Preload(position, 0);

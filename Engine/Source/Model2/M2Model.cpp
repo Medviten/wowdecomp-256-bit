@@ -351,6 +351,12 @@ void* CM2Model::GetCameraByIndex(uint32_t index) {
         this->WaitForLoad(nullptr);
     }
 
+    // Custom: m_cameras stays null for a model without cameras, e.g. the ErrorCube that replaces a missing cinematic
+    // camera. Callers already handle a null camera, but the stock code crashed before returning one.
+    if (!this->m_cameras) {
+        return nullptr;
+    }
+
     return this->m_cameras[index].m_camera;
 }
 

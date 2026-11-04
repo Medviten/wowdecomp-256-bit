@@ -1774,6 +1774,20 @@ void CCharacterComponent::ReplaceExtraSkinTexture(const char* debug) {
         return;
     }
 
+    // Custom: a skin row's third texture fills model texture type 9, which the stock client leaves empty. No stock row
+    // sets it; later models use the type for parts recoloured separately from the skin (Earthen gems).
+    const char* gemTextureName = CCharacterComponent::s_chrVarArray[this->m_data.m_preferences.m_raceID * 2 + this->m_data.m_preferences.m_sexID].m_variation[VARIATION_SKIN].m_variation[0].m_color[this->m_data.m_preferences.m_skinID]->m_textureName[2];
+
+    if (*gemTextureName) {
+        strcpy(s_pathEnd, gemTextureName);
+        CTexture* gemTexture = CreateTexture(s_path, &s_status);
+
+        if (gemTexture) {
+            this->m_data.m_model->ReplaceTexture(9, gemTexture);
+            HandleClose(reinterpret_cast<HOBJECT>(gemTexture));
+        }
+    }
+
     const char* textureName = CCharacterComponent::s_chrVarArray[this->m_data.m_preferences.m_raceID * 2 + this->m_data.m_preferences.m_sexID].m_variation[VARIATION_SKIN].m_variation[0].m_color[this->m_data.m_preferences.m_skinID]->m_textureName[1];
 
     if (!*textureName) {

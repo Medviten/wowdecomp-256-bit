@@ -4187,6 +4187,8 @@ int32_t CGCamera::FinishLoadingModel() {
     void* camera = this->m_model->GetCameraByIndex(0);
 
     if (!camera) {
+        // Custom: don't leave the loaded flag set, as ClearModelCamera returns early once m_model is null.
+        this->m_state &= ~0x4;
         this->m_model->Release();
         this->m_model = nullptr;
         return 0;
