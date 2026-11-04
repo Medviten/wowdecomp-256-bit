@@ -1715,7 +1715,7 @@ bool InitializeGlobal() {
     AlteredFormRacesCallback(alteredForms, nullptr, alteredForms->m_stringValue.m_str, nullptr);
 
     // Custom: character creation druid form preview (see DruidForms_CharacterCreate.lua)
-    CVar* skinColorRaces = CVar::Register("shapeshiftSkinColorRaces", "Races whose shapeshift models follow skin (fur) color, not hair color (retail IDs: Tauren, Pandaren, Highmountain Tauren, Vulpera)", 0, "6,24,25,26,28,35", ShapeshiftSkinColorRacesCallback, CATEGORY_DEFAULT, false, nullptr, false);
+    CVar* skinColorRaces = CVar::Register("shapeshiftSkinColorRaces", "Races whose shapeshift models follow skin (fur) color, not hair color. Empty: from DBFilesClient\\ShapeshiftSkinColorRaces.csv", 0, "", ShapeshiftSkinColorRacesCallback, CATEGORY_DEFAULT, false, nullptr, false);
     ShapeshiftSkinColorRacesCallback(skinColorRaces, nullptr, skinColorRaces->m_stringValue.m_str, nullptr);
     CVar* creatureSkinRaces = CVar::Register("creatureSkinRaces", "Races whose models use their whole skin texture (creature models made playable) and show no armour textures (Murloc = 41, Slime Giant = 43, Centaur = 49, CoA races 56-63)", 0, "41,43,49,56,57,58,59,60,61,62,63", CreatureSkinRacesCallback, CATEGORY_DEFAULT, false, nullptr, false);
     CreatureSkinRacesCallback(creatureSkinRaces, nullptr, creatureSkinRaces->m_stringValue.m_str, nullptr);

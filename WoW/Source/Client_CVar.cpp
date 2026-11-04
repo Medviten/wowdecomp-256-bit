@@ -748,15 +748,13 @@ uint32_t ClientGetRetailRace(uint32_t race) {
 }
 
 // Custom: shapeshiftSkinColorRaces lists the races whose shapeshift form models follow skin (fur) color rather than
-// hair color in player_shapeshift_model (retail IDs "6,24,25,26,28,35": Tauren, Pandaren, Highmountain Tauren, Vulpera),
-// matching the server's Shapeshift.SkinColorRaces default
+// hair color in player_shapeshift_model. Empty (the default) reads them from DBFilesClient\ShapeshiftSkinColorRaces.csv,
+// which WHE's build-dbc.sh exports from the server's player_race_template, so adding a race needs no client change. It's
+// read on first use, once the MPQs are open; Tauren are the only ones without the file.
 static bool s_shapeshiftSkinColorRace[256];
+static bool s_shapeshiftSkinColorFromFile = false;
 
-bool ShapeshiftSkinColorRacesCallback(CVar* var, const char* oldValue, const char* value, void* arg) {
-    memset(s_shapeshiftSkinColorRace, 0, sizeof(s_shapeshiftSkinColorRace));
-
-    const char* cursor = value ? value : "";
-
+static void ParseShapeshiftSkinColorRaces(const char* cursor) {
     while (*cursor) {
         char* end;
         long race = strtol(cursor, &end, 10);
@@ -772,11 +770,32 @@ bool ShapeshiftSkinColorRacesCallback(CVar* var, const char* oldValue, const cha
             s_shapeshiftSkinColorRace[race] = true;
         }
     }
+}
+
+bool ShapeshiftSkinColorRacesCallback(CVar* var, const char* oldValue, const char* value, void* arg) {
+    memset(s_shapeshiftSkinColorRace, 0, sizeof(s_shapeshiftSkinColorRace));
+
+    s_shapeshiftSkinColorFromFile = !value || !*value;
+    ParseShapeshiftSkinColorRaces(value ? value : "");
 
     return true;
 }
 
 bool ClientShapeshiftUsesSkinColor(uint32_t race) {
+    if (s_shapeshiftSkinColorFromFile) {
+        s_shapeshiftSkinColorFromFile = false;
+
+        char* data;
+        uint32_t size;
+
+        if (SFile::LoadFile("DBFilesClient\\ShapeshiftSkinColorRaces.csv", reinterpret_cast<void**>(&data), &size, 1, nullptr) && data) {
+            ParseShapeshiftSkinColorRaces(data);
+            SFile::Unload(data);
+        } else {
+            s_shapeshiftSkinColorRace[6] = true;
+        }
+    }
+
     return race < sizeof(s_shapeshiftSkinColorRace) && s_shapeshiftSkinColorRace[race];
 }
 
