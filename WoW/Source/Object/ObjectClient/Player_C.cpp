@@ -6890,7 +6890,7 @@ int32_t CGPlayer_C::CanUseItem(const ItemStats_C* stats, int32_t& error) {
 
     CGUnitData* unit = this->m_unit;
 
-    if (static_cast<int32_t>(stats->m_requiredLevel) > static_cast<int32_t>(unit->m_unitFieldLevel) || !((1 << (unit->m_unitFieldBytes0[1] - 1)) & stats->m_allowableClass) || !stats->m_allowableRace.HasRace(unit->m_unitFieldBytes0[0])) { // Custom: 256-bit race mask
+    if (static_cast<int32_t>(stats->m_requiredLevel) > static_cast<int32_t>(unit->m_unitFieldLevel) || (unit->m_unitFieldBytes0[1] != 10 && !((1 << (unit->m_unitFieldBytes0[1] - 1)) & stats->m_allowableClass)) || !stats->m_allowableRace.HasRace(unit->m_unitFieldBytes0[0])) { // Custom: 256-bit race mask
         error = ERR_CANT_USE_ITEM;
         return 0;
     }

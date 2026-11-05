@@ -87,6 +87,10 @@ class CGTalentInfo {
     static TSFixedArray<TalentTabInfo*> m_petTabs;
     static CGTalentGroup_C m_talentGroups[2];
     static CGTalentGroup_C m_petTalentGroup;
+    // Custom: WHE F-100. A Hero's talent list holds every class's tabs. The Lua API keeps talking about three tabs, those
+    // of m_heroTalentClass, so the stock frame works unchanged; MapHeroTab turns its index into the real one.
+    static int32_t m_heroTalentClass;
+    static uint32_t MapHeroTab(uint32_t index, int32_t inspect, int32_t pet);
     static void EnterWorld();
     static void LeaveWorld();
     static void ShutdownGame();

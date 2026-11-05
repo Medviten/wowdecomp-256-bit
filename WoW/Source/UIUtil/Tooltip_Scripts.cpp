@@ -959,6 +959,7 @@ static int32_t Script_SetTalent(lua_State* L) {
     int32_t pet = StringToBOOL(L, 5, 0);
     uint32_t group = TalentInfoGetScriptGroupIndex(L, 6);
     int32_t preview = StringToBOOL(L, 7, 0);
+    tabIndex = CGTalentInfo::MapHeroTab(tabIndex, inspect, pet); // Custom: WHE F-100
     TalentTabInfo* tab = CGTalentInfo::GetTab(tabIndex, inspect, pet);
 
     if (tab && talentIndex < tab->m_numTalents) {

@@ -47,8 +47,33 @@ static int32_t Script_UpdateSpells(lua_State* L) {
 // VERIFY: dd465bdc manual
 // OFFSET: 0x0053B5C0
 static int32_t Script_GetNumSpellTabs(lua_State* L) {
-    lua_pushnumber(L, s_numSkillInfos);
+    lua_pushnumber(L, SpellBookHeroTabCount()); // Custom: WHE F-100, s_numSkillInfos unless a Hero has too many
     return 1;
+}
+
+// Custom: WHE F-100, the Hero's spellbook pages. The stock frame must refresh itself, in its own event handler: Lua may
+// not call SpellBookFrame_Update, whose tainted writes would then block every cast from the book.
+static int32_t Script_GetHeroSpellTabPage(lua_State* L) {
+    SpellBookHeroTabCount();
+    lua_pushnumber(L, s_heroSpellTabPage + 1);
+    lua_pushnumber(L, SpellBookHeroPageCount());
+    return 2;
+}
+
+static int32_t Script_SetHeroSpellTabPage(lua_State* L) {
+    if (!lua_isnumber(L, 1)) {
+        luaL_error(L, "Usage: SetHeroSpellTabPage(page)");
+        return 0;
+    }
+
+    int32_t page = lua_tointeger(L, 1);
+
+    if (page >= 1 && static_cast<uint32_t>(page) <= SpellBookHeroPageCount()) {
+        s_heroSpellTabPage = page - 1;
+        FrameScript_SignalEvent(SCRIPT_EVENT_SPELLS_CHANGED, nullptr);
+    }
+
+    return 0;
 }
 
 // VERIFY: 0a46e79d manual
@@ -103,6 +128,11 @@ static int32_t Script_GetSpellTabInfo(lua_State* L) {
 
     int32_t index = static_cast<int32_t>(lua_tonumber(L, 1)) - 1;
     SpellBookSkillInfo* info;
+
+    // Custom: WHE F-100, tabs past the page's last are empty; Lua stays within GetNumSpellTabs
+    if (index >= 0) {
+        index = static_cast<int32_t>(SpellBookHeroMapTab(static_cast<uint32_t>(index)));
+    }
 
     if (static_cast<uint32_t>(index) >= s_numSkillInfos || !(info = s_skillInfos.m_data[index])) {
         lua_pushnil(L);
@@ -1277,6 +1307,8 @@ static int32_t Script_GetSpellInfo(lua_State* L) {
 // STATIC: 0x00ACCCE0
 static FrameScript_Method s_ScriptFunctions[] = {
     { "GetNumSpellTabs", &Script_GetNumSpellTabs },
+    { "GetHeroSpellTabPage", &Script_GetHeroSpellTabPage }, // Custom: WHE F-100
+    { "SetHeroSpellTabPage", &Script_SetHeroSpellTabPage }, // Custom: WHE F-100
     { "GetSpellTabInfo", &Script_GetSpellTabInfo },
     { "GetSpellName", &Script_GetSpellName },
     { "GetSpellLink", &Script_GetSpellLink },

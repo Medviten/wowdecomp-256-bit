@@ -106,6 +106,11 @@ void ClearPetSpellInfo();
 extern const char* s_companionTypes[2];
 extern TSGrowableArray<SpellUsableInfo> s_shapeshiftSpells;
 extern uint32_t s_numSkillInfos;
+// Custom: WHE F-100, pages of spellbook tabs for a Hero. Index = what Lua asks about, result = into s_skillInfos.
+extern uint32_t s_heroSpellTabPage;
+uint32_t SpellBookHeroTabCount();
+uint32_t SpellBookHeroPageCount();
+uint32_t SpellBookHeroMapTab(uint32_t index);
 extern uint32_t s_displayedSpells[1024];
 extern int32_t s_spellList[1024];
 extern uint32_t s_numSpells;

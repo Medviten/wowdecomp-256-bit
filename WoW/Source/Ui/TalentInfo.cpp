@@ -303,6 +303,27 @@ TalentGroupTab_C* CGTalentGroup_C::GetTabFromTalentID(int32_t talentId) {
     return this->GetTabFromID(talent->m_tabID);
 }
 
+// Custom: WHE F-100, see TalentInfo.h. Only a Hero's list is long enough to need this.
+int32_t CGTalentInfo::m_heroTalentClass = 1;
+
+uint32_t CGTalentInfo::MapHeroTab(uint32_t index, int32_t inspect, int32_t pet) {
+    const TSFixedArray<TalentTabInfo*>& tabs = inspect ? CGTalentInfo_Inspect::m_tabs : CGTalentInfo::m_tabs;
+
+    if (pet || tabs.m_count <= 5) {
+        return index;
+    }
+
+    for (uint32_t i = 0; i < tabs.m_count; i++) {
+        TalentTabRec* tab = g_talentTabDB.GetRecord(tabs.m_data[i]->m_tabId);
+
+        if (tab && tab->m_orderIndex == static_cast<int32_t>(index) && (tab->m_classMask & (1 << (CGTalentInfo::m_heroTalentClass - 1)))) {
+            return i;
+        }
+    }
+
+    return 0xFFFFFFFF;
+}
+
 // VERIFY: 9f0c24f3 auto
 // OFFSET: 0x005C5C60
 TalentTabInfo* CGTalentInfo::GetTab(uint32_t index, int32_t inspect, int32_t pet) {

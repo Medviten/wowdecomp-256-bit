@@ -81,12 +81,12 @@ logger off in `WowClient` with `-DWOWCLIENT_CRASH_LOG=OFF`.
 | `WOWDECOMP_DISABLE_SIGNATURE_CHECKS` | `ON` | Skip the MPQ file and `.toc.sig` signature checks, so modified game data and interface files load |
 | `WOWCLIENT_CRASH_LOG` | `ON` | Build `WowClient` with the crash logger |
 | `WOWCLIENT_OUTPUT_OVERRIDE` | empty | Name the `WowClient` executable something other than `WowClient64` / `WowClient32` |
-| `WOWDECOMP_RETAIL_ASSETS` | `OFF` | Show the races mapped by the `retailRaces` CVar (default Dracthyr, `52=52,70=70`) with their Retail model and customization |
+| `WOWDECOMP_RETAIL_ASSETS` | `OFF` | Show the races mapped by the `retailRaces` CVar (default Mechagnome, Dracthyr and Haranir, `37=37,52=52,70=70,86=86,91=91`) with their Retail model and customization |
 
 A `WOWDECOMP_RETAIL_ASSETS` client needs Retail data, or mapped races fall back to their stock model:
 
 1. Copy `config/RetailCasc.example.ini` to `Data/Retail/RetailCasc.ini` in the game folder.
-2. From the game folder, run `RetailPackBuild Data/Retail/Pack 52 70` (built next to the client in
+2. From the game folder, run `RetailPackBuild Data/Retail/Pack 37 52 70 86 91` (built next to the client in
    `build/<dir>/bin/Release`; the arguments are the Retail race ids to pack). It downloads each file the races use
    from wago.tools, pinned to the build the client's tables match.
 3. Anything the pack lacks comes from the Blizzard CDN into `Data/Retail/Cache`, but that downloads whole 256 MB

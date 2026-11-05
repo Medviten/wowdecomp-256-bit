@@ -109,6 +109,36 @@ uint32_t s_displayedSpellCount;
 // STATIC: 0x00BE8DA0
 uint32_t s_numSkillInfos;
 
+// Custom: WHE F-100. Tab 0 (General) is on every page; only a Hero ever has more lines than SpellBookFrame.xml has tabs.
+static const uint32_t HERO_SPELL_TABS_PER_PAGE = 7;
+uint32_t s_heroSpellTabPage;
+
+uint32_t SpellBookHeroPageCount() {
+    return s_numSkillInfos <= HERO_SPELL_TABS_PER_PAGE + 1 ? 1 : (s_numSkillInfos - 2) / HERO_SPELL_TABS_PER_PAGE + 1;
+}
+
+uint32_t SpellBookHeroTabCount() {
+    if (s_numSkillInfos <= HERO_SPELL_TABS_PER_PAGE + 1) {
+        return s_numSkillInfos;
+    }
+
+    if (s_heroSpellTabPage >= SpellBookHeroPageCount()) {
+        s_heroSpellTabPage = SpellBookHeroPageCount() - 1;
+    }
+
+    uint32_t left = s_numSkillInfos - 1 - s_heroSpellTabPage * HERO_SPELL_TABS_PER_PAGE;
+    return 1 + (left < HERO_SPELL_TABS_PER_PAGE ? left : HERO_SPELL_TABS_PER_PAGE);
+}
+
+uint32_t SpellBookHeroMapTab(uint32_t index) {
+    if (!index || s_numSkillInfos <= HERO_SPELL_TABS_PER_PAGE + 1) {
+        return index;
+    }
+
+    SpellBookHeroTabCount();
+    return index + s_heroSpellTabPage * HERO_SPELL_TABS_PER_PAGE;
+}
+
 // STATIC: 0x00BE8DC8
 TSGrowableArray<SpellBookSkillInfo*> s_skillInfos;
 

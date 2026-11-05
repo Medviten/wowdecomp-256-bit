@@ -41,8 +41,34 @@ static int32_t Script_GetNumTalentTabs(lua_State* L) {
         count = pet ? CGTalentInfo::m_petTabs.m_count : CGTalentInfo::m_tabs.m_count;
     }
 
+    // Custom: WHE F-100, a Hero sees one class's tabs at a time (see CGTalentInfo::MapHeroTab)
+    if (!pet && count > 5) {
+        count = 3;
+    }
+
     lua_pushnumber(L, count);
     return 1;
+}
+
+// Custom: WHE F-100, which class's talents a Hero's talent frame shows
+static int32_t Script_GetHeroTalentClass(lua_State* L) {
+    lua_pushnumber(L, CGTalentInfo::m_heroTalentClass);
+    return 1;
+}
+
+static int32_t Script_SetHeroTalentClass(lua_State* L) {
+    if (!lua_isnumber(L, 1)) {
+        luaL_error(L, "Usage: SetHeroTalentClass(classID)");
+        return 0;
+    }
+
+    int32_t classId = lua_tointeger(L, 1);
+
+    if (classId >= 1 && classId <= 11 && classId != 10) {
+        CGTalentInfo::m_heroTalentClass = classId;
+    }
+
+    return 0;
 }
 
 // VERIFY: b59980be manual
@@ -56,6 +82,7 @@ static int32_t Script_GetNumTalents(lua_State* L) {
     uint32_t tabIndex = static_cast<uint32_t>(lua_tonumber(L, 1)) - 1;
     int32_t inspect = StringToBOOL(L, 2, 0);
     int32_t pet = StringToBOOL(L, 3, 0);
+    tabIndex = CGTalentInfo::MapHeroTab(tabIndex, inspect, pet); // Custom: WHE F-100
     TalentTabInfo* tab = CGTalentInfo::GetTab(tabIndex, inspect, pet);
     lua_pushnumber(L, tab ? tab->m_numTalents : 0);
     return 1;
@@ -108,6 +135,7 @@ static int32_t Script_GetTalentTabInfo(lua_State* L) {
     uint32_t tabIndex = static_cast<uint32_t>(lua_tonumber(L, 1)) - 1;
     int32_t pet = StringToBOOL(L, 3, 0);
     int32_t inspect = StringToBOOL(L, 2, 0);
+    tabIndex = CGTalentInfo::MapHeroTab(tabIndex, inspect, pet); // Custom: WHE F-100
     TalentTabInfo* info = CGTalentInfo::GetTab(tabIndex, inspect, pet);
     TalentTabRec* tab;
 
@@ -242,7 +270,7 @@ static int32_t Script_ResetPreviewTalentPoints(lua_State* L) {
     int32_t pet = StringToBOOL(L, 2, 0);
     uint32_t group = TalentInfoGetScriptGroupIndex(L, 3);
     int32_t before = CGTalentInfo::GetPreviewPointsSpent(group, pet);
-    CGTalentInfo::ResetPreviewTalentPoints(group, tab, pet);
+    CGTalentInfo::ResetPreviewTalentPoints(group, CGTalentInfo::MapHeroTab(tab, 0, pet), pet); // Custom: WHE F-100
     int32_t after = CGTalentInfo::GetPreviewPointsSpent(group, pet);
 
     if (after != before) {
@@ -280,6 +308,7 @@ static int32_t Script_GetTalentInfo(lua_State* L) {
     uint32_t talentIndex = static_cast<uint32_t>(lua_tonumber(L, 2)) - 1;
     int32_t inspect = StringToBOOL(L, 3, 0);
     int32_t pet = StringToBOOL(L, 4, 0);
+    tabIndex = CGTalentInfo::MapHeroTab(tabIndex, inspect, pet); // Custom: WHE F-100
     TalentTabInfo* tab = CGTalentInfo::GetTab(tabIndex, inspect, pet);
 
     if (tab && talentIndex < tab->m_numTalents) {
@@ -407,6 +436,7 @@ static int32_t Script_GetTalentPrereqs(lua_State* L) {
     int32_t inspect = StringToBOOL(L, 3, 0);
     int32_t pet = StringToBOOL(L, 4, 0);
     uint32_t group = TalentInfoGetScriptGroupIndex(L, 5);
+    tabIndex = CGTalentInfo::MapHeroTab(tabIndex, inspect, pet); // Custom: WHE F-100
     TalentTabInfo* tab = CGTalentInfo::GetTab(tabIndex, inspect, pet);
 
     if (tab && talentIndex < tab->m_numTalents) {
@@ -468,6 +498,7 @@ static int32_t Script_GetTalentLink(lua_State* L) {
     uint32_t talentIndex = static_cast<uint32_t>(lua_tonumber(L, 2)) - 1;
     int32_t inspect = StringToBOOL(L, 3, 0);
     int32_t pet = StringToBOOL(L, 4, 0);
+    tabIndex = CGTalentInfo::MapHeroTab(tabIndex, inspect, pet); // Custom: WHE F-100
     TalentTabInfo* tab = CGTalentInfo::GetTab(tabIndex, inspect, pet);
 
     if (tab && talentIndex < tab->m_numTalents) {
@@ -507,6 +538,7 @@ static int32_t Script_LearnTalent(lua_State* L) {
     uint32_t talentIndex = static_cast<uint32_t>(lua_tonumber(L, 2)) - 1;
     int32_t pet = StringToBOOL(L, 3, 0);
     CGUnit_C* unit = pet ? static_cast<CGUnit_C*>(ClntObjMgrObjectPtr(CGPetInfo::GetPet(0), TYPEMASK_UNIT, __FILE__, __LINE__)) : ClntObjMgrGetActivePlayerObj();
+    tabIndex = CGTalentInfo::MapHeroTab(tabIndex, 0, pet); // Custom: WHE F-100
     TalentTabInfo* tab = CGTalentInfo::GetTab(tabIndex, 0, pet);
 
     if (!unit || !tab || talentIndex >= tab->m_numTalents) {
@@ -568,7 +600,7 @@ static int32_t Script_AddPreviewTalentPoints(lua_State* L) {
     int32_t pet = StringToBOOL(L, 4, 0);
     uint32_t group = TalentInfoGetScriptGroupIndex(L, 5);
     int32_t before = CGTalentInfo::GetPreviewPointsSpent(group, pet);
-    CGTalentInfo::AddPreviewTalentPoints(group, tab, talent, points, pet);
+    CGTalentInfo::AddPreviewTalentPoints(group, CGTalentInfo::MapHeroTab(tab, 0, pet), talent, points, pet); // Custom: WHE F-100
     int32_t after = CGTalentInfo::GetPreviewPointsSpent(group, pet);
 
     if (after != before) {
@@ -618,6 +650,8 @@ static int32_t Script_GetPreviewTalentPointsSpent(lua_State* L) {
 static FrameScript_Method s_ScriptFunctions[] = {
     { "GetNumTalentTabs", &Script_GetNumTalentTabs },
     { "GetTalentTabInfo", &Script_GetTalentTabInfo },
+    { "GetHeroTalentClass", &Script_GetHeroTalentClass }, // Custom: WHE F-100
+    { "SetHeroTalentClass", &Script_SetHeroTalentClass }, // Custom: WHE F-100
     { "GetNumTalents", &Script_GetNumTalents },
     { "GetTalentInfo", &Script_GetTalentInfo },
     { "GetTalentLink", &Script_GetTalentLink },

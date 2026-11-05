@@ -673,7 +673,7 @@ void CGMinimapFrame::InitializeGame() {
 int32_t CGMinimapFrame::CountAvailableTrackingTypes() {
     int32_t count = 0;
     CGPlayer_C* player = static_cast<CGPlayer_C*>(ClntObjMgrObjectPtr(ClntObjMgrGetActivePlayer(), TYPEMASK_PLAYER, __FILE__, __LINE__));
-    uint32_t classMask = player ? 1 << player->m_unit->m_unitFieldBytes0[1] : 0;
+    uint32_t classMask = player ? (player->m_unit->m_unitFieldBytes0[1] == 10 ? 0xFFFFFFFF : 1 << player->m_unit->m_unitFieldBytes0[1]) : 0; // Custom: WHE F-100, Hero
 
     for (uint32_t i = 0; i < sizeof(CGMinimapFrame::s_trackingTypes) / sizeof(CGMinimapFrame::s_trackingTypes[0]); i++) {
         uint32_t mask = CGMinimapFrame::s_trackingTypes[i].m_classMask;
@@ -691,7 +691,7 @@ int32_t CGMinimapFrame::CountAvailableTrackingTypes() {
 const TrackingTypeInfo* CGMinimapFrame::GetTrackingTypeByIndex(int32_t index) {
     int32_t count = 0;
     CGPlayer_C* player = static_cast<CGPlayer_C*>(ClntObjMgrObjectPtr(ClntObjMgrGetActivePlayer(), TYPEMASK_PLAYER, __FILE__, __LINE__));
-    uint32_t classMask = player ? 1 << player->m_unit->m_unitFieldBytes0[1] : 0;
+    uint32_t classMask = player ? (player->m_unit->m_unitFieldBytes0[1] == 10 ? 0xFFFFFFFF : 1 << player->m_unit->m_unitFieldBytes0[1]) : 0; // Custom: WHE F-100, Hero
 
     for (uint32_t i = 0; i < sizeof(CGMinimapFrame::s_trackingTypes) / sizeof(CGMinimapFrame::s_trackingTypes[0]); i++) {
         uint32_t mask = CGMinimapFrame::s_trackingTypes[i].m_classMask;

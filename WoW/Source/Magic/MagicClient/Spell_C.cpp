@@ -148,6 +148,14 @@ static int32_t s_spellPctModifiers[96][31];
 // STATIC: 0x00D3C658
 static int32_t s_spellFlatModifiers[96][31];
 
+// Custom: WHE F-100. A Hero (class 10) holds modifiers from every class's talents, but a mask bit only means something
+// within one spell family, so its totals are kept per family. Its packets carry the family in a trailing field.
+static const int32_t HERO_CLASS_ID = 10;
+static const uint32_t HERO_MOD_FAMILIES = 40;
+static bool s_heroModifiers;
+static int32_t s_heroPctModifiers[HERO_MOD_FAMILIES][96][31];
+static int32_t s_heroFlatModifiers[HERO_MOD_FAMILIES][96][31];
+
 // STATIC: 0x00AF524C
 static TSList<PendingSpellCast, TSGetLink<PendingSpellCast> > s_pendingSpellCasts;
 
@@ -739,6 +747,10 @@ void Spell_C_Initialize() {
     s_lastFailedSpellId = 0;
     s_feedPetSpell = 0;
     s_spellClassSet = 0;
+    // Custom: WHE F-100, the login resend only sends non-zero totals
+    s_heroModifiers = false;
+    memset(s_heroPctModifiers, 0, sizeof(s_heroPctModifiers));
+    memset(s_heroFlatModifiers, 0, sizeof(s_heroFlatModifiers));
     s_delayedTrajectoryCast = nullptr;
     s_enableErrorSpeechCVar = CVar::Lookup("Sound_EnableErrorSpeech");
 }
@@ -1174,6 +1186,39 @@ void CGUnit_C::ReleaseMissiles() {
 // VERIFY: 936f6df8 manual
 // OFFSET: 0x007FD970
 bool Spell_C_GetSpellModifiers(const SpellRec* spell, int32_t modifier, int32_t& flat, int32_t& pct) {
+    // Custom: WHE F-100, a Hero's modifiers aren't limited to one family
+    if (s_heroModifiers) {
+        uint32_t family = static_cast<uint32_t>(spell->m_spellClassSet);
+
+        if (!family || family >= HERO_MOD_FAMILIES || (spell->m_attributesExC & 0x20000000)) {
+            flat = 0;
+            pct = 100;
+            return false;
+        }
+
+        pct = 0;
+        flat = 0;
+
+        for (uint32_t i = 0; i < sizeof(spell->m_spellClassMask) * 8; i++) {
+            if ((1 << (i & 31)) & spell->m_spellClassMask[i >> 5]) {
+                flat += s_heroFlatModifiers[family][i][modifier];
+                pct += s_heroPctModifiers[family][i][modifier];
+            }
+        }
+
+        if (!flat && !pct) {
+            return false;
+        }
+
+        pct += 100;
+
+        if (pct < 0) {
+            pct = 0;
+        }
+
+        return true;
+    }
+
     if (!spell->m_spellClassSet || spell->m_spellClassSet != s_spellClassSet) {
         flat = 0;
         pct = 100;
@@ -2873,6 +2918,8 @@ void Spell_C_SetPlayerClass(int32_t classId) {
     if (rec) {
         s_spellClassSet = rec->m_spellClassSet;
     }
+
+    s_heroModifiers = classId == HERO_CLASS_ID; // Custom: WHE F-100
 }
 
 // VERIFY: 28235946 manual
@@ -2898,6 +2945,22 @@ int32_t Packet_Group_32(void* param, NETMESSAGE msgId, uint32_t time, CDataStore
     msg->Get(group);
     msg->Get(op);
     msg->Get(value);
+
+    // Custom: WHE F-100, the family a Hero's modifier belongs to
+    if (msg->m_read < msg->m_size) {
+        uint32_t family;
+        msg->Get(family);
+
+        if (family < HERO_MOD_FAMILIES && group < 96 && op < 31) {
+            if (msgId == SMSG_SET_PCT_SPELL_MODIFIER) {
+                s_heroPctModifiers[family][group][op] = value;
+            } else {
+                s_heroFlatModifiers[family][group][op] = value;
+            }
+        }
+
+        return 1;
+    }
 
     if (msgId == SMSG_SET_PCT_SPELL_MODIFIER) {
         s_spellPctModifiers[group][op] = value;
@@ -3776,7 +3839,8 @@ bool Spell_C_HasNoReagentCost(CGPlayer_C* player, const SpellRec* spell) {
         return true;
     }
 
-    if (!spell->m_spellClassSet || spell->m_spellClassSet != s_spellClassSet) {
+    // Custom: WHE F-100, this field has no family either; the server has the last word on a Hero's reagents
+    if (!spell->m_spellClassSet || (!s_heroModifiers && spell->m_spellClassSet != s_spellClassSet)) {
         return false;
     }
 
@@ -6885,6 +6949,11 @@ bool Spell_C_HaveSpellTokens(CGUnit_C* unit, const SpellRec* spell, bool report,
     }
 
     for (uint32_t i = 0; i < sizeof(spell->m_requiredTotemCategoryID) / sizeof(spell->m_requiredTotemCategoryID[0]); i++) {
+        // Custom: WHE F-100, a Hero doesn't need the shaman's four totems (see Spell::CheckItems on the server)
+        if (s_heroModifiers && spell->m_requiredTotemCategoryID[i] >= 2 && spell->m_requiredTotemCategoryID[i] <= 5) {
+            continue;
+        }
+
         if (spell->m_requiredTotemCategoryID[i] && !player->m_bag.FindTotemCategory(spell->m_requiredTotemCategoryID[i], 0)) {
             if (report) {
                 Spell_C_SpellFailed(cast, spell, 130, spell->m_requiredTotemCategoryID[i], -1, false);

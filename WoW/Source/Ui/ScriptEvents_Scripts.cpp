@@ -2887,7 +2887,8 @@ static int32_t Script_GetComboPoints(lua_State* L) {
         CGPlayer_C* player = static_cast<CGPlayer_C*>(ClntObjMgrObjectPtr(ClntObjMgrGetActivePlayer(), TYPEMASK_PLAYER, __FILE__, __LINE__));
         uint8_t classId = player ? player->m_unit->m_unitFieldBytes0[1] : 0;
 
-        if (!player || classId == 4 || classId == 11) {
+        // Custom: WHE F-100, a Hero (class 10) can have combo points as well
+        if (!player || classId == 4 || classId == 11 || classId == 10) {
             points = CGGameUI::GetComboPoints(target);
         }
     } else if (unit == CGPetInfo::GetPet(0)) {

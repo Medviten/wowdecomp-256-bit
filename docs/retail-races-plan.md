@@ -57,7 +57,7 @@ His design notes: `Kalibros-decomp/docs/retail-race-handoff.md`, `retail-casc.md
    others), manifest entries off by default. GlueXML already had the slots/icons/race info. Not done: retail asset
    pack tool, an in-world Visage spell calling `ToggleRetailForm`.
 6. **More races** opt in (Haranir, Earthen, Vulpera, Highmountain ...).
-   Done: Mechagnome (WHE F-040, race 37, in the `retailRaces` default).
+   Done: Mechagnome (WHE F-040, race 37), Haranir (WHE F-098/F-099, races 86/91), all in the `retailRaces` default.
 
 ## Risks
 

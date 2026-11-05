@@ -617,7 +617,8 @@ bool CGCharacterInfo::CanEquipItemInSlot(const ItemStats_C* stats, uint32_t slot
         for (int32_t i = 0; i < g_chrClassesDB.m_numRecords; i++) {
             ChrClassesRec* chrClass = g_chrClassesDB.GetRecordByIndex(i);
 
-            if (chrClass && ((1 << (chrClass->m_id - 1)) & stats->m_allowableClass) && player->m_unit->m_unitFieldBytes0[1] != chrClass->m_id) {
+            // Custom: WHE F-100, nothing is closed to a Hero (class 10)
+            if (chrClass && player->m_unit->m_unitFieldBytes0[1] != 10 && ((1 << (chrClass->m_id - 1)) & stats->m_allowableClass) && player->m_unit->m_unitFieldBytes0[1] != chrClass->m_id) {
                 return false;
             }
         }
@@ -668,7 +669,8 @@ bool CGCharacterInfo::CanEquipItemInSlot(const ItemStats_C* stats, uint32_t slot
         for (int32_t i = 0; i < g_chrClassesDB.m_numRecords; i++) {
             ChrClassesRec* chrClass = g_chrClassesDB.GetRecordByIndex(i);
 
-            if (chrClass && ((1 << (chrClass->m_id - 1)) & stats->m_allowableClass) && player->m_unit->m_unitFieldBytes0[1] == chrClass->m_id) {
+            // Custom: WHE F-100, nothing is closed to a Hero (class 10)
+            if (chrClass && ((1 << (chrClass->m_id - 1)) & stats->m_allowableClass) && (player->m_unit->m_unitFieldBytes0[1] == chrClass->m_id || player->m_unit->m_unitFieldBytes0[1] == 10)) {
                 allowed = 1;
             }
         }

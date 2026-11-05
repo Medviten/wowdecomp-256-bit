@@ -6752,7 +6752,7 @@ bool CGUnit_C::CanGainXP() const {
     }
 
     CGUnit_C* owner = static_cast<CGUnit_C*>(ClntObjMgrObjectPtr(unit->m_unitFieldCreatedby, TYPEMASK_PLAYER, __FILE__, __LINE__));
-    return owner && owner->m_unit->m_unitFieldBytes0[1] == 3;
+    return owner && (owner->m_unit->m_unitFieldBytes0[1] == 3 || owner->m_unit->m_unitFieldBytes0[1] == 10); // Custom: WHE F-100, a Hero's tamed beast
 }
 
 // VERIFY: 6c86f70b manual
@@ -7238,7 +7238,7 @@ PetPersonalityRec* CGUnit_C::GetPetPersonality() const {
 
     CGUnit_C* owner = static_cast<CGUnit_C*>(ClntObjMgrObjectPtr(unit->m_unitFieldCreatedby, TYPEMASK_PLAYER, __FILE__, __LINE__));
 
-    if (!owner || owner->m_unit->m_unitFieldBytes0[1] != 3) {
+    if (!owner || (owner->m_unit->m_unitFieldBytes0[1] != 3 && owner->m_unit->m_unitFieldBytes0[1] != 10)) { // Custom: WHE F-100, a Hero's tamed beast
         return nullptr;
     }
 
@@ -18578,7 +18578,8 @@ void CGUnit_C::DoPowerRegen(uint32_t elapsed) {
     int32_t powerType = this->m_unit->m_unitFieldBytes0[3];
     this->DoPowerRegen(powerType, elapsed);
 
-    if (this->m_unit->m_unitFieldBytes0[1] == 11) {
+    // Custom: WHE F-100, a Hero (class 10) has both pools like a druid
+    if (this->m_unit->m_unitFieldBytes0[1] == 11 || this->m_unit->m_unitFieldBytes0[1] == 10) {
         if (powerType) {
             this->DoPowerRegen(0, elapsed);
         }
@@ -20420,7 +20421,7 @@ double CGUnit_C::GetHealthModifier() {
     if (this->m_unit->m_unitFieldPetnumber) {
         CGUnit_C* owner = static_cast<CGUnit_C*>(ClntObjMgrObjectPtr(this->m_unit->m_unitFieldCreatedby, TYPEMASK_PLAYER, __FILE__, __LINE__));
 
-        if (owner && owner->m_unit->m_unitFieldBytes0[1] == 3) {
+        if (owner && (owner->m_unit->m_unitFieldBytes0[1] == 3 || owner->m_unit->m_unitFieldBytes0[1] == 10)) { // Custom: WHE F-100, a Hero's tamed beast
             return 1.0;
         }
     }
@@ -20441,7 +20442,7 @@ double CGUnit_C::GetPowerModifier() {
     if (this->m_unit->m_unitFieldPetnumber) {
         CGUnit_C* owner = static_cast<CGUnit_C*>(ClntObjMgrObjectPtr(this->m_unit->m_unitFieldCreatedby, TYPEMASK_PLAYER, __FILE__, __LINE__));
 
-        if (owner && owner->m_unit->m_unitFieldBytes0[1] == 3) {
+        if (owner && (owner->m_unit->m_unitFieldBytes0[1] == 3 || owner->m_unit->m_unitFieldBytes0[1] == 10)) { // Custom: WHE F-100, a Hero's tamed beast
             return 1.0;
         }
     }

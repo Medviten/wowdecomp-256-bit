@@ -361,7 +361,7 @@ static bool FactionHasReputationForPlayer(const FactionRec* faction) {
         return false;
     }
 
-    uint8_t classId = player->m_unit->m_unitFieldBytes0[1];
+    uint8_t classId = player->m_unit->m_unitFieldBytes0[1] == 10 ? 2 : player->m_unit->m_unitFieldBytes0[1]; // Custom: WHE F-100, as the server's ReputationMgr
     uint8_t race = player->m_unit->m_unitFieldBytes0[0];
 
     for (uint32_t i = 0; i < 4; i++) {
@@ -703,7 +703,7 @@ void CGReputationInfo::EnterWorld() {
 
     CGReputationInfo::m_factions.InternalClear(0);
     uint8_t race = player->m_unit->m_unitFieldBytes0[0];
-    uint8_t classId = player->m_unit->m_unitFieldBytes0[1];
+    uint8_t classId = player->m_unit->m_unitFieldBytes0[1] == 10 ? 2 : player->m_unit->m_unitFieldBytes0[1]; // Custom: WHE F-100, as the server's ReputationMgr
     CGReputationInfo::m_collapsedHeaders = 0xFFFFFFFF;
     CGReputationInfo::m_numFactions = 0;
     CGReputationInfo::m_numShownFactions = 0;
