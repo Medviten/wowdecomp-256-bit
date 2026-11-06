@@ -24,7 +24,8 @@ bool FactionRec::Read(SFileImpl* file, const char* stringBuffer) {
 
     int32_t idRead = SFileReadFile(file, &this->m_id, sizeof(this->m_id), nullptr, nullptr, 0);
     int32_t reputationIndexRead = SFileReadFile(file, &this->m_reputationIndex, sizeof(this->m_reputationIndex), nullptr, nullptr, 0);
-    int32_t reputationRaceMaskRead = SFileReadFile(file, this->m_reputationRaceMask, sizeof(this->m_reputationRaceMask), nullptr, nullptr, 0);
+    // Custom: 32-bit or 256-bit masks, whichever this DBC has (see RaceMask.h)
+    int32_t reputationRaceMaskRead = RaceMask::ReadDBC(file, this->m_reputationRaceMask, 4);
     int32_t reputationClassMaskRead = SFileReadFile(file, this->m_reputationClassMask, sizeof(this->m_reputationClassMask), nullptr, nullptr, 0);
     int32_t reputationBaseRead = SFileReadFile(file, this->m_reputationBase, sizeof(this->m_reputationBase), nullptr, nullptr, 0);
     int32_t reputationFlagsRead = SFileReadFile(file, this->m_reputationFlags, sizeof(this->m_reputationFlags), nullptr, nullptr, 0);

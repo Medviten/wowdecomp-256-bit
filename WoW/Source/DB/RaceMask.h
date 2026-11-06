@@ -3,12 +3,28 @@
 
 #include <cstdint>
 
+class CDataStore;
+class SFileImpl;
+
 // Custom: 256-bit race mask, bit (race - 1) set per race, so race ids 1-255 fit. Stored exactly as in the DBC files
 // written by DBCTool-256-bit: 8 little-endian uint32 fields, races 1-32 first. Replaces the stock int32 race masks of
 // Faction, SkillLineAbility, SkillRaceClassInfo and TalentTab, and HelmetGeosetVisData's hide masks, which index
 // their bits by race id itself (see HasBit()). Item queries and who requests carry it as 8 uint32 too.
+//
+// Custom: the client also reads the stock 32-bit layout, so one binary works with both the 256-bit and the 32-bit
+// server. Each of those DBCs is loaded in whichever layout its header has (a 32-bit mask is zero-extended, as
+// DBCTool-256-bit does, so -1 stays races 1-32). Item queries, who requests and itemcache.wdb use the packet format:
+// CVar raceMaskBits = 32 or 256, or 0 (default) for 256 when any of those DBCs is 256-bit and 32 otherwise.
 struct RaceMask {
     static const int32_t s_numWords = 8;
+
+    // Words per mask in the DBC being loaded (set by WowClientDB_Common::Load) and in packets
+    static void SetDBCWords(int32_t words);
+    static int32_t GetPacketWords();
+    static void SetPacketBits(int32_t bits);
+    static bool ReadDBC(SFileImpl* file, RaceMask* masks, int32_t count);
+    void GetPacket(CDataStore* msg);
+    void PutPacket(CDataStore* msg) const;
 
     /* 0000 */ uint32_t m_words[s_numWords];
 

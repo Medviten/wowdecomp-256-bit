@@ -40,7 +40,8 @@ bool TalentTabRec::Read(SFileImpl* file, const char* stringBuffer) {
     int32_t nameRead15 = SFileReadFile(file, &nameOffset[15], sizeof(nameOffset[15]), nullptr, nullptr, 0);
     int32_t nameFlagsRead = SFileReadFile(file, &nameFlags, sizeof(nameFlags), nullptr, nullptr, 0);
     int32_t spellIconIDRead = SFileReadFile(file, &this->m_spellIconID, sizeof(this->m_spellIconID), nullptr, nullptr, 0);
-    int32_t raceMaskRead = SFileReadFile(file, &this->m_raceMask, sizeof(this->m_raceMask), nullptr, nullptr, 0);
+    // Custom: 32-bit or 256-bit masks, whichever this DBC has (see RaceMask.h)
+    int32_t raceMaskRead = RaceMask::ReadDBC(file, &this->m_raceMask, 1);
     int32_t classMaskRead = SFileReadFile(file, &this->m_classMask, sizeof(this->m_classMask), nullptr, nullptr, 0);
     int32_t categoryEnumIDRead = SFileReadFile(file, &this->m_categoryEnumID, sizeof(this->m_categoryEnumID), nullptr, nullptr, 0);
     int32_t orderIndexRead = SFileReadFile(file, &this->m_orderIndex, sizeof(this->m_orderIndex), nullptr, nullptr, 0);

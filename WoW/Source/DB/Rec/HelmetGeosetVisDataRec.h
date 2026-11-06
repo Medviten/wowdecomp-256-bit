@@ -12,6 +12,8 @@ class HelmetGeosetVisDataRec {
     static const int32_t s_numColumns = 57;
     static const int32_t s_rowSize = 228;
     static const bool s_generatedID = false;
+    // Custom: RaceMask fields, so the stock 32-bit layout loads too (see WowClientDB_RaceMasks)
+    static const int32_t s_numRaceMasks = 7;
 
     /* 0000 */ int32_t m_id;
     // Custom: 256-bit masks (see RaceMask.h), bit = race id

@@ -769,10 +769,8 @@ void FriendList::SendWho(const char* filter) {
     strcpy(this->m_whoName, name);
     msg.PutString(guild);
     strcpy(this->m_whoGuild, guild);
-    // Custom: 256-bit race mask, 8 uint32
-    for (int32_t i = 0; i < RaceMask::s_numWords; i++) {
-        msg.Put(raceMask.m_words[i]);
-    }
+    // Custom: race mask in the packet format, 8 uint32 or the stock 1 (see RaceMask.h)
+    raceMask.PutPacket(&msg);
 
     this->m_whoRaceMask = raceMask;
     msg.Put(static_cast<uint32_t>(classMask));

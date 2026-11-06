@@ -5,8 +5,22 @@
 #include <cstdint>
 #include <cstring>
 #include <new>
+#include <type_traits>
 #include "Engine/Source/BlizzardCore/SFile2-Core.h"
 #include "Engine/Source/Storm/H/storm.h"
+#include "WoW/Source/DB/RaceMask.h"
+
+// Custom: number of RaceMask fields in a record (T::s_numRaceMasks), 0 for records without any. Lets Load() accept the
+// stock 32-bit layout of those DBCs as well as the 256-bit one (see RaceMask.h).
+template <class T, class = void>
+struct WowClientDB_RaceMasks {
+    static const int32_t value = 0;
+};
+
+template <class T>
+struct WowClientDB_RaceMasks<T, std::void_t<decltype(T::s_numRaceMasks)>> {
+    static const int32_t value = T::s_numRaceMasks;
+};
 
 extern int32_t g_clientDbPerformCompress;
 
@@ -130,8 +144,23 @@ void WowClientDB_Common<T>::Load(const char* file, int32_t line) {
         SErrDisplayAppFatalCustom(0x85100079, "Unable to read column count from %s", T::GetFilename());
     }
 
-    if (numColumns != T::s_numColumns) {
-        SErrDisplayAppFatalCustom(0x85100079, "%s has wrong number of columns (found %i, expected %i)", T::GetFilename(), numColumns, T::s_numColumns);
+    // Custom: a DBC with race masks may also be in the stock layout, one field per mask instead of 8
+    int32_t expectedColumns = T::s_numColumns;
+    int32_t expectedRowSize = T::s_rowSize;
+    int32_t raceMaskWords = RaceMask::s_numWords;
+
+    if constexpr (WowClientDB_RaceMasks<T>::value > 0) {
+        const int32_t narrowFields = (RaceMask::s_numWords - 1) * WowClientDB_RaceMasks<T>::value;
+
+        if (numColumns == T::s_numColumns - narrowFields) {
+            expectedColumns -= narrowFields;
+            expectedRowSize -= narrowFields * static_cast<int32_t>(sizeof(uint32_t));
+            raceMaskWords = 1;
+        }
+    }
+
+    if (numColumns != expectedColumns) {
+        SErrDisplayAppFatalCustom(0x85100079, "%s has wrong number of columns (found %i, expected %i)", T::GetFilename(), numColumns, expectedColumns);
     }
 
     int32_t rowSize;
@@ -140,8 +169,12 @@ void WowClientDB_Common<T>::Load(const char* file, int32_t line) {
         SErrDisplayAppFatalCustom(0x85100079, "Unable to read row size from %s", T::GetFilename());
     }
 
-    if (rowSize != T::s_rowSize) {
-        SErrDisplayAppFatalCustom(0x85100079, "%s has wrong row size (found %i, expected %i)", T::GetFilename(), rowSize, T::s_rowSize);
+    if (rowSize != expectedRowSize) {
+        SErrDisplayAppFatalCustom(0x85100079, "%s has wrong row size (found %i, expected %i)", T::GetFilename(), rowSize, expectedRowSize);
+    }
+
+    if constexpr (WowClientDB_RaceMasks<T>::value > 0) {
+        RaceMask::SetDBCWords(raceMaskWords);
     }
 
     uint32_t stringSize;

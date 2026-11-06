@@ -19,7 +19,8 @@ bool SkillLineAbilityRec::Read(SFileImpl* file, const char* stringBuffer) {
     int32_t idRead = SFileReadFile(file, &this->m_id, sizeof(this->m_id), nullptr, nullptr, 0);
     int32_t skillLineRead = SFileReadFile(file, &this->m_skillLine, sizeof(this->m_skillLine), nullptr, nullptr, 0);
     int32_t spellRead = SFileReadFile(file, &this->m_spell, sizeof(this->m_spell), nullptr, nullptr, 0);
-    int32_t raceMaskRead = SFileReadFile(file, &this->m_raceMask, sizeof(this->m_raceMask), nullptr, nullptr, 0);
+    // Custom: 32-bit or 256-bit masks, whichever this DBC has (see RaceMask.h)
+    int32_t raceMaskRead = RaceMask::ReadDBC(file, &this->m_raceMask, 1);
     int32_t classMaskRead = SFileReadFile(file, &this->m_classMask, sizeof(this->m_classMask), nullptr, nullptr, 0);
     int32_t excludeRaceRead = SFileReadFile(file, &this->m_excludeRace, sizeof(this->m_excludeRace), nullptr, nullptr, 0);
     int32_t excludeClassRead = SFileReadFile(file, &this->m_excludeClass, sizeof(this->m_excludeClass), nullptr, nullptr, 0);

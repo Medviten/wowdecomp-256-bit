@@ -17,7 +17,8 @@ const char* HelmetGeosetVisDataRec::GetFilename() {
 // OFFSET: 0x008B0070
 bool HelmetGeosetVisDataRec::Read(SFileImpl* file, const char* stringBuffer) {
     int32_t idRead = SFileReadFile(file, &this->m_id, sizeof(this->m_id), nullptr, nullptr, 0);
-    int32_t hideGeosetRead = SFileReadFile(file, this->m_hideGeoset, sizeof(this->m_hideGeoset), nullptr, nullptr, 0);
+    // Custom: 32-bit or 256-bit masks, whichever this DBC has (see RaceMask.h)
+    int32_t hideGeosetRead = RaceMask::ReadDBC(file, this->m_hideGeoset, 7);
 
     if (!idRead
         | !hideGeosetRead) {

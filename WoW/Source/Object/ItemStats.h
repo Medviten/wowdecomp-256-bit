@@ -9,8 +9,10 @@ class CDataStore;
 
 class ItemStats_C {
     public:
-    // Custom: bumped from 5, AllowableRace is 256-bit (old itemcache.wdb files are discarded)
+    // Custom: 6 when AllowableRace is cached as 256-bit, the stock 5 when 32-bit (RaceMask::GetPacketWords()), so a
+    // cache written in the other format is discarded. Read by DBCache through DBCacheVersion.
     static const uint32_t s_cacheVersion = 6;
+    static uint32_t GetCacheVersion();
 
     /* 0004 */ uint32_t m_class;
     /* 0008 */ uint32_t m_subClass;

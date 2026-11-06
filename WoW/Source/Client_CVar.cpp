@@ -20,6 +20,7 @@
 #include "Engine/Source/Services/Texture.h"
 #include "Engine/Source/Storm/H/storm.h"
 #include "WoW/Source/ConsoleDevice/ConsoleDevice.h"
+#include "WoW/Source/DB/RaceMask.h"
 #include "WoW/Source/Hardware.h"
 #include "WoW/Source/WowSysMessageOutput.h"
 
@@ -631,6 +632,14 @@ bool TimingMethodCallback(CVar* var, const char* oldValue, const char* value, vo
 // OFFSET: 0x00403320
 bool LocaleCallback(CVar* var, const char* oldValue, const char* value, void* arg) {
     SStrCopy(s_localeCode, value, sizeof(s_localeCode));
+
+    return true;
+}
+
+// Custom: raceMaskBits = 32 or 256 forces the race mask format the server uses in item queries and who requests;
+// 0 follows the client's DBCs (256 when any race-mask DBC is 256-bit). See RaceMask.h.
+bool RaceMaskBitsCallback(CVar* var, const char* oldValue, const char* value, void* arg) {
+    RaceMask::SetPacketBits(value ? static_cast<int32_t>(strtol(value, nullptr, 10)) : 0);
 
     return true;
 }

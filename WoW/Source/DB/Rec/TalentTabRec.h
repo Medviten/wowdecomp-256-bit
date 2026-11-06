@@ -12,6 +12,8 @@ class TalentTabRec {
     static const int32_t s_numColumns = 31;
     static const int32_t s_rowSize = 124;
     static const bool s_generatedID = false;
+    // Custom: RaceMask fields, so the stock 32-bit layout loads too (see WowClientDB_RaceMasks)
+    static const int32_t s_numRaceMasks = 1;
 
     /* 0000 */ int32_t m_id;
     /* 0004 */ const char* m_name;

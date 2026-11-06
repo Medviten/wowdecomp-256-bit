@@ -26,6 +26,11 @@ ItemStats_C::~ItemStats_C() {
     }
 }
 
+// Custom: see ItemStats.h
+uint32_t ItemStats_C::GetCacheVersion() {
+    return RaceMask::GetPacketWords() == RaceMask::s_numWords ? ItemStats_C::s_cacheVersion : 5;
+}
+
 // VERIFY: eb115b6b manual
 // OFFSET: 0x0098D910
 void ItemStats_C::Unpack(CDataStore* msg) {
@@ -57,10 +62,8 @@ void ItemStats_C::Unpack(CDataStore* msg) {
     msg->Get(this->m_sellPrice);
     msg->Get(this->m_inventoryType);
     msg->Get(this->m_allowableClass);
-    // Custom: 256-bit race mask, 8 uint32
-    for (uint32_t i = 0; i < RaceMask::s_numWords; i++) {
-        msg->Get(this->m_allowableRace.m_words[i]);
-    }
+    // Custom: race mask in the packet format, 8 uint32 or the stock 1 (see RaceMask.h)
+    this->m_allowableRace.GetPacket(msg);
     msg->Get(this->m_itemLevel);
     msg->Get(this->m_requiredLevel);
     msg->Get(this->m_requiredSkill);
@@ -178,10 +181,8 @@ void ItemStats_C::Pack(CDataStore* msg) {
     msg->Put(this->m_sellPrice);
     msg->Put(this->m_inventoryType);
     msg->Put(this->m_allowableClass);
-    // Custom: 256-bit race mask, 8 uint32
-    for (uint32_t i = 0; i < RaceMask::s_numWords; i++) {
-        msg->Put(this->m_allowableRace.m_words[i]);
-    }
+    // Custom: race mask in the packet format, 8 uint32 or the stock 1 (see RaceMask.h)
+    this->m_allowableRace.PutPacket(msg);
     msg->Put(this->m_itemLevel);
     msg->Put(this->m_requiredLevel);
     msg->Put(this->m_requiredSkill);

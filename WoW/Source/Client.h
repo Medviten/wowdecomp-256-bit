@@ -98,6 +98,8 @@ uint32_t GetM2CvarFlags();
 int32_t InitializeEngineCallback(const void* data, void* param);
 bool InitializeGlobal();
 bool LocaleCallback(CVar* var, const char* oldValue, const char* value, void* arg);
+// Custom: race mask format of item queries, who requests and itemcache.wdb (raceMaskBits, see RaceMask.h)
+bool RaceMaskBitsCallback(CVar* var, const char* oldValue, const char* value, void* arg);
 // Custom: Cataclysm-style altered forms (alteredFormRaces); 0 when the race has none
 bool AlteredFormRacesCallback(CVar* var, const char* oldValue, const char* value, void* arg);
 uint32_t ClientGetAlteredFormRace(uint32_t race);

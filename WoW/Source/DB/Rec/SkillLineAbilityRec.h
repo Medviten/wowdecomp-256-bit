@@ -12,6 +12,8 @@ class SkillLineAbilityRec {
     static const int32_t s_numColumns = 21;
     static const int32_t s_rowSize = 84;
     static const bool s_generatedID = false;
+    // Custom: RaceMask fields, so the stock 32-bit layout loads too (see WowClientDB_RaceMasks)
+    static const int32_t s_numRaceMasks = 1;
 
     /* 0000 */ int32_t m_id;
     /* 0004 */ int32_t m_skillLine;

@@ -18,6 +18,22 @@
 class CHashKeyGUID;
 class CWardenKey;
 
+// Custom: a record type with GetCacheVersion() picks its cache version at run time (ItemStats_C, whose race mask
+// format depends on the server), the others use their s_cacheVersion
+template <class T, class = void>
+struct DBCacheVersion {
+    static uint32_t Get() {
+        return T::s_cacheVersion;
+    }
+};
+
+template <class T>
+struct DBCacheVersion<T, std::void_t<decltype(&T::GetCacheVersion)>> {
+    static uint32_t Get() {
+        return T::GetCacheVersion();
+    }
+};
+
 struct HASHKEY_INT {
     HASHKEY_INT();
     HASHKEY_INT(int32_t key);
@@ -212,7 +228,8 @@ void DBCache<T, TKey, THashKey>::Load() {
     uint32_t cacheVersion;
     header.Get(cacheVersion);
 
-    if (cacheVersion != T::s_cacheVersion) {
+    // Custom: DBCacheVersion instead of T::s_cacheVersion
+    if (cacheVersion != DBCacheVersion<T>::Get()) {
         OsCloseFile(file);
         return;
     }
@@ -441,7 +458,7 @@ void DBCache<T, TKey, THashKey>::Save() {
     header.Put(static_cast<uint32_t>(12340));
     header.Put(SFile::s_locale);
     header.Put(static_cast<uint32_t>(sizeof(T)));
-    header.Put(T::s_cacheVersion);
+    header.Put(DBCacheVersion<T>::Get()); // Custom: DBCacheVersion instead of T::s_cacheVersion
     header.Put(this->m_version);
     header.Finalize();
     header.GetDataInSitu(data, header.m_size);

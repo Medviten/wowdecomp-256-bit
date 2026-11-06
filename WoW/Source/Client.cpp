@@ -1709,6 +1709,10 @@ bool InitializeGlobal() {
 
     CVar::Register("useEnglishAudio", "override the locale and use English audio", 0, "0", nullptr, CATEGORY_DEFAULT, false, nullptr, false);
 
+    // Custom: 32-bit or 256-bit race masks in packets (see RaceMask.h)
+    CVar* raceMaskBits = CVar::Register("raceMaskBits", "Race mask format of the server: 32, 256, or 0 to follow the DBC files", 0, "0", RaceMaskBitsCallback, CATEGORY_DEFAULT, false, nullptr, false);
+    RaceMaskBitsCallback(raceMaskBits, nullptr, raceMaskBits->m_stringValue.m_str, nullptr);
+
     // Custom: Cataclysm-style altered forms (see ClientGetAlteredFormRace)
     // Custom: defaults use retail race IDs (22 Worgen, 23 Gilnean)
     CVar* alteredForms = CVar::Register("alteredFormRaces", "Races with a second form drawn as another race, e.g. \"22=23\" (Worgen = Gilnean)", 0, "22=23", AlteredFormRacesCallback, CATEGORY_DEFAULT, false, nullptr, false);
