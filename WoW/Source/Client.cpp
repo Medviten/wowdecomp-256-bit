@@ -1728,6 +1728,8 @@ bool InitializeGlobal() {
     CVar* retailRaces = CVar::Register("retailRaces", "Races drawn with retail models: \"race=retailRaceID\", or race=centaur / race=slimegiant", 0, "37=37,52=52,70=70,86=86,91=91", RetailRacesCallback, CATEGORY_DEFAULT, false, nullptr, false);
     RetailRacesCallback(retailRaces, nullptr, retailRaces->m_stringValue.m_str, nullptr);
     CVar::Register("druidFormPreview", "Show the druid form preview in character creation", 0, "1", nullptr, CATEGORY_DEFAULT, false, nullptr, false);
+    // Custom: the macro icon picker also lists every SpellIcon.dbc icon (see CGUIMacros::LoadIcons); 0 is stock
+    CVar::Register("macroSpellIcons", "List every SpellIcon.dbc icon in the macro icon picker, not only the Ability_ and Spell_ icons", 0, "0", nullptr, CATEGORY_DEFAULT, false, nullptr, false);
 
     if (SFile::IsTrial()) {
         StartupReport(firstRun);

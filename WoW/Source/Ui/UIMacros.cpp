@@ -27,6 +27,8 @@
 #include "WoW/Source/Object/ObjectClient/Bag_C.h"
 #include "WoW/Source/Object/ObjectClient/Player_C.h"
 #include "WoW/Source/Ui/MacroConditions.h"
+#include "Engine/Source/ConsoleBase/ConsoleVar.h"
+#include "WoW/Source/DB/Rec/SpellIconRec.h"
 
 // STATIC: 0x00ACE2A0
 static TSExplicitList<MACRONODE, offsetof(MACRONODE, m_dynamicLink)> s_dynamicMacros;
@@ -407,6 +409,33 @@ void CGUIMacros::LoadIcons() {
     SStrPrintf(path, sizeof(path), "%s%s", SFile::GetDataPath(), s_macroIconPath);
     OsFileList(path, "*", IconListDirectoryCallback, nullptr, 0);
     OsFileList(s_macroIconPath, "*", IconListCustomCallback, nullptr, 0);
+
+    // Custom: macroSpellIcons = 1 also lists every icon SpellIcon.dbc names under Interface\Icons\, so the icons of
+    // custom spells (whatever their names) can be picked. The default, 0, keeps the stock list: only the Ability_ and
+    // Spell_ icons found in the archives and the icon folders. The duplicates are removed below with the stock ones.
+    CVar* spellIcons = CVar::Lookup("macroSpellIcons");
+
+    if (spellIcons && spellIcons->m_intValue) {
+        uint32_t prefix = static_cast<uint32_t>(SStrLen(s_macroIconPath));
+
+        for (int32_t i = 0; i < g_spellIconDB.m_numRecords; i++) {
+            SpellIconRec* icon = g_spellIconDB.GetRecordByIndex(i);
+
+            if (!icon || !icon->m_textureFilename || SStrCmpI(icon->m_textureFilename, s_macroIconPath, prefix)
+                || !icon->m_textureFilename[prefix]) {
+                continue;
+            }
+
+            char* name = SStrDupA(icon->m_textureFilename + prefix, __FILE__, __LINE__);
+            char* ext = SStrChrR(name, '.');
+
+            if (ext && !SStrCmpI(ext, ".blp", STORM_MAX_STR)) {
+                *ext = '\0';
+            }
+
+            *s_macroIcons.New() = name;
+        }
+    }
 
     qsort(s_macroIcons.m_data, s_macroIcons.Count(), sizeof(char*), QSortIcons);
     qsort(s_macroItemIcons.m_data, s_macroItemIcons.Count(), sizeof(char*), QSortIcons);
