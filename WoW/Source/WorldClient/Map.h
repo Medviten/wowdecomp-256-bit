@@ -326,6 +326,9 @@ class CMap {
     static void ClearAllFootprints();
     static void RenderFootprints();
     static void PreUpdateAreas(bool addToScene);
+    // Custom: Cataclysm-style terrain swaps (see CMap::SetTerrainSwap)
+    static void SetTerrainSwap(uint32_t swapMapID, int32_t baseMapID);
+    static void PurgeSwappedAreas();
     static void UpdateArea(int32_t addToScene, CMapArea* area, CiRect* chunkRect, int32_t depth);
     static void PrepareMapObjDefs(bool addToScene);
     static void PrepareMapObjDef(CMapObjDef* mapObjDef, CMapObj* mapObj);

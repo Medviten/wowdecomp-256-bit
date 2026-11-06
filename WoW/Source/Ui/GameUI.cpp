@@ -154,6 +154,7 @@
 #include "WoW/Source/Object/ObjectClient/Corpse_C.h"
 #include "WoW/Source/WorldClient/DayNight.h"
 #include "WoW/Source/WorldClient/MapWeather.h"
+#include "WoW/Source/WorldClient/Map.h"
 #include <ctime>
 #include "Engine/Source/Event/CFocusEvent.h"
 #include "Engine/Source/Frame/CLayoutFrame.h"
@@ -6768,6 +6769,17 @@ int32_t CGGameUI::MessageHandler(void* param, NETMESSAGE msgId, uint32_t time, C
             uint32_t phase;
             msg->Get(phase);
             CGGameUI::SetPhaseShift(phase);
+
+            // Custom: servers with terrain swaps (WHE F-102) add the swap map and the map it swaps tiles of (0 and -1:
+            // none). Stock servers send only the phase, which leaves the terrain as it is.
+            if (!msg->IsRead()) {
+                uint32_t swapMapID = 0;
+                int32_t baseMapID = -1;
+                msg->Get(swapMapID);
+                msg->Get(baseMapID);
+                CMap::SetTerrainSwap(swapMapID, baseMapID);
+            }
+
             return 1;
         }
 

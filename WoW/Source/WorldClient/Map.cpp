@@ -99,6 +99,16 @@ float CMap::s_liquidAlphaScale = 0.58333333f;
 // STATIC: 0x00ADFBC4
 int32_t s_mapId = -1;
 
+// Custom: terrain swaps. While a swap is set, the tiles of the base map that the swap map's WDT has are read from the
+// swap map's folder (World\Maps\<swap>\<swap>_x_y.adt): Cataclysm's phase terrain, such as the Lost Isles after the
+// volcano erupts. The server sets it (see CGGameUI's SMSG_PHASE_SHIFT_CHANGE handler).
+static uint32_t s_terrainSwapMapID;
+static int32_t s_terrainSwapBaseMapID = -1;
+static char s_terrainSwapDir[256];
+static uint8_t s_terrainSwapTiles[4096];  // 1: the swap map has this tile
+static uint8_t s_terrainSwapLoaded[4096]; // 1: the loaded area of this tile came from the swap map
+static bool s_terrainSwapDirty;
+
 // STATIC: 0x00ADFBCC
 FVBBList CMap::s_vbbList;
 
@@ -2004,6 +2014,7 @@ void CMap::PreUpdateAreas(bool addToScene) {
     CMap::ProcessDetailDoodadUpdateList();
 
     int32_t waitForLoad = !(CMap::s_isStreamingMode || CMap::bPreload);
+    CMap::PurgeSwappedAreas(); // Custom: terrain swaps
     CMapBaseObjLink* link = CMap::s_unk_ADFBEC.Head();
 
     while (link) {
@@ -4157,7 +4168,100 @@ CTexture* CMap::LoadTexture(const char* fileName) {
 void CMap::LoadArea(CMapArea* area) {
     char fileName[256];
     SStrPrintf(fileName, sizeof(fileName), "%s\\%s_%d_%d.adt", CMap::mapPath, CMap::mapName, area->m_index.x, area->m_index.y);
+
+    // Custom: a tile of the swap map replaces the base map's while a terrain swap is set
+    int32_t index = 64 * area->m_index.y + area->m_index.x;
+    bool swapped = s_terrainSwapMapID && s_terrainSwapBaseMapID == s_mapId && s_terrainSwapTiles[index];
+    s_terrainSwapLoaded[index] = swapped;
+
+    if (swapped) {
+        SStrPrintf(fileName, sizeof(fileName), "World\\Maps\\%s\\%s_%d_%d.adt", s_terrainSwapDir, s_terrainSwapDir, area->m_index.x, area->m_index.y);
+    }
+
     area->Load(fileName);
+}
+
+// Custom: set the terrain swap, 0 for none. Tiles already loaded are reloaded by PurgeSwappedAreas.
+void CMap::SetTerrainSwap(uint32_t swapMapID, int32_t baseMapID) {
+    if (swapMapID == s_terrainSwapMapID && baseMapID == s_terrainSwapBaseMapID) {
+        return;
+    }
+
+    s_terrainSwapMapID = 0;
+    s_terrainSwapBaseMapID = baseMapID;
+    s_terrainSwapDir[0] = '\0';
+    memset(s_terrainSwapTiles, 0, sizeof(s_terrainSwapTiles));
+    s_terrainSwapDirty = true;
+
+    MapRec* map = swapMapID ? g_mapDB.GetRecord(swapMapID) : nullptr;
+
+    if (!map) {
+        return;
+    }
+
+    // The swap map's WDT lists its tiles (MVER, MPHD, then MAIN: 64 x 64 SMAreaInfo, flag 1 = the tile exists)
+    char wdt[256];
+    SStrPrintf(wdt, sizeof(wdt), "World\\Maps\\%s\\%s.wdt", map->m_directory, map->m_directory);
+    SFileImpl* file = nullptr;
+
+    if (!SFileOpenFile(wdt, &file) || !file) {
+        DebugLog("Terrain swap %u: no %s\n", swapMapID, wdt);
+        return;
+    }
+
+    SIffChunk chunk;
+    uint32_t version;
+    SMMapHeader header;
+    SMAreaInfo info[4096];
+    SFileReadFile(file, &chunk, offsetof(SIffChunk, m_data), nullptr, nullptr, 0);
+    SFileReadFile(file, &version, sizeof(version), nullptr, nullptr, 0);
+    SFileReadFile(file, &chunk, offsetof(SIffChunk, m_data), nullptr, nullptr, 0);
+    SFileReadFile(file, &header, sizeof(header), nullptr, nullptr, 0);
+    SFileReadFile(file, &chunk, offsetof(SIffChunk, m_data), nullptr, nullptr, 0);
+    int32_t read = SFileReadFile(file, info, sizeof(info), nullptr, nullptr, 0);
+    SFileCloseFile(file);
+
+    if (!read) {
+        return;
+    }
+
+    for (uint32_t i = 0; i < 4096; i++) {
+        s_terrainSwapTiles[i] = info[i].m_flags & 1;
+    }
+
+    SStrCopy(s_terrainSwapDir, map->m_directory, sizeof(s_terrainSwapDir));
+    s_terrainSwapMapID = swapMapID;
+}
+
+// Custom: free the loaded areas whose terrain the swap changed, so PreUpdateAreas loads them again from the right
+// folder. An area still being read is left for the next frame.
+void CMap::PurgeSwappedAreas() {
+    if (!s_terrainSwapDirty) {
+        return;
+    }
+
+    bool pending = false;
+    CMapBaseObjLink* link = CMap::s_unk_ADFBEC.Head();
+
+    while (link) {
+        CMapArea* area = static_cast<CMapArea*>(link->m_owner);
+        CMapBaseObjLink* next = CMap::s_unk_ADFBEC.Next(link);
+        int32_t index = 64 * area->m_index.y + area->m_index.x;
+        bool swap = s_terrainSwapMapID && s_terrainSwapBaseMapID == s_mapId && s_terrainSwapTiles[index];
+
+        if (swap != (s_terrainSwapLoaded[index] != 0)) {
+            if (!area->m_asyncObject || !area->m_asyncObject->m_isCurrent) {
+                CMap::FreeBaseObjLink(link);
+                CMap::PurgeArea(area);
+            } else {
+                pending = true;
+            }
+        }
+
+        link = next;
+    }
+
+    s_terrainSwapDirty = pending;
 }
 
 // VERIFY: a0b22da5 auto
