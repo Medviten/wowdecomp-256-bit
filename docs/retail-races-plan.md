@@ -58,6 +58,8 @@ His design notes: `Kalibros-decomp/docs/retail-race-handoff.md`, `retail-casc.md
    pack tool, an in-world Visage spell calling `ToggleRetailForm`.
 6. **More races** opt in (Haranir, Earthen, Vulpera, Highmountain ...).
    Done: Mechagnome (WHE F-040, race 37), Haranir (WHE F-098/F-099, races 86/91), all in the `retailRaces` default.
+   Skyborne (WHE F-103/F-104, races 95/96) from the Forever source (`wow_classic_beta`): `retailRaces` entries
+   `95=forever:95,96=forever:96`, used only when `Data/Retail/ForeverCasc.ini` exists; `RetailPackBuild --forever`.
 
 ## Risks
 

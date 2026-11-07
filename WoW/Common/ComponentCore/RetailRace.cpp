@@ -83,6 +83,23 @@ void Log(const char* format, ...) {
     std::fclose(file);
 }
 
+// Only opt in to Forever when an explicit Forever configuration is present.
+// Custom: split out of ForeverRaceMap, so retailRaces' "forever:" entries follow it too
+bool ForeverConfigured() {
+    static const bool enabled = [] {
+        const char* config = std::getenv("WOW_FOREVER_CONFIG");
+        bool result = config && *config;
+        char exe[MAX_PATH];
+        if (GetModuleFileNameA(nullptr, exe, sizeof(exe))) {
+            const auto data = std::filesystem::path(exe).parent_path() / "Data";
+            result = result || std::filesystem::is_regular_file(data / "Retail" / "ForeverCasc.ini")
+                || std::filesystem::is_regular_file(data / "Forever" / "ForeverCasc.ini");
+        }
+        return result;
+    }();
+    return enabled;
+}
+
 // Forever uses separate IDs, tables, storage and cache; never add its IDs to Retail's source.
 const std::map<uint32_t, uint32_t>& ForeverRaceMap() {
     static const auto map = [] {
@@ -97,24 +114,21 @@ const std::map<uint32_t, uint32_t>& ForeverRaceMap() {
             }
             return result;
         }
-        // Only opt in when an explicit Forever configuration is present.
-        const char* config = std::getenv("WOW_FOREVER_CONFIG");
-        bool enabled = config && *config;
-        char exe[MAX_PATH];
-        if (GetModuleFileNameA(nullptr, exe, sizeof(exe))) {
-            const auto data = std::filesystem::path(exe).parent_path() / "Data";
-            enabled = enabled || std::filesystem::is_regular_file(data / "Retail" / "ForeverCasc.ini")
-                || std::filesystem::is_regular_file(data / "Forever" / "ForeverCasc.ini");
-        }
-        // Custom: no default Forever races (Kalibro maps his races 52/53 here; ours are Alliance Dracthyr and Gnoll)
-        (void)enabled;
+        // Custom: no fixed Forever races (Kalibro maps his races 52/53 here; ours are Alliance Dracthyr and Gnoll):
+        // retailRaces' "race=forever:<id>" entries name them (Skyborne 95/96 by default), see ForeverRace
         return result;
     }();
     return map;
 }
 
+// Custom: a retailRaces "forever:" entry, while a Forever configuration is installed. Without one the race keeps its
+// DBC model and customization (the native look its modpak ships).
+bool ForeverRace(uint32_t race) {
+    return ClientRetailRaceIsForever(race) && ForeverConfigured();
+}
+
 Retail::SourceKind RaceSource(uint32_t race) {
-    return ForeverRaceMap().count(race) ? Retail::SourceKind::Forever : Retail::SourceKind::Retail;
+    return ForeverRaceMap().count(race) || ForeverRace(race) ? Retail::SourceKind::Forever : Retail::SourceKind::Retail;
 }
 
 // Custom: the races mapped to retail (or to Kalibro's Centaur / Slime Giant profiles) come from the retailRaces CVar,
@@ -127,6 +141,7 @@ bool SlimeGiantRace(uint32_t race) { return ClientGetRetailRace(race) == Retail:
 uint32_t RetailRaceId(uint32_t race) {
     const auto forever = ForeverRaceMap().find(race);
     if (forever != ForeverRaceMap().end()) return forever->second;
+    if (ClientRetailRaceIsForever(race) && !ForeverConfigured()) return 0; // Custom: see ForeverRace
     return ClientGetRetailRace(race);
 }
 

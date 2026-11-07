@@ -3,6 +3,8 @@
 // thread. Each missing file is downloaded on its own from wago.tools at the pinned build; the walk is
 // CdnAssetDownload's (download.cpp): the DB2 tables, then every choice's models, textures and skeletons, then their
 // skins, animations and SKEL parents.
+// With --forever it builds the Forever source's pack instead (Data/Retail/ForeverPack, the pack= key of
+// ForeverCasc.ini), from the wow_classic_beta build ForeverCasc.example.ini pins (Skyborne: Forever races 95 and 96).
 #include "Engine/Source/Retail/Appearance.h"
 #include "Engine/Source/Retail/CascSource.h"
 #include "Engine/Source/Retail/RetailModel.h"
@@ -19,14 +21,25 @@
 
 namespace app = Retail::Db2::appearance;
 namespace {
-// The build the Retail table layouts match (RetailCasc.example.ini)
-const char* const BuildConfig = "88d5e8ef05ec5a8446cdec93d142d7c6";
-const wchar_t* const BuildVersion = L"12.1.5.70448";
+// The builds the table layouts match: Retail (RetailCasc.example.ini) and Forever (ForeverCasc.example.ini)
+struct PackSource {
+    Retail::SourceKind kind;
+    const char* product;
+    const char* buildConfig;
+    const wchar_t* version;
+    const char* configVariable;
+    const char* configName;
+};
+const PackSource RetailPack = {Retail::SourceKind::Retail, "wow", "88d5e8ef05ec5a8446cdec93d142d7c6", L"12.1.5.70448",
+                               "WOW_RETAIL_CONFIG", "RetailPackBuild.ini"};
+const PackSource ForeverPack = {Retail::SourceKind::Forever, "wow_classic_beta", "dd3dfc2881c407299f46c2aaf34c130b", L"1.60.1.70124",
+                                "WOW_FOREVER_CONFIG", "ForeverPackBuild.ini"};
+const PackSource* packSource = &RetailPack;
 
 unsigned downloaded = 0;
 
 bool Download(uint32_t id, const std::string& file) {
-    const std::wstring url = L"https://wago.tools/api/casc/" + std::to_wstring(id) + L"?download&version=" + BuildVersion;
+    const std::wstring url = L"https://wago.tools/api/casc/" + std::to_wstring(id) + L"?download&version=" + packSource->version;
     const std::wstring target = std::filesystem::path(file).wstring(), partial = target + L".part";
     for (int attempt = 0; attempt < 3; ++attempt) {
         if (SUCCEEDED(URLDownloadToFileW(nullptr, url.c_str(), partial.c_str(), 0, nullptr))) {
@@ -53,24 +66,30 @@ uint32_t Id(const char* text) {
 }
 
 int main(int argc, char** argv) {
+    if (argc > 1 && std::string(argv[1]) == "--forever") {
+        packSource = &ForeverPack;
+        --argc;
+        ++argv;
+    }
     if (argc < 3) {
-        std::fprintf(stderr, "Usage: RetailPackBuild <pack-directory> <retail-race-ID> [retail-race-ID ...]\n"
-                             "  e.g. RetailPackBuild Data/Retail/Pack 52 70   (then pack=Pack in Data/Retail/RetailCasc.ini)\n");
+        std::fprintf(stderr, "Usage: RetailPackBuild [--forever] <pack-directory> <race-ID> [race-ID ...]\n"
+                             "  e.g. RetailPackBuild Data/Retail/Pack 52 70   (then pack=Pack in Data/Retail/RetailCasc.ini)\n"
+                             "       RetailPackBuild --forever Data/Retail/ForeverPack 95 96   (pack=ForeverPack in ForeverCasc.ini)\n");
         return 2;
     }
     try {
         const std::filesystem::path pack = std::filesystem::absolute(argv[1]);
         std::filesystem::create_directories(pack);
         // A files-mode source over the pack; SetPackMissHandler fills it as the walk reads
-        const auto config = pack / "RetailPackBuild.ini";
+        const auto config = pack / packSource->configName;
         {
             std::ofstream ini(config, std::ios::trunc);
-            ini << "mode=files\npath=.\nproduct=wow\nregion=us\nbuild=" << BuildConfig << "\nlocale=2\n";
+            ini << "mode=files\npath=.\nproduct=" << packSource->product << "\nregion=us\nbuild=" << packSource->buildConfig << "\nlocale=2\n";
             if (!ini) throw std::runtime_error("Cannot write " + config.string());
         }
-        _putenv_s("WOW_RETAIL_CONFIG", config.string().c_str());
+        _putenv_s(packSource->configVariable, config.string().c_str());
         Retail::SetPackMissHandler(Download);
-        Retail::SourceScope scope(Retail::SourceKind::Retail);
+        Retail::SourceScope scope(packSource->kind);
         auto& source = Retail::Source();
         if (!app::Status().loaded) throw std::runtime_error(app::Status().error);
         std::printf("tables ready (%u downloaded)\n", downloaded);

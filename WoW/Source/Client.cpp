@@ -1724,8 +1724,9 @@ bool InitializeGlobal() {
     CVar* creatureSkinRaces = CVar::Register("creatureSkinRaces", "Races whose models use their whole skin texture (creature models made playable) and show no armour textures (Murloc = 41, Slime Giant = 43, Centaur = 49, CoA races 56-63)", 0, "41,43,49,56,57,58,59,60,61,62,63", CreatureSkinRacesCallback, CATEGORY_DEFAULT, false, nullptr, false);
     CreatureSkinRacesCallback(creatureSkinRaces, nullptr, creatureSkinRaces->m_stringValue.m_str, nullptr);
     // Custom: retail models and customization per race (builds with WOWDECOMP_RETAIL_ASSETS; ignored otherwise).
-    // Defaults: Mechagnome 37, Dracthyr (Alliance 52, Horde 70) and Haranir (Alliance 86, Horde 91) at their retail IDs.
-    CVar* retailRaces = CVar::Register("retailRaces", "Races drawn with retail models: \"race=retailRaceID\", or race=centaur / race=slimegiant", 0, "37=37,52=52,70=70,86=86,91=91", RetailRacesCallback, CATEGORY_DEFAULT, false, nullptr, false);
+    // Defaults: Mechagnome 37, Dracthyr (Alliance 52, Horde 70) and Haranir (Alliance 86, Horde 91) at their retail IDs,
+    // Skyborne (Alliance 95, Horde 96) at their Forever IDs (used only when a Forever configuration is installed).
+    CVar* retailRaces = CVar::Register("retailRaces", "Races drawn with retail models: \"race=retailRaceID\", race=forever:foreverRaceID, or race=centaur / race=slimegiant", 0, "37=37,52=52,70=70,86=86,91=91,95=forever:95,96=forever:96", RetailRacesCallback, CATEGORY_DEFAULT, false, nullptr, false);
     RetailRacesCallback(retailRaces, nullptr, retailRaces->m_stringValue.m_str, nullptr);
     CVar::Register("druidFormPreview", "Show the druid form preview in character creation", 0, "1", nullptr, CATEGORY_DEFAULT, false, nullptr, false);
     // Custom: the macro icon picker also lists every SpellIcon.dbc icon (see CGUIMacros::LoadIcons); 0 is stock

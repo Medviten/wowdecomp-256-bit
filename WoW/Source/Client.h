@@ -114,6 +114,8 @@ constexpr uint32_t CLIENT_RETAIL_SLIME_GIANT = 0xF0010000; // Retail::SlimeGiant
 constexpr uint32_t CLIENT_RETAIL_CENTAUR = 0xF0020000;     // Retail::Centaur::Profile
 bool RetailRacesCallback(CVar* var, const char* oldValue, const char* value, void* arg);
 uint32_t ClientGetRetailRace(uint32_t race);
+// Custom: whether retailRaces maps the race to the Forever source ("race=forever:<id>"); its ID is ClientGetRetailRace's
+bool ClientRetailRaceIsForever(uint32_t race);
 int main();
 int32_t Packet_SMSG_NOTIFICATION(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* msg);
 int32_t Packet_SMSG_PLAYED_TIME(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* msg);

@@ -697,11 +697,14 @@ uint32_t ClientGetAlteredFormRace(uint32_t race) {
 
 // Custom: retailRaces lists the races drawn with retail models and customization (Kalibro's retail race layer, builds
 // with WOWDECOMP_RETAIL_ASSETS): "race=retail" pairs, where retail is a retail ChrRaces ID or "centaur"/"slimegiant" for
-// Kalibro's hand-built Centaur and Slime Giant. Races not listed keep their stock models.
+// Kalibro's hand-built Centaur and Slime Giant, or "forever:<id>" for a race of the Forever source (wow_classic_beta,
+// ForeverCasc.ini; e.g. Skyborne 95/96). Races not listed keep their stock models.
 static uint32_t s_retailRace[256];
+static bool s_foreverRace[256];
 
 bool RetailRacesCallback(CVar* var, const char* oldValue, const char* value, void* arg) {
     memset(s_retailRace, 0, sizeof(s_retailRace));
+    memset(s_foreverRace, 0, sizeof(s_foreverRace));
 
     const char* cursor = value ? value : "";
 
@@ -726,11 +729,17 @@ bool RetailRacesCallback(CVar* var, const char* oldValue, const char* value, voi
 
         cursor++;
         uint32_t retail = 0;
+        bool forever = false;
 
-        if (!SStrCmpI(cursor, "centaur", 7)) {
+        if (!SStrCmpI(cursor, "forever:", 8)) {
+            forever = true;
+            cursor += 8;
+        }
+
+        if (!forever && !SStrCmpI(cursor, "centaur", 7)) {
             retail = CLIENT_RETAIL_CENTAUR;
             cursor += 7;
-        } else if (!SStrCmpI(cursor, "slimegiant", 10)) {
+        } else if (!forever && !SStrCmpI(cursor, "slimegiant", 10)) {
             retail = CLIENT_RETAIL_SLIME_GIANT;
             cursor += 10;
         } else {
@@ -746,6 +755,7 @@ bool RetailRacesCallback(CVar* var, const char* oldValue, const char* value, voi
 
         if (race > 0 && race < 256 && retail) {
             s_retailRace[race] = retail;
+            s_foreverRace[race] = forever;
         }
     }
 
@@ -754,6 +764,10 @@ bool RetailRacesCallback(CVar* var, const char* oldValue, const char* value, voi
 
 uint32_t ClientGetRetailRace(uint32_t race) {
     return race < sizeof(s_retailRace) / sizeof(s_retailRace[0]) ? s_retailRace[race] : 0;
+}
+
+bool ClientRetailRaceIsForever(uint32_t race) {
+    return race < sizeof(s_foreverRace) && s_foreverRace[race];
 }
 
 // Custom: shapeshiftSkinColorRaces lists the races whose shapeshift form models follow skin (fur) color rather than
