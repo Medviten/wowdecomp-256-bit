@@ -643,15 +643,17 @@ int32_t CCharacterCreation::GetExistingClassIndex() {
 
 // VERIFY: 6c4329fd manual
 // OFFSET: 0x004E0F50
+// Custom: room for 256 classes instead of 10, so a custom class (e.g. WHE's Hero class) doesn't overrun the array and
+// kill the client the moment the creation screen opens
 int32_t CCharacterCreation::GetRandomClassID() {
-    int32_t classes[10];
+    int32_t classes[256];
     int32_t count = 0;
     uint8_t expansion = ClientServices::Connection()->m_accountExpansion;
 
     for (uint32_t i = 0; i < CCharacterCreation::m_classes.Count(); i++) {
         ChrClassesRec* rec = CCharacterCreation::m_classes.m_data[i];
 
-        if (expansion >= rec->m_requiredExpansion) {
+        if (expansion >= rec->m_requiredExpansion && count < 256) { // Custom: bounded (see above)
             classes[count++] = rec->m_id;
         }
     }
