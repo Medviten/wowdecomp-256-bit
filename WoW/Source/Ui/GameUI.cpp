@@ -8074,14 +8074,16 @@ void CGGameUI::DisplayPvPQueueRemovedError(int32_t reason) {
 // OFFSET: 0x005235B0
 void CGGameUI::StartMovie(uint32_t movieId) {
     MovieRec* movie = g_movieDB.GetRecord(movieId);
+    int32_t fileDataId = movie ? FindMovieFileDataID(movieId) : -1;
 
-    if (!movie) {
-        return;
-    }
-
-    int32_t fileDataId = FindMovieFileDataID(movieId);
-
+    // Custom: a movie this client has no file for (no Movie row, or no variation with a FileData row) is reported
+    // finished at once, as if skipped, so server scripts waiting for CMSG_COMPLETE_MOVIE (such as the Lost Isles
+    // arrival in WHE F-013) carry on. Stock ignored the request, and the server waited forever.
     if (fileDataId < 0) {
+        CDataStore msg;
+        msg.Put(static_cast<uint32_t>(CMSG_COMPLETE_MOVIE));
+        msg.Finalize();
+        ClientServices::Send2(&msg);
         return;
     }
 
