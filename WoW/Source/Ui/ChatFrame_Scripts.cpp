@@ -182,7 +182,12 @@ static int32_t Script_SendChatMessage(lua_State* L) {
         }
     }
 
-    if (player->IsDeadOrGhost() && type != CHAT_MSG_WHISPER && type != CHAT_MSG_PARTY && type != CHAT_MSG_PARTY_LEADER && type != CHAT_MSG_RAID && type != CHAT_MSG_RAID_LEADER && type != CHAT_MSG_RAID_WARNING && type != CHAT_MSG_GUILD && type != CHAT_MSG_OFFICER && type != CHAT_MSG_CHANNEL && type != CHAT_MSG_DND && type != CHAT_MSG_BATTLEGROUND && type != CHAT_MSG_BATTLEGROUND_LEADER) {
+    // Custom: let server commands ('.' or '!' first, like the server's ChatHandler::ParseCommands) through while dead
+    // or a ghost. The server parses commands before it drops say/yell/emote from dead players, so only the client
+    // stopped them; ordinary speech still gets ERR_CHAT_WHILE_DEAD.
+    bool isCommand = text && (text[0] == '.' || text[0] == '!');
+
+    if (player->IsDeadOrGhost() && !isCommand && type != CHAT_MSG_WHISPER && type != CHAT_MSG_PARTY && type != CHAT_MSG_PARTY_LEADER && type != CHAT_MSG_RAID && type != CHAT_MSG_RAID_LEADER && type != CHAT_MSG_RAID_WARNING && type != CHAT_MSG_GUILD && type != CHAT_MSG_OFFICER && type != CHAT_MSG_CHANNEL && type != CHAT_MSG_DND && type != CHAT_MSG_BATTLEGROUND && type != CHAT_MSG_BATTLEGROUND_LEADER) {
         CGGameUI::DisplayError(ERR_CHAT_WHILE_DEAD);
         return 0;
     }
