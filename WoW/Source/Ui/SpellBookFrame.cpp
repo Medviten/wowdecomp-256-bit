@@ -341,8 +341,11 @@ void CGSpellBook::AddKnownSpell(int32_t spellId, int32_t notify, int32_t replace
         }
 
         case 39: {
-            CGSpellBook::m_languageSpells.m_data[spell.m_effectMiscValue[0]] = spellId;
-            CGChat::UpdateLanguages();
+            // Custom: a spell's language may be missing from Languages.dbc, whose highest id ends the array
+            if (static_cast<uint32_t>(spell.m_effectMiscValue[0]) < CGSpellBook::m_languageSpells.Count()) {
+                CGSpellBook::m_languageSpells.m_data[spell.m_effectMiscValue[0]] = spellId;
+                CGChat::UpdateLanguages();
+            }
             break;
         }
 

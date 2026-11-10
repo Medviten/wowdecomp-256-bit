@@ -4681,7 +4681,8 @@ int32_t CGPlayer_C::GetLanguageSkill(uint32_t language, uint32_t& skill) {
         return 0;
     }
 
-    int32_t languageSpell = CGSpellBook::m_languageSpells.m_data[language];
+    // Custom: chat and gossip packets carry the language id, and the array ends at the highest id in Languages.dbc
+    int32_t languageSpell = language < CGSpellBook::m_languageSpells.Count() ? CGSpellBook::m_languageSpells.m_data[language] : 0;
 
     if (!languageSpell) {
         if (!(this->m_unit->m_unitFieldFlags2 & 0x8)) {
