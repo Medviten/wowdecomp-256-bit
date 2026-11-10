@@ -823,9 +823,10 @@ bool ClientShapeshiftUsesSkinColor(uint32_t race) {
 }
 
 // Custom: creatureSkinRaces lists races whose models use their skin texture's whole layout, like creature models made
-// playable (default "41,43,49,56-63": Murloc, Slime Giant, Centaur and the CoA Custom races Hozen, Sylvari, Mantid, Ethereal,
-// Kyrian, Venthyr, Banshee and Faceless One). Armour textures are not composited onto them: they would land wherever the
-// model's own UVs fall. Weapons, shields, helmets and other attached item models still show.
+// playable (default: Murloc 41, Slime Giant 43, Centaur 49, the CoA Custom races 56-63 (Hozen, Sylvari, Mantid, Ethereal,
+// Kyrian, Venthyr, Banshee, Faceless One) and the CoA 1.9.9 catalog races 67-69 and 71-82, Sethrak .. Drakkin). Armour
+// textures are not composited onto them: they would land wherever the model's own UVs fall. Weapons, shields, helmets and
+// other attached item models still show.
 static bool s_creatureSkinRace[256];
 
 bool CreatureSkinRacesCallback(CVar* var, const char* oldValue, const char* value, void* arg) {

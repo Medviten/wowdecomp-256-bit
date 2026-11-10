@@ -1721,7 +1721,7 @@ bool InitializeGlobal() {
     // Custom: character creation druid form preview (see DruidForms_CharacterCreate.lua)
     CVar* skinColorRaces = CVar::Register("shapeshiftSkinColorRaces", "Races whose shapeshift models follow skin (fur) color, not hair color. Empty: from DBFilesClient\\ShapeshiftSkinColorRaces.csv", 0, "", ShapeshiftSkinColorRacesCallback, CATEGORY_DEFAULT, false, nullptr, false);
     ShapeshiftSkinColorRacesCallback(skinColorRaces, nullptr, skinColorRaces->m_stringValue.m_str, nullptr);
-    CVar* creatureSkinRaces = CVar::Register("creatureSkinRaces", "Races whose models use their whole skin texture (creature models made playable) and show no armour textures (Murloc = 41, Slime Giant = 43, Centaur = 49, CoA races 56-63)", 0, "41,43,49,56,57,58,59,60,61,62,63", CreatureSkinRacesCallback, CATEGORY_DEFAULT, false, nullptr, false);
+    CVar* creatureSkinRaces = CVar::Register("creatureSkinRaces", "Races whose models use their whole skin texture (creature models made playable) and show no armour textures (Murloc = 41, Slime Giant = 43, Centaur = 49, CoA races 56-63, CoA 1.9.9 races 67-69 and 71-82)", 0, "41,43,49,56,57,58,59,60,61,62,63,67,68,69,71,72,73,74,75,76,77,78,79,80,81,82", CreatureSkinRacesCallback, CATEGORY_DEFAULT, false, nullptr, false);
     CreatureSkinRacesCallback(creatureSkinRaces, nullptr, creatureSkinRaces->m_stringValue.m_str, nullptr);
     // Custom: retail models and customization per race (builds with WOWDECOMP_RETAIL_ASSETS; ignored otherwise).
     // Defaults: Mechagnome 37, Dracthyr (Alliance 52, Horde 70) and Haranir (Alliance 86, Horde 91) at their retail IDs,
