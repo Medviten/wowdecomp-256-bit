@@ -79,6 +79,13 @@ Key pieces:
   `DetailDoodad.cpp`); camera `cameraZoomLimit`/acceleration/character fade (`Camera_CVar.cpp`); Stormwind
   occluder removed (`CWorldOcclusion.cpp`).
 - Guild bank fix (`GuildBankFrame*.cpp`), character-creator Worgen/human and druid-form previews.
+- **Continuation DBCs** — `Foo.dbc<tier>-<name>` files (wxl-extended-dbc's naming) found in the patches are layered
+  over `Foo.dbc`: same ID replaces, new ID appends, by tier then name. Found when the archives open (folders listed,
+  MPQs via `(listfile)`); CVar `extendedDBC` 0 turns them off (`DBContinuations` in `WowClientDB.h/.cpp`, log in
+  `Logs\ExtendedDBC.log`). **Sound fallback** — a missing `.wav` opens as `.ogg` and back (`OpenAlternateSoundFile`
+  in `SoundEngine.cpp`), for the squished client's converted sounds.
+- **Patch names** — `patch-<stem>[.<tag>].MPQ` with any letters/digits stem (`PatchFiles.cpp`): numbers by value,
+  letters by length then alphabet, letters above numbers; a tagged patch loads only when `realmName` equals the tag.
 
 To see the full fork delta: `git diff 4119c4b HEAD -- WoW Engine` (4119c4b is the last pure-upstream commit before
 the fork's work), or grep for `// Custom`.
