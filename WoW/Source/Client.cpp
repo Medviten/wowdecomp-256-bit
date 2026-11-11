@@ -1375,6 +1375,9 @@ static void OpenArchives() {
                 s_startArchivePriority = priority;
             }
 
+            // Custom: note the continuation DBCs this patch holds (see DBContinuations)
+            DBContinuations::ScanArchive(patches.m_files[i - 1], s_archiveHandles[slot]);
+
             slot++;
             priority++;
         }
@@ -1414,6 +1417,9 @@ static void OpenArchives() {
     }
 
     s_numPatchArchives = slot;
+
+    // Custom: continuation DBCs can also be loose files (see DBContinuations)
+    DBContinuations::ScanFolder("Data\\DBFilesClient\\");
     int32_t basePriority = 63;
     s_firstBaseArchive = slot;
 
@@ -1701,6 +1707,10 @@ bool InitializeGlobal() {
     }
 
     CVar::Register("dbCompress", "Database compression", 0, "-1", nullptr, CATEGORY_DEFAULT, false, nullptr, false);
+
+    // Custom: continuation DBCs found in the patches are layered over the DBC files; read at startup (see DBContinuations)
+    CVar* extendedDBC = CVar::Register("extendedDBC", "Load continuation DBCs (Foo.dbc1-name) found in the patches (restart to apply)", 0, "1", nullptr, CATEGORY_DEFAULT, false, nullptr, false);
+    DBContinuations::SetEnabled(extendedDBC->m_intValue != 0);
     CVar* locale = CVar::Register("locale", "Set the game locale", 0, "****", LocaleCallback, CATEGORY_DEFAULT, false, nullptr, false);
 
     if (!SStrCmp(locale->m_stringValue.m_str, "****", STORM_MAX_STR)) {

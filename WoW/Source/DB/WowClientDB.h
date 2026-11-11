@@ -6,6 +6,7 @@
 #include <cstring>
 #include <new>
 #include <type_traits>
+#include <unordered_map>
 #include "Engine/Source/BlizzardCore/SFile2-Core.h"
 #include "Engine/Source/Storm/H/storm.h"
 #include "WoW/Source/DB/RaceMask.h"
@@ -21,6 +22,91 @@ template <class T>
 struct WowClientDB_RaceMasks<T, std::void_t<decltype(T::s_numRaceMasks)>> {
     static const int32_t value = T::s_numRaceMasks;
 };
+
+// Custom: continuation DBCs, a client-side take on wxl-extended-dbc's file format. Next to "DBFilesClient\Foo.dbc",
+// files named "DBFilesClient\Foo.dbc<tier>-<name>" (tier 1-9; name of letters, digits, '-' and '_') hold extra rows
+// for the same table, in the same layout. They are found in the patch archives when these open (folder patches by
+// listing them, MPQs by their (listfile)) and in Data\DBFilesClient. The CVar extendedDBC turns them off. A row whose ID
+// is already loaded replaces it; any other row is added. Files apply by tier, then by name A-Z, so later ones win.
+// Tables without an ID column only gain rows. Lets one client keep stock DBCs and layer optional changes on top, e.g.
+// "SoundEntries.dbc1-ogg".
+struct DBContinuationFile {
+    SFileImpl* m_file;
+    int32_t m_numRecords;
+    uint32_t m_stringSize;
+    uint32_t m_stringOffset;
+};
+
+class DBContinuations {
+    public:
+    static const int32_t s_maxFiles = 32;
+
+    // Set while a table's LoadRecords runs, which has no other way to receive it.
+    static DBContinuations* s_current;
+
+    DBContinuationFile m_files[s_maxFiles];
+    int32_t m_count = 0;
+    int32_t m_numRecords = 0;
+    uint32_t m_stringSize = 0;
+
+    static void SetEnabled(bool enabled);
+    // Records the continuation files in a patch archive (path as opened) or a loose folder ending in '\'.
+    static void ScanArchive(const char* path, SArchive* archive);
+    static void ScanFolder(const char* folder);
+
+    ~DBContinuations();
+    void Find(const char* filename, int32_t numColumns, int32_t rowSize, uint32_t baseStringSize);
+    template <class T>
+    int32_t Merge(T* rows, int32_t count, char* strings);
+};
+
+// Reads the continuation rows into rows[], which has room for count + m_numRecords rows, and their strings into
+// strings[], which has room after the base table's. Returns the new row count.
+template <class T>
+int32_t DBContinuations::Merge(T* rows, int32_t count, char* strings) {
+    std::unordered_map<int32_t, int32_t> indexById;
+
+    if constexpr (!T::s_generatedID) {
+        indexById.reserve(static_cast<size_t>(count + this->m_numRecords));
+
+        for (int32_t i = 0; i < count; i++) {
+            indexById[rows[i].m_id] = i;
+        }
+    }
+
+    for (int32_t file = 0; file < this->m_count; file++) {
+        DBContinuationFile& continuation = this->m_files[file];
+        char* fileStrings = strings + continuation.m_stringOffset;
+
+        for (int32_t i = 0; i < continuation.m_numRecords; i++) {
+            T rec;
+
+            if (!rec.Read(continuation.m_file, fileStrings)) {
+                SErrDisplayAppFatal("%s: Cannot read continuation row %i", T::GetFilename(), i);
+            }
+
+            if constexpr (T::s_generatedID) {
+                rec.m_generatedID = count;
+                new (&rows[count++]) T(rec);
+            } else {
+                auto found = indexById.find(rec.m_id);
+
+                if (found != indexById.end()) {
+                    rows[found->second] = rec;
+                } else {
+                    indexById[rec.m_id] = count;
+                    new (&rows[count++]) T(rec);
+                }
+            }
+        }
+
+        if (!SFileReadFile(continuation.m_file, fileStrings, continuation.m_stringSize, nullptr, nullptr, 0)) {
+            SErrDisplayAppFatal("%s: Cannot read continuation string table", T::GetFilename());
+        }
+    }
+
+    return count;
+}
 
 extern int32_t g_clientDbPerformCompress;
 
@@ -96,6 +182,7 @@ class WowClientDB_RLE : public WowClientDB_Common<T> {
     WowClientDB_RLE();
     int32_t GetRecordByIndex(int32_t index, T* rec) const;
     int32_t GetRecord(int32_t id, T* rec) const;
+    void LoadMergedRecords(SFileImpl* f, const char* file, int32_t line, DBContinuations* continuations);
 };
 
 // VERIFY: 936b7da3 auto
@@ -183,12 +270,18 @@ void WowClientDB_Common<T>::Load(const char* file, int32_t line) {
         SErrDisplayAppFatalCustom(0x85100079, "Unable to read string size from %s", T::GetFilename());
     }
 
-    char* strings = static_cast<char*>(SMemAlloc(stringSize, file, line, 0));
+    // Custom: continuation files' strings go after the base table's, in the same allocation (see DBContinuations)
+    DBContinuations continuations;
+    continuations.Find(T::GetFilename(), numColumns, rowSize, stringSize);
+
+    char* strings = static_cast<char*>(SMemAlloc(stringSize + continuations.m_stringSize, file, line, 0));
     this->m_strings = strings;
     this->m_maxID = 0;
     this->m_minID = 0xFFFFFFF;
 
+    DBContinuations::s_current = continuations.m_count ? &continuations : nullptr;
     this->LoadRecords(f, file, line);
+    DBContinuations::s_current = nullptr;
 
     if (!SFileReadFile(f, strings, stringSize, nullptr, nullptr, 0)) {
         SErrDisplayAppFatal("%s: Cannot read string table", T::GetFilename());
@@ -222,7 +315,11 @@ WowClientDB<T>::~WowClientDB() {
 // OFFSET: [0x00405860<Startup_StringsRec>, 0x00658D90<AchievementRec>, 0x00658EA0<Achievement_CriteriaRec>, 0x00658FB0<Achievement_CategoryRec>, 0x006590C0<AnimationDataRec>, 0x006591D0<AreaGroupRec>, 0x006592E0<AreaPOIRec>, 0x006593F0<AreaTableRec>, 0x00659590, 0x006596A0<BarberShopStyleRec>, 0x006597B0<BattlemasterListRec>, 0x00659910<Cfg_CategoriesRec>, 0x00659A70, 0x00659B80<CharBaseInfoRec>, 0x00659CA0, 0x00659DB0<CharStartOutfitRec>, 0x00659F00<CharTitlesRec>, 0x0065A010<CharacterFacialHairStylesRec>, 0x0065A120<ChatChannelsRec>, 0x0065A240<ChrClassesRec>, 0x0065A390<ChrRacesRec>, 0x0065A4A0, 0x0065A5B0<CinematicSequencesRec>, 0x0065A6C0<CreatureDisplayInfoExtraRec>, 0x0065A810<CreatureDisplayInfoRec>, 0x0065A920<CreatureFamilyRec>, 0x0065AA30<CreatureModelDataRec>, 0x0065AB90<CreatureSoundDataRec>, 0x0065ACE0<CreatureSpellDataRec>, 0x0065AE30, 0x0065AF50<CurrencyCategoryRec>, 0x0065B060<DanceMovesRec>, 0x0065B190<DeclinedWordCasesRec>, 0x0065B2A0<DestructibleModelDataRec>, 0x0065B3B0, 0x0065B4E0<DurabilityCostsRec>, 0x0065B670<EmotesTextRec>, 0x0065B780, 0x0065B8A0<FactionGroupRec>, 0x0065B9B0<FactionRec>, 0x0065BB00<FactionTemplateRec>, 0x0065BC10<FileDataRec>, 0x0065BD40<GameObjectArtKitRec>, 0x0065BE50<GameObjectDisplayInfoRec>, 0x0065BFA0<GameTablesRec>, 0x0065C180, 0x0065C330, 0x0065C4E0<HelmetGeosetVisDataRec>, 0x0065C610<HolidaysRec>, 0x0065C760, 0x0065C880<ItemClassRec>, 0x0065CBE0<ItemExtendedCostRec>, 0x0065CD20<ItemPurchaseGroupRec>, 0x0065CE70<ItemRandomPropertiesRec>, 0x0065CF80<ItemRandomSuffixRec>, 0x0065D0D0<ItemSetRec>, 0x0065D220<ItemSubClassMaskRec>, 0x0065D330<ItemSubClassRec>, 0x0065D450<ItemVisualsRec>, 0x0065D560, 0x0065D670, 0x0065D790<LfgDungeonGroupRec>, 0x0065D8A0<LfgDungeonsRec>, 0x0065D9B0<LiquidTypeRec>, 0x0065DAD0<LoadingScreensRec>, 0x0065DBE0<LoadingScreenTaxiSplinesRec>, 0x0065DCF0<LockRec>, 0x0065DE00<LockTypeRec>, 0x0065DF10<MailTemplateRec>, 0x0065E020<MapRec>, 0x0065E130<MapDifficultyRec>, 0x0065E240, 0x0065E3C0<NameGenRec>, 0x0065E4E0<OverrideSpellDataRec>, 0x0065E5F0<PackageRec>, 0x0065E710<PaperDollItemFrameRec>, 0x0065E820<ParticleColorRec>, 0x0065E930<PetPersonalityRec>, 0x0065EA40<PowerDisplayRec>, 0x0065EB90, 0x0065ECA0<RandPropPointsRec>, 0x0065EDB0, 0x0065EEC0<ScalingStatDistributionRec>, 0x0065EFD0<ScalingStatValuesRec>, 0x0065F0E0<ScreenEffectRec>, 0x0065F200, 0x0065F310<SkillCostsDataRec>, 0x0065F420<SkillLineAbilityRec>, 0x0065F570<SkillLineRec>, 0x0065F6E0<SkillTiersRec>, 0x0065F830<SoundAmbienceRec>, 0x0065F940<SoundEmittersRec>, 0x0065FA50<SoundEntriesRec>, 0x0065FB60<SoundProviderPreferencesRec>, 0x0065FC70<SoundSamplePreferencesRec>, 0x0065FD90, 0x0065FEC0<SpellChainEffectsRec>, 0x00660020, 0x00660130<SpellDispelTypeRec>, 0x006602C0<SpellItemEnchantmentRec>, 0x00660410<SpellItemEnchantmentConditionRec>, 0x00660570<SpellMissileRec>, 0x00660680<SpellMissileMotionRec>, 0x006607A0<SpellRangeRec>, 0x00660AE0<SpellShapeshiftFormRec>, 0x00660BF0<SpellVisualEffectNameRec>, 0x00660D00<SpellVisualKitRec>, 0x00660E30<SpellVisualRec>, 0x00660F80, 0x00661090<StationeryRec>, 0x006611C0<TalentRec>, 0x00661310<TalentTabRec>, 0x00661420<TaxiNodesRec>, 0x00661560<TerrainTypeRec>, 0x00661680, 0x006617C0, 0x006618E0, 0x00661A10, 0x00661B20<UnitBloodRec>, 0x00661C30<VehicleRec>, 0x00661D80<VehicleSeatRec>, 0x00661EF0<VocalUISoundsRec>, 0x00662040<WeaponImpactSoundsRec>, 0x00662150, 0x00662260<WeatherRec>, 0x00662370<WorldMapAreaRec>, 0x00662490<WorldMapContinentRec>, 0x006625A0<WorldMapOverlayRec>, 0x006626F0, 0x00662800<WorldSafeLocsRec>, 0x00662960<WorldStateUIRec>, 0x00662AD0<CharSectionsRec>, 0x00662BE0<ZoneIntroMusicTableRec>, 0x00662CF0<ZoneMusicRec>, 0x00662E00<WorldStateZoneSoundsRec>, 0x00662F10<WorldChunkSoundsRec>, 0x00663020<SoundEntriesAdvancedRec>, 0x00663170<ObjectEffectRec>, 0x00663290<ObjectEffectModifierRec>, 0x006633D0<SoundFilterElemRec>, 0x006634E0<WMOAreaTableRec>, 0x0076BBF0<VideoHardwareRec>, 0x007EC7A0<LightParamsRec>, 0x007EC8B0<LightRec>]
 template <class T>
 void WowClientDB<T>::LoadRecords(SFileImpl* f, const char* file, int32_t line) {
-    this->m_records = static_cast<T*>(SMemAlloc(sizeof(T) * this->m_numRecords, file, line, 0));
+    // Custom: room for the continuation files' rows as well (see DBContinuations)
+    DBContinuations* continuations = DBContinuations::s_current;
+    int32_t capacity = this->m_numRecords + (continuations ? continuations->m_numRecords : 0);
+
+    this->m_records = static_cast<T*>(SMemAlloc(sizeof(T) * capacity, file, line, 0));
 
     for (int32_t i = 0; i < this->m_numRecords; i++) {
         new (&this->m_records[i]) T();
@@ -239,6 +336,25 @@ void WowClientDB<T>::LoadRecords(SFileImpl* f, const char* file, int32_t line) {
 
         this->m_maxID = id > this->m_maxID ? id : this->m_maxID;
         this->m_minID = id < this->m_minID ? id : this->m_minID;
+    }
+
+    // Custom: merge the continuation rows; replaced rows keep their IDs, so only added ones can widen the range
+    if (continuations) {
+        int32_t first = this->m_numRecords;
+        this->m_numRecords = continuations->Merge(this->m_records, this->m_numRecords, const_cast<char*>(this->m_strings));
+
+        for (int32_t i = first; i < this->m_numRecords; i++) {
+            int32_t id;
+
+            if constexpr (T::s_generatedID) {
+                id = this->m_records[i].m_generatedID;
+            } else {
+                id = this->m_records[i].m_id;
+            }
+
+            this->m_maxID = id > this->m_maxID ? id : this->m_maxID;
+            this->m_minID = id < this->m_minID ? id : this->m_minID;
+        }
     }
 
     this->m_recordsById = new (__FILE__, __LINE__) T*[this->m_maxID - this->m_minID + 1];
@@ -341,6 +457,12 @@ WowClientDB_RLE<T>::~WowClientDB_RLE() {
 // OFFSET: [0x0065C9A0<ItemDisplayInfoRec>, 0x006608B0<SpellRec>, 0x007EC520]
 template <class T>
 void WowClientDB_RLE<T>::LoadRecords(SFileImpl* f, const char* file, int32_t line) {
+    // Custom: continuation files need every row in memory before storing them (see DBContinuations)
+    if (DBContinuations::s_current) {
+        this->LoadMergedRecords(f, file, line, DBContinuations::s_current);
+        return;
+    }
+
     T rec;
     uint32_t compressedSize = 0;
 
@@ -396,6 +518,58 @@ void WowClientDB_RLE<T>::LoadRecords(SFileImpl* f, const char* file, int32_t lin
             this->m_recordsById[this->m_data[i].m_id - this->m_minID] = &this->m_data[i];
         }
     }
+}
+
+// Custom: LoadRecords with continuation files. Reads the base rows and the continuations' into one array, then
+// stores them as LoadRecords does, compressed or not.
+template <class T>
+void WowClientDB_RLE<T>::LoadMergedRecords(SFileImpl* f, const char* file, int32_t line, DBContinuations* continuations) {
+    T* rows = static_cast<T*>(SMemAlloc(sizeof(T) * (this->m_numRecords + continuations->m_numRecords), file, line, 0));
+
+    for (int32_t i = 0; i < this->m_numRecords; i++) {
+        new (&rows[i]) T();
+        rows[i].Read(f, this->m_strings);
+    }
+
+    this->m_numRecords = continuations->Merge(rows, this->m_numRecords, const_cast<char*>(this->m_strings));
+
+    for (int32_t i = 0; i < this->m_numRecords; i++) {
+        this->m_maxID = rows[i].m_id > this->m_maxID ? rows[i].m_id : this->m_maxID;
+        this->m_minID = rows[i].m_id < this->m_minID ? rows[i].m_id : this->m_minID;
+    }
+
+    T** index = static_cast<T**>(SMemAlloc(sizeof(T*) * this->m_numRecords + sizeof(T*) * (this->m_maxID - this->m_minID) + sizeof(T*), file, line, 0));
+    this->m_records = index;
+    this->m_recordsById = &index[this->m_numRecords];
+    memset(this->m_recordsById, 0, sizeof(T*) * (this->m_maxID - this->m_minID) + sizeof(T*));
+
+    if (!g_clientDbPerformCompress) {
+        this->m_data = rows;
+
+        for (int32_t i = 0; i < this->m_numRecords; i++) {
+            this->m_records[i] = &rows[i];
+            this->m_recordsById[rows[i].m_id - this->m_minID] = &rows[i];
+        }
+
+        return;
+    }
+
+    uint32_t compressedSize = 0;
+
+    for (int32_t i = 0; i < this->m_numRecords; i++) {
+        compressedSize += CompressRow(reinterpret_cast<const uint8_t*>(&rows[i]), sizeof(T), nullptr);
+    }
+
+    this->m_data = static_cast<T*>(SMemAlloc(compressedSize, file, line, 0));
+    uint8_t* dst = reinterpret_cast<uint8_t*>(this->m_data);
+
+    for (int32_t i = 0; i < this->m_numRecords; i++) {
+        this->m_records[i] = reinterpret_cast<T*>(dst);
+        this->m_recordsById[rows[i].m_id - this->m_minID] = reinterpret_cast<T*>(dst);
+        dst += CompressRow(reinterpret_cast<const uint8_t*>(&rows[i]), sizeof(T), dst);
+    }
+
+    SMemFree(rows, file, line, 0);
 }
 
 // VERIFY: 8403c210 auto
