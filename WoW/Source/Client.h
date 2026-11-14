@@ -78,6 +78,9 @@ extern char s_localeCode[5];
 extern int32_t s_isPvPRealm;
 extern int32_t s_region;
 
+// Custom: timestamped steps of a world transfer (map change) in Logs\WorldTransfer.log, to see where the loading
+// screen's time goes
+void ClientTransferLog(const char* format, ...);
 void AsyncFileReadRegisterCVars();
 void BeginCloseGame();
 int32_t CCommand_Perf(const char* command, const char* arguments);

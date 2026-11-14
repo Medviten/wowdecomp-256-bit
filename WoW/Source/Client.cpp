@@ -1,3 +1,4 @@
+#include <cstdarg>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
@@ -891,9 +892,25 @@ void StartupReport(bool firstRun) {
     World::SetFrameCntCallback(StartupReportFrameCallback);
 }
 
+// Custom: see Client.h. Storm's log stamps each line to the millisecond.
+static HSLOG s_transferLog;
+
+void ClientTransferLog(const char* format, ...) {
+    if (!s_transferLog && !SLogCreate("Logs\\WorldTransfer.log", 0, &s_transferLog)) {
+        return;
+    }
+
+    va_list args;
+    va_start(args, format);
+    SLogVWrite(s_transferLog, format, args);
+    va_end(args);
+    SLogFlush(s_transferLog);
+}
+
 // VERIFY: 2b64aabf manual
 // OFFSET: 0x00403B70
 static int32_t LoadNewWorld(const void* data, void* param) {
+    ClientTransferLog("LoadNewWorld: map %u, unloading the old map", s_zoneID); // Custom
     ClientServices::Connection()->CharacterSetInGame(0);
     MovementDestroy();
     EventUnregister(EVENT_ID_IDLE, MovementIdleMoveUnits);
@@ -911,6 +928,7 @@ static int32_t LoadNewWorld(const void* data, void* param) {
 
     CGUnit_C::StopMissileTrajectoryTargeting();
     World::UnloadMap();
+    ClientTransferLog("LoadNewWorld: old map unloaded"); // Custom
 
     if (World::s_weather) {
         World::s_weather->Reset();
@@ -925,7 +943,9 @@ static int32_t LoadNewWorld(const void* data, void* param) {
     AsyncFileReadIngameProgressCallback(nullptr, nullptr);
     AsyncFileReadSetProgressCallback(LoadingScreenAsyncCallback, nullptr);
     World::SetLoadProgressCallback(LoadingScreenWorldCallback, nullptr);
+    ClientTransferLog("LoadNewWorld: loading map %s", s_directory); // Custom
     CWorld::LoadMap(s_directory, &s_spawnPosition, s_zoneID, 1);
+    ClientTransferLog("LoadNewWorld: map loaded"); // Custom
     AsyncFileReadSetProgressCallback(nullptr, nullptr);
     World::SetLoadProgressCallback(nullptr, nullptr);
 
@@ -939,6 +959,7 @@ static int32_t LoadNewWorld(const void* data, void* param) {
         msg.Put(static_cast<uint32_t>(MSG_MOVE_WORLDPORT_ACK));
         msg.Finalize();
         ClientServices::Send2(&msg);
+        ClientTransferLog("LoadNewWorld: MSG_MOVE_WORLDPORT_ACK sent, waiting for the server"); // Custom
     }
 
     return 1;
@@ -967,6 +988,7 @@ static int32_t Packet_SMSG_NEW_WORLD(void* param, NETMESSAGE msgId, uint32_t tim
     }
 
     s_directory = map->m_directory;
+    ClientTransferLog("SMSG_NEW_WORLD: map %u (%s)", s_zoneID, s_directory); // Custom
     EventSetTimer(0, LoadNewWorld, reinterpret_cast<void*>(1));
 
     return 1;
@@ -1937,6 +1959,7 @@ int32_t Packet_SMSG_TRANSFER_PENDING(void* param, NETMESSAGE msgId, uint32_t tim
 
     CGGameUI::ClearClientControls();
     ConsolePrintf("World transfer pending...");
+    ClientTransferLog("SMSG_TRANSFER_PENDING: map %u%s", mapID, transportEntry ? " (on a transport)" : ""); // Custom
 
     if (!transportEntry || transportMap == -1) {
         LoadingScreenEnable(mapID, true);

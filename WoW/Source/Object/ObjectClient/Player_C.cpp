@@ -3112,6 +3112,7 @@ void CGPlayer_C::PostInitActivePlayer() {
             this->ToggleFarSight(charmed);
         }
 
+        ClientTransferLog("player object received, UI entering the world (addons' PLAYER_ENTERING_WORLD)"); // Custom
         CGGameUI::EnterWorld();
         CGGameUI::UpdateActivePlayer();
     }
@@ -3126,6 +3127,8 @@ void CGPlayer_C::PostInitActivePlayer() {
     } else {
         LoadingScreenDisable();
     }
+
+    ClientTransferLog("player object in the world, loading screen off"); // Custom
 
     Spell_C_SetPlayerClass(this->m_unit->m_unitFieldBytes0[1]);
     this->CountEquippedGems();
