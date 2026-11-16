@@ -436,9 +436,18 @@ bool CMapObj::Read(char* fileName) {
 
     SFileImpl* file = nullptr;
 
-    if (CMap::SafeOpen(fileName, &file)) {
+    // Custom: a missing WMO falls back to the placeholder below (logged in Logs\MissingWMO.log) instead of
+    // SafeOpen's fatal error, so ported maps whose buildings aren't converted yet still load
+    if (SFileOpenFile(fileName, &file)) {
         SStrCopy(this->m_wmoName, fileName, STORM_MAX_STR);
     } else {
+        static HSLOG s_missingLog;
+
+        if (s_missingLog || SLogCreate("Logs\\MissingWMO.log", 0, &s_missingLog)) {
+            SLogWrite(s_missingLog, "%s", fileName);
+            SLogFlush(s_missingLog);
+        }
+
         CMap::SafeOpen("world\\wmo\\Dungeon\\test\\missingwmo.wmo", &file);
         SStrCopy(this->m_wmoName, "world\\wmo\\Dungeon\\test\\missingwmo.wmo", STORM_MAX_STR);
     }
