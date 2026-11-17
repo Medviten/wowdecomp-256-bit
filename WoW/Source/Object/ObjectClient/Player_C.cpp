@@ -3811,8 +3811,9 @@ int32_t Packet_Group_17(void* param, NETMESSAGE msgId, uint32_t time, CDataStore
             return 1;
         }
 
-        for (int32_t i = 0; i < 25; i++) {
-            PlayerQuestLogEntry* entry = i >= 0 && i <= 25 ? &player->m_player->m_playerQuestLog[i] : nullptr;
+        // Custom: all PLAYER_QUEST_LOG_SLOTS slots (was 25)
+        for (uint32_t i = 0; i < PLAYER_QUEST_LOG_SLOTS; i++) {
+            PlayerQuestLogEntry* entry = player->GetQuestLogEntry(i);
 
             if (entry && entry->m_questId == questId) {
                 if (entry->m_state & 0x2) {
@@ -7131,8 +7132,10 @@ int32_t OnUpdateQuest(WOWGUID guid, uint32_t offset, uint32_t count, const void*
     }
 
     CGQuestLog::Update(1);
-    uint32_t slot = (offset - 0x28) / sizeof(PlayerQuestLogEntry);
-    PlayerQuestLogEntry* entry = slot > 25 ? nullptr : &player->m_player->m_playerQuestLog[slot];
+    // Custom: offsets past the stock quest log are extended slots (m_playerQuestLogExt)
+    uint32_t extOffset = offsetof(CGPlayerLocalData, m_playerQuestLogExt);
+    uint32_t slot = offset >= extOffset ? PLAYER_QUEST_LOG_STOCK_SLOTS + (offset - extOffset) / sizeof(PlayerQuestLogEntry) : (offset - 0x28) / sizeof(PlayerQuestLogEntry);
+    PlayerQuestLogEntry* entry = player->GetQuestLogEntry(slot);
     const PlayerQuestLogEntry* old = static_cast<const PlayerQuestLogEntry*>(value);
     uint32_t questId = entry->m_questId;
     WOWGUID none = { 0 };
@@ -7205,6 +7208,11 @@ void CGPlayer_C::SetActiveMirrorHandlers() {
 
     for (uint32_t i = 0x28; i < 0x21C; i += 20) {
         ClntObjMgrSetObjMirrorHandler(this->m_obj->m_guid, ID_PLAYER, i, 20, OnUpdateQuest, nullptr, static_cast<HANDLER_PRIORITY>(0), 0);
+    }
+
+    // Custom: extended quest log slots
+    for (uint32_t i = offsetof(CGPlayerLocalData, m_playerQuestLogExt); i < sizeof(CGPlayerLocalData); i += sizeof(PlayerQuestLogEntry)) {
+        ClntObjMgrSetObjMirrorHandler(this->m_obj->m_guid, ID_PLAYER, i, sizeof(PlayerQuestLogEntry), OnUpdateQuest, nullptr, static_cast<HANDLER_PRIORITY>(0), 0);
     }
 
     for (uint32_t i = 0x11B0; i < 0x1214; i += 4) {
@@ -7299,6 +7307,11 @@ void CGPlayer_C::UnsetActiveMirrorHandlers() {
     }
 
     for (uint32_t i = 0x28; i < 0x21C; i += 20) {
+        ClntObjMgrUnsetObjMirrorHandler(this->m_obj->m_guid, ID_PLAYER, i, OnUpdateQuest, nullptr);
+    }
+
+    // Custom: extended quest log slots
+    for (uint32_t i = offsetof(CGPlayerLocalData, m_playerQuestLogExt); i < sizeof(CGPlayerLocalData); i += sizeof(PlayerQuestLogEntry)) {
         ClntObjMgrUnsetObjMirrorHandler(this->m_obj->m_guid, ID_PLAYER, i, OnUpdateQuest, nullptr);
     }
 
@@ -12517,8 +12530,9 @@ void CGPlayer_C::CheckForQuestItemLoot(uint32_t itemId, uint32_t count, uint32_t
         return;
     }
 
-    for (uint32_t i = 0; i < 25; i++) {
-        PlayerQuestLogEntry* entry = &this->m_player->m_playerQuestLog[i];
+    // Custom: all PLAYER_QUEST_LOG_SLOTS slots (was 25)
+    for (uint32_t i = 0; i < PLAYER_QUEST_LOG_SLOTS; i++) {
+        PlayerQuestLogEntry* entry = this->GetQuestLogEntry(i);
 
         if (static_cast<int32_t>(entry->m_questId) <= 0 || CGQuestLog::IsQuestExpiredByID(entry->m_questId)) {
             continue;

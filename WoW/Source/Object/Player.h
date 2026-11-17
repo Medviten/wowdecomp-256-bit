@@ -8,6 +8,13 @@
 
 class CGPlayerLocalData;
 
+// Custom: the quest log holds 255 quests instead of 25. Slots 0-24 keep their stock fields (PLAYER_QUEST_LOG_1_1..25_5);
+// slots 25-254 are appended after the stock player fields (m_playerQuestLogExt, PLAYER_QUEST_LOG_EXT_1_1 on the
+// server) so no stock field index moves. The extra slots are private: only the active player has them.
+static constexpr uint32_t PLAYER_QUEST_LOG_STOCK_SLOTS = 25;
+static constexpr uint32_t PLAYER_QUEST_LOG_SLOTS = 255;
+static constexpr uint32_t PLAYER_QUEST_LOG_EXT_FIELDS = (PLAYER_QUEST_LOG_SLOTS - PLAYER_QUEST_LOG_STOCK_SLOTS) * 5;
+
 struct PlayerQuestLogEntry {
     /* 0000 */ uint32_t m_questId;
     /* 0004 */ uint32_t m_state;
@@ -128,6 +135,8 @@ class CGPlayerLocalData : public CGPlayerData {
     /* 1248 */ uint32_t m_playerFieldGlyphs1 [6];
     /* 1260 */ uint32_t m_playerGlyphsEnabled;
     /* 1264 */ uint32_t m_playerPetSpellPower;
+    // Custom: quest log slots 25-254 (see PLAYER_QUEST_LOG_SLOTS)
+    /* 1268 */ PlayerQuestLogEntry m_playerQuestLogExt [PLAYER_QUEST_LOG_SLOTS - PLAYER_QUEST_LOG_STOCK_SLOTS];
 };
 
 #endif

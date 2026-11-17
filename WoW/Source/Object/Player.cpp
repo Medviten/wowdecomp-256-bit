@@ -98,6 +98,11 @@ uint32_t CGPlayer::GetSavedIndexFromDataIndex(uint32_t index, uint32_t count, in
                 return i + sizeof(CGPlayer::s_mirrorFields) / sizeof(CGPlayer::s_mirrorFields[0]);
             }
         }
+
+        // Custom: the extended quest log fields follow the stock local mirror fields
+        if (index >= 1178 && index < 1178 + PLAYER_QUEST_LOG_EXT_FIELDS) {
+            return index - 1178 + sizeof(CGPlayer::s_mirrorFields) / sizeof(CGPlayer::s_mirrorFields[0]) + sizeof(CGPlayer::s_localMirrorFields) / sizeof(CGPlayer::s_localMirrorFields[0]);
+        }
     }
 
     return 1178;
@@ -130,7 +135,8 @@ int32_t CGPlayer::HasZoneExplored(int32_t zone) {
 // VERIFY: 89fd3c87 auto
 // OFFSET: 0x004F5530
 int32_t CGPlayer::TotalFields() {
-    return CGUnit::TotalFields() + 1043;
+    // Custom: + the extended quest log fields
+    return CGUnit::TotalFields() + 1043 + PLAYER_QUEST_LOG_EXT_FIELDS;
 }
 
 // VERIFY: f3b17437 auto
@@ -170,8 +176,14 @@ bool CGPlayer::HasAuraVision(uint8_t vision) {
 // VERIFY: d70d997f manual
 // OFFSET: 0x005E0870
 PlayerQuestLogEntry* CGPlayer::GetQuestLogEntry(uint32_t slot) {
-    if (slot > 25) {
+    // Custom: slots 25-254 live in m_playerQuestLogExt and exist only on the active player (callers looking at other
+    // players stop at PLAYER_QUEST_LOG_STOCK_SLOTS). The stock check was slot > 25.
+    if (slot >= PLAYER_QUEST_LOG_SLOTS) {
         return nullptr;
+    }
+
+    if (slot >= PLAYER_QUEST_LOG_STOCK_SLOTS) {
+        return &this->m_player->m_playerQuestLogExt[slot - PLAYER_QUEST_LOG_STOCK_SLOTS];
     }
 
     return &this->m_player->m_playerQuestLog[slot];

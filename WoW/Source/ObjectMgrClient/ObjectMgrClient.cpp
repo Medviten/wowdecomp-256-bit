@@ -39,8 +39,14 @@ static thread_local ObjectMgr* s_curMgr;
 // STATIC: 0x00B4B014
 static ObjectMgr* s_savedObjMgr;
 
+// Custom: the active player has PLAYER_QUEST_LOG_EXT_FIELDS more fields than stock (1326) for the 255-slot quest
+// log, which takes the update mask past the stock 42 blocks
+static constexpr uint32_t ACTIVE_PLAYER_DWORDS = 1326 + PLAYER_QUEST_LOG_EXT_FIELDS;
+static constexpr uint32_t MAX_DIRTY_MASK_BLOCKS = (ACTIVE_PLAYER_DWORDS + 31) / 32;
+static_assert(ACTIVE_PLAYER_DWORDS * sizeof(uint32_t) == sizeof(CGObjectData) + sizeof(CGUnitData) + sizeof(CGPlayerLocalData), "active player field count");
+
 // STATIC: 0x00B4B020
-static TSList<CMirrorHandler, TSGetLink<CMirrorHandler> > s_typeMirrorHandlers[NUM_CLIENT_OBJECT_TYPES][1326];
+static TSList<CMirrorHandler, TSGetLink<CMirrorHandler> > s_typeMirrorHandlers[NUM_CLIENT_OBJECT_TYPES][ACTIVE_PLAYER_DWORDS];
 
 // STATIC: 0x00B4AFF4
 static uint32_t s_objHeapIds[NUM_CLIENT_OBJECT_TYPES];
@@ -55,7 +61,7 @@ static const char* s_objNames[NUM_CLIENT_OBJECT_TYPES] = { "CGObject_C", "CGItem
 static const uint32_t s_objHeapSize[NUM_CLIENT_OBJECT_TYPES] = { 0, 512, 32, 64, 64, 64, 32, 32 };
 
 // STATIC: 0x00AC3D04
-static const uint32_t s_objDwordCount[NUM_CLIENT_OBJECT_TYPES] = { 0x6, 0x40, 0x8A, 0x94, 0x52E, 0x12, 0xC, 0x24 };
+static const uint32_t s_objDwordCount[NUM_CLIENT_OBJECT_TYPES] = { 0x6, 0x40, 0x8A, 0x94, ACTIVE_PLAYER_DWORDS, 0x12, 0xC, 0x24 }; // Custom: player was 0x52E
 
 // STATIC: 0x00B6A160
 uint32_t s_objTotalSize[NUM_CLIENT_OBJECT_TYPES] = {
@@ -476,7 +482,7 @@ static uint32_t GetNumDwordBlocks(uint32_t type, WOWGUID guid) {
         }
 
         case TYPEMASK_OBJECT | TYPEMASK_UNIT | TYPEMASK_PLAYER: {
-            return guid == ClntObjMgrGetActivePlayer() ? 1326 : 324;
+            return guid == ClntObjMgrGetActivePlayer() ? ACTIVE_PLAYER_DWORDS : 324; // Custom: was 1326
         }
 
         case TYPEMASK_OBJECT | TYPEMASK_GAMEOBJECT: {
@@ -504,7 +510,8 @@ static int32_t ExtractDirtyMasks(CDataStore* msg, uint8_t* blockCount, uint32_t*
     msg->Get(count);
     *blockCount = count;
 
-    if (count > 42) {
+    // Custom: was 42 blocks
+    if (count > MAX_DIRTY_MASK_BLOCKS) {
         return 0;
     }
 
@@ -514,8 +521,8 @@ static int32_t ExtractDirtyMasks(CDataStore* msg, uint8_t* blockCount, uint32_t*
         msg->Get(masks[i]);
     }
 
-    if (i < 42) {
-        memset(&masks[i], 0, sizeof(uint32_t) * (42 - i));
+    if (i < MAX_DIRTY_MASK_BLOCKS) {
+        memset(&masks[i], 0, sizeof(uint32_t) * (MAX_DIRTY_MASK_BLOCKS - i));
     }
 
     return 1;
@@ -524,7 +531,7 @@ static int32_t ExtractDirtyMasks(CDataStore* msg, uint8_t* blockCount, uint32_t*
 // VERIFY: 3918bd3a manual
 // OFFSET: 0x004D3F80
 static int32_t SkipPartialObjectUpdate(CDataStore* msg) {
-    uint32_t masks[42];
+    uint32_t masks[MAX_DIRTY_MASK_BLOCKS]; // Custom: was 42
     uint8_t blockCount;
 
     if (!ExtractDirtyMasks(msg, &blockCount, masks)) {
@@ -799,7 +806,7 @@ static void ExpireOldObjects(uint32_t expireTime, OBJECT_TYPE_ID typeId) {
 // OFFSET: 0x004D4930
 CGObject_C* ClntObjMgrAllocObject(OBJECT_TYPE_ID typeId, WOWGUID guid) {
     if (guid == ClntObjMgrGetActivePlayer()) {
-        return static_cast<CGObject_C*>(SMemAlloc(sizeof(CGPlayer_C) + s_objDwordCount[ID_PLAYER] * sizeof(uint32_t) + CGPlayer::TotalFields() * sizeof(uint32_t) + 1002 * sizeof(TSList<void>), __FILE__, __LINE__, 0));
+        return static_cast<CGObject_C*>(SMemAlloc(sizeof(CGPlayer_C) + s_objDwordCount[ID_PLAYER] * sizeof(uint32_t) + CGPlayer::TotalFields() * sizeof(uint32_t) + (1002 + PLAYER_QUEST_LOG_EXT_FIELDS) * sizeof(TSList<void>), __FILE__, __LINE__, 0));
     }
 
     ExpireOldObjects(10000, typeId);
@@ -912,7 +919,7 @@ static int32_t LinkPendingNodes(TSExplicitList<CMirrorHandler, offsetof(CMirrorH
 // VERIFY: 5cf2342e manual
 // OFFSET: 0x004D53C0
 static int32_t FillInPartialObjectData(CGObject_C* object, WOWGUID guid, CDataStore* msg, bool skipMirrorUpdate, bool zeroFillAbsent) {
-    uint32_t masks[42];
+    uint32_t masks[MAX_DIRTY_MASK_BLOCKS]; // Custom: was 42
     uint8_t blockCount;
 
     if (!ExtractDirtyMasks(msg, &blockCount, masks)) {
@@ -977,7 +984,7 @@ static int32_t CallMirrorHandlers(CDataStore* msg, bool postInit, WOWGUID guid) 
         return SkipPartialObjectUpdate(msg);
     }
 
-    uint32_t masks[42];
+    uint32_t masks[MAX_DIRTY_MASK_BLOCKS]; // Custom: was 42
     uint8_t blockCount;
 
     if (!ExtractDirtyMasks(msg, &blockCount, masks)) {
@@ -1043,7 +1050,7 @@ static void ClearMirrorLists(CGObject_C* object) {
             FreeMirrorHandlers(player->m_playerMirrorLists, 176);
 
             if (player->IsActivePlayer()) {
-                FreeMirrorHandlers(player->m_playerLocalMirrorLists, 1002);
+                FreeMirrorHandlers(player->m_playerLocalMirrorLists, 1002 + PLAYER_QUEST_LOG_EXT_FIELDS);
             }
         }
 
@@ -1128,7 +1135,7 @@ void ClntObjMgrUnsetObjMirrorHandler(WOWGUID guid, OBJECT_TYPE_ID typeId, uint32
 // OFFSET: 0x004D5C80
 void ClntObjMgrDestroyShared() {
     for (uint32_t typeId = 0; typeId < NUM_CLIENT_OBJECT_TYPES; typeId++) {
-        for (uint32_t i = 0; i < 1326; i++) {
+        for (uint32_t i = 0; i < ACTIVE_PLAYER_DWORDS; i++) { // Custom: was 1326
             TSList<CMirrorHandler, TSGetLink<CMirrorHandler> >* list = &s_typeMirrorHandlers[typeId][i];
 
             for (CMirrorHandler* handler = list->Head(); handler; handler = list->Head()) {

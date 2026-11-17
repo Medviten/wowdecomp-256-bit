@@ -1,8 +1,10 @@
+#include <cstddef>
 #include <cstdint>
 #include "Engine/Source/Storm/H/stpl.h"
 #include "Engine/Source/FrameScript/FrameScript.h"
 #include "WoW/Source/Ui/ScriptEvents.h"
 #include "WoW/Source/Object/ObjectClient/Unit_C.h"
+#include "WoW/Source/Object/Player.h"
 #include "WoW/Source/Object/Types.h"
 #include "WoW/Source/ObjectMgrClient/ObjectMgrClient.h"
 #include "WoW/Source/Ui/BattlefieldInfo.h"
@@ -390,6 +392,11 @@ void ScriptEventsRegisterUnit(CGUnit_C* unit) {
     if (unit->m_obj->m_type & TYPEMASK_PLAYER) {
         ClntObjMgrSetObjMirrorHandler(unit->m_obj->m_guid, ID_PLAYER, 0x21C, 0x98, PlayerInventoryChangedHandler, nullptr, static_cast<HANDLER_PRIORITY>(0), 0);
         ClntObjMgrSetObjMirrorHandler(unit->m_obj->m_guid, ID_PLAYER, 0x28, 0x1F4, PlayerQuestLogChangedHandler, nullptr, static_cast<HANDLER_PRIORITY>(0), 0);
+
+        // Custom: extended quest log slots (only the active player has them)
+        if (unit->IsActivePlayer()) {
+            ClntObjMgrSetObjMirrorHandler(unit->m_obj->m_guid, ID_PLAYER, offsetof(CGPlayerLocalData, m_playerQuestLogExt), sizeof(CGPlayerLocalData::m_playerQuestLogExt), PlayerQuestLogChangedHandler, nullptr, static_cast<HANDLER_PRIORITY>(0), 0);
+        }
     }
 }
 
@@ -405,6 +412,11 @@ void ScriptEventsUnregisterUnit(CGUnit_C* unit) {
     if (unit->m_obj->m_type & TYPEMASK_PLAYER) {
         ClntObjMgrUnsetObjMirrorHandler(unit->m_obj->m_guid, ID_PLAYER, 0x21C, PlayerInventoryChangedHandler, nullptr);
         ClntObjMgrUnsetObjMirrorHandler(unit->m_obj->m_guid, ID_PLAYER, 0x28, PlayerQuestLogChangedHandler, nullptr);
+
+        // Custom: extended quest log slots
+        if (unit->IsActivePlayer()) {
+            ClntObjMgrUnsetObjMirrorHandler(unit->m_obj->m_guid, ID_PLAYER, offsetof(CGPlayerLocalData, m_playerQuestLogExt), PlayerQuestLogChangedHandler, nullptr);
+        }
     }
 }
 

@@ -266,11 +266,12 @@ static int32_t Script_GetQuestTimers(lua_State* L) {
 
         int32_t slot = CGQuestLog::m_quests[i].m_logSlot;
 
-        if (slot < 0 || slot > 25) {
+        // Custom: extended quest log (was slot > 25)
+        if (slot < 0 || slot >= static_cast<int32_t>(PLAYER_QUEST_LOG_SLOTS)) {
             continue;
         }
 
-        PlayerQuestLogEntry* entry = &player->m_player->m_playerQuestLog[slot];
+        PlayerQuestLogEntry* entry = player->GetQuestLogEntry(slot);
 
         if (!entry || !entry->m_time || (entry->m_state & 2) || (i < CGQuestLog::m_numQuest && CGQuestLog::m_quests[i].m_expired)) {
             continue;
@@ -922,11 +923,12 @@ static int32_t Script_GetQuestIndexForTimer(lua_State* L) {
 
             int32_t slot = CGQuestLog::m_quests[i].m_logSlot;
 
-            if (slot < 0 || slot > 25) {
+            // Custom: extended quest log (was slot > 25)
+            if (slot < 0 || slot >= static_cast<int32_t>(PLAYER_QUEST_LOG_SLOTS)) {
                 continue;
             }
 
-            PlayerQuestLogEntry* entry = &player->m_player->m_playerQuestLog[slot];
+            PlayerQuestLogEntry* entry = player->GetQuestLogEntry(slot);
 
             if (!entry || !entry->m_time || (entry->m_state & 2) || timeOffset - static_cast<int32_t>(time(nullptr)) + static_cast<int32_t>(entry->m_time) - 1 < 0) {
                 continue;
@@ -1072,7 +1074,7 @@ static int32_t Script_QuestPOIGetQuestIDByIndex(lua_State* L) {
 
     uint32_t index = static_cast<uint32_t>(lua_tonumber(L, 1)) - 1;
 
-    if (index > 24) {
+    if (index >= PLAYER_QUEST_LOG_SLOTS) { // Custom: was > 24
         return 0;
     }
 
@@ -1108,8 +1110,9 @@ static int32_t Script_GetQuestLogTimeLeft(lua_State* L) {
         int32_t index = CGQuestLog::GetSelectedLogEntry();
         uint32_t slot = index < 0 ? 0 : CGQuestLog::m_quests[index].m_logSlot;
 
-        if (slot <= 25) {
-            PlayerQuestLogEntry* entry = &player->m_player->m_playerQuestLog[slot];
+        // Custom: extended quest log (was slot <= 25)
+        if (slot < PLAYER_QUEST_LOG_SLOTS) {
+            PlayerQuestLogEntry* entry = player->GetQuestLogEntry(slot);
             int32_t timeOffset = CGQuestLog::m_timeOffset;
 
             if (entry && entry->m_time && !(entry->m_state & 2) && timeOffset) {
@@ -1138,8 +1141,9 @@ static int32_t Script_IsCurrentQuestFailed(lua_State* L) {
         int32_t index = CGQuestLog::GetSelectedLogEntry();
         uint32_t slot = index < 0 ? 0 : CGQuestLog::m_quests[index].m_logSlot;
 
-        if (slot <= 25) {
-            PlayerQuestLogEntry* entry = &player->m_player->m_playerQuestLog[slot];
+        // Custom: extended quest log (was slot <= 25)
+        if (slot < PLAYER_QUEST_LOG_SLOTS) {
+            PlayerQuestLogEntry* entry = player->GetQuestLogEntry(slot);
 
             if (entry && ((entry->m_state & 2) || CGQuestLog::IsSelectedQuestExpired())) {
                 lua_pushnumber(L, 1.0);
@@ -1165,7 +1169,8 @@ static int32_t Script_IsUnitOnQuest(lua_State* L) {
     WOWGUID guid;
 
     if (index >= 0 && index < CGQuestLog::m_numQuest && !CGQuestLog::m_quests[index].m_isHeader && (questId = CGQuestLog::m_quests[index].m_questId) && (guid = GetGuidByKeyword(lua_tolstring(L, 2, nullptr)), CGPartyInfo::IsMember(guid)) && (member = static_cast<CGPlayer_C*>(ClntObjMgrObjectPtr(guid, TYPEMASK_PLAYER, __FILE__, __LINE__))) && !(member->m_modelFlags & 0x10000)) {
-        for (uint32_t slot = 0; slot < 25; slot++) {
+        // Custom: party members only have the stock slots; quests past slot 25 do not show for them
+        for (uint32_t slot = 0; slot < PLAYER_QUEST_LOG_STOCK_SLOTS; slot++) {
             PlayerQuestLogEntry* entry = member->GetQuestLogEntry(slot);
 
             if (entry && static_cast<int32_t>(entry->m_questId) == questId) {
@@ -1470,8 +1475,9 @@ static int32_t Script_GetQuestLogTitle(lua_State* L) {
         if (index >= 0 && index < CGQuestLog::m_numQuest && !CGQuestLog::m_quests[index].m_isHeader) {
             uint32_t slot = CGQuestLog::m_quests[index].m_logSlot;
 
-            if (slot <= 25) {
-                PlayerQuestLogEntry* entry = &player->m_player->m_playerQuestLog[slot];
+            // Custom: extended quest log (was slot <= 25)
+            if (slot < PLAYER_QUEST_LOG_SLOTS) {
+                PlayerQuestLogEntry* entry = player->GetQuestLogEntry(slot);
 
                 if (entry && (entry->m_state & 2)) {
                     failed = true;

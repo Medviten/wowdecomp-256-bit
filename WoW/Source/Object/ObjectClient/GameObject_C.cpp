@@ -3809,7 +3809,8 @@ int32_t CGGameObject_C::CanHighlight() const {
         return 0;
     }
 
-    for (uint32_t i = 0; i < 25; i++) {
+    // Custom: all PLAYER_QUEST_LOG_SLOTS slots (was 25)
+    for (uint32_t i = 0; i < PLAYER_QUEST_LOG_SLOTS; i++) {
         if (player->GetQuestLogEntry(i)->m_questId == static_cast<uint32_t>(questId)) {
             return 1;
         }
