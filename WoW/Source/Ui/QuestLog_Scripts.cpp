@@ -105,6 +105,20 @@ static int32_t Script_GetNumQuestLogEntries(lua_State* L) {
     return 2;
 }
 
+// Custom: GetQuestLogCapacity() returns how many quests the quest log takes: the server's Quests.LogSize, or the
+// stock 25 from a server that doesn't send it
+static int32_t Script_GetQuestLogCapacity(lua_State* L) {
+    CGPlayer_C* player = ClntObjMgrGetActivePlayerObj();
+    uint32_t capacity = player ? player->m_player->m_playerQuestLogSize : 0;
+
+    if (capacity < PLAYER_QUEST_LOG_STOCK_SLOTS || capacity > PLAYER_QUEST_LOG_SLOTS) {
+        capacity = PLAYER_QUEST_LOG_STOCK_SLOTS;
+    }
+
+    lua_pushnumber(L, capacity);
+    return 1;
+}
+
 // VERIFY: 8f4872a2 manual
 // OFFSET: 0x005DFC40
 static int32_t Script_GetQuestWatchIndex(lua_State* L) {
@@ -1711,6 +1725,7 @@ static int32_t Script_QuestPOIUpdateTexture(lua_State* L) {
 // STATIC: 0x00AD1020
 static FrameScript_Method s_ScriptFunctions[] = {
     { "GetNumQuestLogEntries", &Script_GetNumQuestLogEntries },
+    { "GetQuestLogCapacity", &Script_GetQuestLogCapacity }, // Custom
     { "GetQuestLogTitle", &Script_GetQuestLogTitle },
     { "SelectQuestLogEntry", &Script_SelectQuestLogEntry },
     { "GetQuestLogSelection", &Script_GetQuestLogSelection },

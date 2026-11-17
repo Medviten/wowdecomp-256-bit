@@ -99,8 +99,8 @@ uint32_t CGPlayer::GetSavedIndexFromDataIndex(uint32_t index, uint32_t count, in
             }
         }
 
-        // Custom: the extended quest log fields follow the stock local mirror fields
-        if (index >= 1178 && index < 1178 + PLAYER_QUEST_LOG_EXT_FIELDS) {
+        // Custom: the appended fields (extended quest log, quest log size) follow the stock local mirror fields
+        if (index >= 1178 && index < 1178 + PLAYER_EXT_FIELDS) {
             return index - 1178 + sizeof(CGPlayer::s_mirrorFields) / sizeof(CGPlayer::s_mirrorFields[0]) + sizeof(CGPlayer::s_localMirrorFields) / sizeof(CGPlayer::s_localMirrorFields[0]);
         }
     }
@@ -135,8 +135,8 @@ int32_t CGPlayer::HasZoneExplored(int32_t zone) {
 // VERIFY: 89fd3c87 auto
 // OFFSET: 0x004F5530
 int32_t CGPlayer::TotalFields() {
-    // Custom: + the extended quest log fields
-    return CGUnit::TotalFields() + 1043 + PLAYER_QUEST_LOG_EXT_FIELDS;
+    // Custom: + the appended fields (extended quest log, quest log size)
+    return CGUnit::TotalFields() + 1043 + PLAYER_EXT_FIELDS;
 }
 
 // VERIFY: f3b17437 auto

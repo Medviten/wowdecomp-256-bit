@@ -154,7 +154,7 @@ CGFieldDescriptor UNIT_DESCRIPTORS[89] = {
 };
 
 // STATIC: 0xAC66D8
-CGFieldDescriptor PLAYER_DESCRIPTORS[216] = { // Custom: + PLAYER_QUEST_LOG_EXT (was 215)
+CGFieldDescriptor PLAYER_DESCRIPTORS[217] = { // Custom: + PLAYER_QUEST_LOG_EXT, PLAYER_QUEST_LOG_SIZE (was 215)
     { "PLAYER_DUEL_ARBITER", 0, 2, 4, 0x1 },
     { "PLAYER_FLAGS", 2, 1, 1, 0x1 },
     { "PLAYER_GUILDID", 3, 1, 1, 0x1 },
@@ -371,6 +371,7 @@ CGFieldDescriptor PLAYER_DESCRIPTORS[216] = { // Custom: + PLAYER_QUEST_LOG_EXT 
     { "PLAYER_GLYPHS_ENABLED", 1176, 1, 1, 0x2 },
     { "PLAYER_PET_SPELL_POWER", 1177, 1, 1, 0x2 },
     { "PLAYER_QUEST_LOG_EXT", 1178, PLAYER_QUEST_LOG_EXT_FIELDS, 1, 0x2 }, // Custom: quest log slots 25-254
+    { "PLAYER_QUEST_LOG_SIZE", 1178 + PLAYER_QUEST_LOG_EXT_FIELDS, 1, 1, 0x2 }, // Custom: Quests.LogSize
 };
 
 // STATIC: 0xAC77A8

@@ -39,9 +39,9 @@ static thread_local ObjectMgr* s_curMgr;
 // STATIC: 0x00B4B014
 static ObjectMgr* s_savedObjMgr;
 
-// Custom: the active player has PLAYER_QUEST_LOG_EXT_FIELDS more fields than stock (1326) for the 255-slot quest
-// log, which takes the update mask past the stock 42 blocks
-static constexpr uint32_t ACTIVE_PLAYER_DWORDS = 1326 + PLAYER_QUEST_LOG_EXT_FIELDS;
+// Custom: the active player has PLAYER_EXT_FIELDS more fields than stock (1326) for the 255-slot quest log and its
+// size, which takes the update mask past the stock 42 blocks
+static constexpr uint32_t ACTIVE_PLAYER_DWORDS = 1326 + PLAYER_EXT_FIELDS;
 static constexpr uint32_t MAX_DIRTY_MASK_BLOCKS = (ACTIVE_PLAYER_DWORDS + 31) / 32;
 static_assert(ACTIVE_PLAYER_DWORDS * sizeof(uint32_t) == sizeof(CGObjectData) + sizeof(CGUnitData) + sizeof(CGPlayerLocalData), "active player field count");
 
@@ -806,7 +806,7 @@ static void ExpireOldObjects(uint32_t expireTime, OBJECT_TYPE_ID typeId) {
 // OFFSET: 0x004D4930
 CGObject_C* ClntObjMgrAllocObject(OBJECT_TYPE_ID typeId, WOWGUID guid) {
     if (guid == ClntObjMgrGetActivePlayer()) {
-        return static_cast<CGObject_C*>(SMemAlloc(sizeof(CGPlayer_C) + s_objDwordCount[ID_PLAYER] * sizeof(uint32_t) + CGPlayer::TotalFields() * sizeof(uint32_t) + (1002 + PLAYER_QUEST_LOG_EXT_FIELDS) * sizeof(TSList<void>), __FILE__, __LINE__, 0));
+        return static_cast<CGObject_C*>(SMemAlloc(sizeof(CGPlayer_C) + s_objDwordCount[ID_PLAYER] * sizeof(uint32_t) + CGPlayer::TotalFields() * sizeof(uint32_t) + (1002 + PLAYER_EXT_FIELDS) * sizeof(TSList<void>), __FILE__, __LINE__, 0));
     }
 
     ExpireOldObjects(10000, typeId);
@@ -1050,7 +1050,7 @@ static void ClearMirrorLists(CGObject_C* object) {
             FreeMirrorHandlers(player->m_playerMirrorLists, 176);
 
             if (player->IsActivePlayer()) {
-                FreeMirrorHandlers(player->m_playerLocalMirrorLists, 1002 + PLAYER_QUEST_LOG_EXT_FIELDS);
+                FreeMirrorHandlers(player->m_playerLocalMirrorLists, 1002 + PLAYER_EXT_FIELDS);
             }
         }
 

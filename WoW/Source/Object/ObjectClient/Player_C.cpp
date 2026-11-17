@@ -7211,7 +7211,7 @@ void CGPlayer_C::SetActiveMirrorHandlers() {
     }
 
     // Custom: extended quest log slots
-    for (uint32_t i = offsetof(CGPlayerLocalData, m_playerQuestLogExt); i < sizeof(CGPlayerLocalData); i += sizeof(PlayerQuestLogEntry)) {
+    for (uint32_t i = offsetof(CGPlayerLocalData, m_playerQuestLogExt); i < offsetof(CGPlayerLocalData, m_playerQuestLogExt) + sizeof(CGPlayerLocalData::m_playerQuestLogExt); i += sizeof(PlayerQuestLogEntry)) {
         ClntObjMgrSetObjMirrorHandler(this->m_obj->m_guid, ID_PLAYER, i, sizeof(PlayerQuestLogEntry), OnUpdateQuest, nullptr, static_cast<HANDLER_PRIORITY>(0), 0);
     }
 
@@ -7311,7 +7311,7 @@ void CGPlayer_C::UnsetActiveMirrorHandlers() {
     }
 
     // Custom: extended quest log slots
-    for (uint32_t i = offsetof(CGPlayerLocalData, m_playerQuestLogExt); i < sizeof(CGPlayerLocalData); i += sizeof(PlayerQuestLogEntry)) {
+    for (uint32_t i = offsetof(CGPlayerLocalData, m_playerQuestLogExt); i < offsetof(CGPlayerLocalData, m_playerQuestLogExt) + sizeof(CGPlayerLocalData::m_playerQuestLogExt); i += sizeof(PlayerQuestLogEntry)) {
         ClntObjMgrUnsetObjMirrorHandler(this->m_obj->m_guid, ID_PLAYER, i, OnUpdateQuest, nullptr);
     }
 

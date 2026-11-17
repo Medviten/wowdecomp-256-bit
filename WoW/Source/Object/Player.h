@@ -14,6 +14,9 @@ class CGPlayerLocalData;
 static constexpr uint32_t PLAYER_QUEST_LOG_STOCK_SLOTS = 25;
 static constexpr uint32_t PLAYER_QUEST_LOG_SLOTS = 255;
 static constexpr uint32_t PLAYER_QUEST_LOG_EXT_FIELDS = (PLAYER_QUEST_LOG_SLOTS - PLAYER_QUEST_LOG_STOCK_SLOTS) * 5;
+// Custom: all fields appended after the stock player fields: the extended quest log, m_playerQuestLogSize and
+// m_playerExtPad
+static constexpr uint32_t PLAYER_EXT_FIELDS = PLAYER_QUEST_LOG_EXT_FIELDS + 2;
 
 struct PlayerQuestLogEntry {
     /* 0000 */ uint32_t m_questId;
@@ -137,6 +140,10 @@ class CGPlayerLocalData : public CGPlayerData {
     /* 1264 */ uint32_t m_playerPetSpellPower;
     // Custom: quest log slots 25-254 (see PLAYER_QUEST_LOG_SLOTS)
     /* 1268 */ PlayerQuestLogEntry m_playerQuestLogExt [PLAYER_QUEST_LOG_SLOTS - PLAYER_QUEST_LOG_STOCK_SLOTS];
+    // Custom: the server's Quests.LogSize (0 from a server without it), for GetQuestLogCapacity()
+    /* 2460 */ uint32_t m_playerQuestLogSize;
+    // Custom: keeps the size a multiple of 8 (WOWGUID members align the struct to 8), so it matches the field count
+    /* 2464 */ uint32_t m_playerExtPad;
 };
 
 #endif
