@@ -1226,6 +1226,16 @@ static int32_t MinimapBuildSource(const int32_t* tile, char* path, uint32_t size
     MINIMAPMD5NAME* name = s_md5Names.Ptr(path);
 
     if (!name) {
+        // Custom: a tile md5translate.trs doesn't list loads from its plain name, Textures\Minimap\<map>\mapX_YY.blp
+        // (later clients' layout), so maps added by patches (the Wandering Isle) need no edit of the shared trs
+        char plain[260];
+        SStrPrintf(plain, sizeof(plain), "%s\\%s", s_minimapTexturePath, path);
+
+        if (SFile::FileExistsInArchives(plain)) {
+            SStrCopy(path, plain, size);
+            return 1;
+        }
+
         SysMsgPrintf(STATUS_ERROR, 2, "No minimap texture: \"%s\"", path);
         *path = 0;
         return 0;
