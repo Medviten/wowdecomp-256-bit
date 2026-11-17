@@ -1373,6 +1373,11 @@ void CWorld::LoadMap(const char* mapName, C3Vector* position, int32_t zoneID, in
     CWorld::gbChunkRectOld = CWorld::gbChunkRect;
     CMap::Load(mapName, zoneID);
 
+    // Custom: real-time exterior shadows off on maps listed in bakedShadowMaps, back on elsewhere
+    if (CWorldParam::cvar_extShadowQuality) {
+        CWorldParam::ApplyExtShadowMode(zoneID, CWorldParam::cvar_extShadowQuality->m_intValue);
+    }
+
     int32_t shaders = Enable_Doodads;
 
     if (!(CWorld::enables2 & Enable_Doodads) || !(CWorld::enables & Enable_PixelShaders)) {

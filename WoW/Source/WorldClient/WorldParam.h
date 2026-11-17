@@ -40,6 +40,8 @@ class CWorldParam {
     static CVar* cvar_grassWindSpeed;
     static CVar* cvar_grassWindDirection;
     static CVar* cvar_grassParting;
+    // Custom: maps drawn with only their baked terrain shadows (see ApplyExtShadowMode)
+    static CVar* cvar_bakedShadowMaps;
     static CVar* cvar_objectFade;
     static CVar* cvar_objectFadeZFill;
     static CVar* cvar_environmentDetail;
@@ -48,6 +50,8 @@ class CWorldParam {
     static CVar* cvar_projectedTextures;
     static CVar* cvar_gxTextureCacheSize;
 
+    static void ApplyExtShadowMode(int32_t mapId, int32_t mode); // Custom
+    static bool BakedShadowMapsCallback(CVar* var, const char* oldValue, const char* value, void* arg); // Custom
     static bool BaseMipCallback(CVar* var, const char* oldValue, const char* value, void* arg);
     static bool BspCacheCallback(CVar* var, const char* oldValue, const char* value, void* arg);
     static bool CloudLODCallback(CVar* var, const char* oldValue, const char* value, void* arg);

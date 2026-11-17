@@ -1,5 +1,6 @@
 #include "WorldParam.h"
 #include <cstdio>
+#include <cstdlib>
 #include <new>
 #include "Engine/Source/Gx/CGxDevice/CGxDevice.h"
 #include "Engine/Source/Services/GfxSingletonManager.h"
@@ -98,6 +99,50 @@ CVar* CWorldParam::cvar_grassWindStrength;
 CVar* CWorldParam::cvar_grassWindSpeed;
 CVar* CWorldParam::cvar_grassWindDirection;
 CVar* CWorldParam::cvar_grassParting;
+
+// Custom: bakedShadowMaps lists map ids (separated by anything but digits, default "860", the Wandering Isle) that draw
+// only the terrain shadows baked into their tiles (WHE's adt_bake_shadows.py). The real-time exterior shadows
+// (extShadowQuality) use the time-of-day sun and cover a square around the camera, so on such maps they double up
+// with the fixed-sun baked ones and their square's edge follows the camera.
+CVar* CWorldParam::cvar_bakedShadowMaps;
+static int32_t s_bakedShadowMaps[64];
+static uint32_t s_bakedShadowMapCount;
+
+void CWorldParam::ApplyExtShadowMode(int32_t mapId, int32_t mode) {
+    for (uint32_t i = 0; i < s_bakedShadowMapCount; i++) {
+        if (s_bakedShadowMaps[i] == mapId) {
+            mode = 0;
+            break;
+        }
+    }
+
+    if (CShadowCache::ValidateShadowMode(static_cast<EShadowMode>(mode))) {
+        CShadowCache::SetShadowMode(static_cast<EShadowMode>(mode));
+    }
+}
+
+bool CWorldParam::BakedShadowMapsCallback(CVar* var, const char* oldValue, const char* value, void* arg) {
+    s_bakedShadowMapCount = 0;
+
+    for (const char* cursor = value ? value : ""; *cursor && s_bakedShadowMapCount < 64;) {
+        char* end;
+        long id = strtol(cursor, &end, 10);
+
+        if (end == cursor) {
+            cursor++;
+            continue;
+        }
+
+        s_bakedShadowMaps[s_bakedShadowMapCount++] = static_cast<int32_t>(id);
+        cursor = end;
+    }
+
+    if (CWorldParam::cvar_extShadowQuality) {
+        CWorldParam::ApplyExtShadowMode(World::QueryMapId(), CWorldParam::cvar_extShadowQuality->m_intValue);
+    }
+
+    return true;
+}
 
 // Custom: farClipLimit 0 keeps the stock caps; otherwise 183-100000 yards. Re-applies farclip so it takes effect at once.
 static bool FarClipLimitCallback(CVar* var, const char* oldValue, const char* value, void* arg) {
@@ -484,7 +529,8 @@ bool CWorldParam::ExtShadowQualityCallback(CVar* var, const char* oldValue, cons
         return false;
     }
 
-    CShadowCache::SetShadowMode(static_cast<EShadowMode>(mode));
+    // Custom: maps in bakedShadowMaps keep real-time shadows off (was CShadowCache::SetShadowMode(mode))
+    CWorldParam::ApplyExtShadowMode(World::QueryMapId(), static_cast<int32_t>(mode));
 
     return true;
 }
@@ -659,6 +705,8 @@ void CWorldParam::Initialize() {
     CWorldParam::cvar_grassWindDirection = CVar::Register("grassWindDirection", "Grass wind heading in degrees", 1, "45", nullptr, CATEGORY_GRAPHICS, false, nullptr, false);
     CWorldParam::cvar_grassParting = CVar::Register("grassParting", "Grass bends away from your character (needs grassWind)", 1, "1", nullptr, CATEGORY_GRAPHICS, false, nullptr, false);
     CWorldParam::cvar_disableFog = CVar::Register("disableFog", "Push distance fog past the horizon (not underwater)", 1, "0", nullptr, CATEGORY_GRAPHICS, false, nullptr, false);
+    CWorldParam::cvar_bakedShadowMaps = CVar::Register("bakedShadowMaps", "Map ids drawn without real-time exterior shadows (baked terrain shadows only)", 1, "860", CWorldParam::BakedShadowMapsCallback, CATEGORY_GRAPHICS, false, nullptr, false);
+    CWorldParam::BakedShadowMapsCallback(CWorldParam::cvar_bakedShadowMaps, nullptr, CWorldParam::cvar_bakedShadowMaps->m_stringValue.m_str, nullptr);
     CWorldParam::cvar_lod = CVar::Register("lod", "Video option: Toggle Lod", 1, "0", CWorldParam::LodCallback, CATEGORY_GRAPHICS, false, nullptr, false);
     CWorldParam::cvar_mapShadows = CVar::Register("mapShadows", "Video option: Toggle map shadows", 1, "1", CWorldParam::MapShadowsCallback, CATEGORY_GRAPHICS, false, nullptr, false);
     CWorldParam::cvar_maxLights = CVar::Register("MaxLights", "Max number of hardware lights", 1, "4", CWorldParam::MaxLightsCallback, CATEGORY_GRAPHICS, false, nullptr, false);
