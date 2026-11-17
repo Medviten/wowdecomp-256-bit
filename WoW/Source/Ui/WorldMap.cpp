@@ -670,7 +670,9 @@ void CGWorldMap::SetMap(uint32_t continent, uint32_t zone, int32_t dungeonMap) {
 
     CGWorldMap::m_numOverlays = 0;
 
-    if (player && continent != static_cast<uint32_t>(-2) && (CGWorldMap::m_currentZone >= 0 || CGWorldMap::m_currentOrphanZone > 0)) {
+    // Custom: orphan zones (maps without a continent map, e.g. the Wandering Isle) also get their explored overlays
+    // when no dungeon floor is shown; stock skipped every orphan zone, as only dungeons were orphans
+    if (player && (continent != static_cast<uint32_t>(-2) || dungeonMap <= 0) && (CGWorldMap::m_currentZone >= 0 || CGWorldMap::m_currentOrphanZone > 0)) {
         int32_t mapAreaID;
 
         if (CGWorldMap::m_currentContinent < 0) {
