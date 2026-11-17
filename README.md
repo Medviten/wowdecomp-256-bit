@@ -81,7 +81,7 @@ logger off in `WowClient` with `-DWOWCLIENT_CRASH_LOG=OFF`.
 | `WOWDECOMP_DISABLE_SIGNATURE_CHECKS` | `ON` | Skip the MPQ file and `.toc.sig` signature checks, so modified game data and interface files load |
 | `WOWCLIENT_CRASH_LOG` | `ON` | Build `WowClient` with the crash logger |
 | `WOWCLIENT_OUTPUT_OVERRIDE` | empty | Name the `WowClient` executable something other than `WowClient64` / `WowClient32` |
-| `WOWDECOMP_RETAIL_ASSETS` | `OFF` | Show the races mapped by the `retailRaces` CVar (default Mechagnome, Dracthyr, Haranir and Skyborne, `37=37,52=52,70=70,86=86,91=91,95=forever:95,96=forever:96`) with their Retail model and customization |
+| `WOWDECOMP_RETAIL_ASSETS` | `ON` | Show the races mapped by the `retailRaces` CVar (default Mechagnome, Dracthyr, Haranir and Skyborne, `37=37,52=52,70=70,86=86,91=91,95=forever:95,96=forever:96`) with their Retail model and customization |
 
 A `WOWDECOMP_RETAIL_ASSETS` client needs Retail data, or mapped races fall back to their stock model:
 
