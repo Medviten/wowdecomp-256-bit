@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Fork of [wowdecomp](https://github.com/Medviten/wowdecomp) (C++ decompilation of the WoW 3.3.5a `Wow.exe`, build 12340)
+Fork of [wowdecomp](https://github.com/Medviten/wowdecomp-32-bit) (now archived as wowdecomp-32-bit; C++ decompilation of the WoW 3.3.5a `Wow.exe`, build 12340)
 that adds custom-race support: 256-bit race masks, race ids up to 255, altered forms (Worgen/Gilnean), and assorted
 client QoL features. See `README.md` for the upstream project overview and build requirements.
 
@@ -98,7 +98,7 @@ match; a 256-bit DBC or packet is unreadable by a 32-bit build and vice versa. S
 
 | Part | 32-bit | 256-bit |
 | --- | --- | --- |
-| Client | `wowdecomp` (upstream here; also the 32-bit client, carrying the same race/retail work on stock masks) | `wowdecomp-256-bit` (this repo) |
+| Client | `wowdecomp-256-bit` serves both: it reads 32-bit DBCs and talks to 32-bit servers. The former 32-bit client `wowdecomp-32-bit` (local checkout `wowdecomp-32-bit`, upstream here) is archived since 2026-11-18 | `wowdecomp-256-bit` (this repo) |
 | Server | `azerothcore-wotlk-32-bit` (stock masks; git `upstream` = mod-playerbots/azerothcore-wotlk, branch `Playerbot`) for developing and testing WHE-32-bit's `patches/whe-acore.patch` (and `whe-playerbots.patch`) | `azerothcore-wotlk-256-bit` fork (256-bit `RaceMask` throughout) + WHE-256-bit's `patches/whe-acore.patch` for the module hooks |
 | Server modules | stock mod-playerbots + patch | `mod-playerbots-256-bit`, `mod-transmog-256-bit`, `mod-ale-256-bit` |
 | DBC tool | `DBCTool-32-bit` | `DBCTool-256-bit` (four 64-bit race-mask columns) |
@@ -111,4 +111,4 @@ match; a 256-bit DBC or packet is unreadable by a 32-bit build and vice versa. S
 - WHE modpaks can carry `patches/client/*.patch` for this repo and `patches/core/` for the server; `build-dbc.sh`
   combines them per target.
 - Assets are not in either WHE repo: add or fix BLP/M2 files in `WHE-common/patch-A.MPQ/`, never per flavour.
-- A change to client code here usually needs porting to `wowdecomp` too (and vice versa), minus the mask layout.
+- Client changes go here only: the 32-bit client is archived and this client covers both flavours, so no port is needed.
