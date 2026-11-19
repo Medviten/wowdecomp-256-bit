@@ -165,6 +165,27 @@ static std::map<const CGUnit_C*, AlteredFormTransition> s_alteredFormTransitions
 // Custom: the sound of a transition's anim (see PlayAlteredFormSound), kept apart from the transition, which is copied
 static std::map<const CGUnit_C*, SE2SoundKitObject> s_alteredFormSounds;
 
+// Custom: a trace of the active player's altered form (Logs\AlteredForm.log): when the aura list arrives, what each
+// display update draws and whether character select's model is reused. A Worgen whose Human Form came with the login
+// aura list was drawn in the other form; this records the order of events behind that.
+static void AlteredFormLog(const CGUnit_C* unit, const char* format, ...) {
+    if (!unit || unit->m_obj->m_guid != ClntObjMgrGetActivePlayer()) {
+        return;
+    }
+
+    static HSLOG s_log;
+
+    if (!s_log && !SLogCreate("Logs\\AlteredForm.log", 0, &s_log)) {
+        return;
+    }
+
+    va_list args;
+    va_start(args, format);
+    SLogVWrite(s_log, format, args);
+    va_end(args);
+    SLogFlush(s_log);
+}
+
 // Custom: the key bone (Waist) of the old model's legs, which walk or run through the transition's anim when the unit
 // moves (see PlayBaseAnimation)
 static const uint32_t s_alteredFormLegsKeyBone = 5;
@@ -1067,8 +1088,13 @@ int32_t CGUnit_C::DisplayInfoNeedsUpdate() {
 // OFFSET: 0x0073E410
 void CGUnit_C::UpdateDisplayInfo(int32_t force) {
     if (!force && !this->DisplayInfoNeedsUpdate()) {
+        AlteredFormLog(this, "display update skipped: display info %d, local display %d",
+            this->m_displayInfo ? this->m_displayInfo->m_id : 0, this->GetLocalDisplayID()); // Custom
         return;
     }
+
+    AlteredFormLog(this, "display update: force %d, display info %d -> local display %d, world model %d", force,
+        this->m_displayInfo ? this->m_displayInfo->m_id : 0, this->GetLocalDisplayID(), this->m_worldModel != nullptr); // Custom
 
     // Custom: the model about to be replaced may be carried by an altered form transition's old model
     this->StopAlteredFormTransition(false);
@@ -10369,7 +10395,16 @@ void CGUnit_C::InitializeActivePlayerComponent() {
         return;
     }
 
-    if (this->m_modelData && (this->m_modelData->m_flags & 0x4) && CGPlayer_C::s_displayId == this->m_unit->m_unitFieldDisplayid) {
+    // Custom: character select's model is of the native display, so it is kept only when that is the display drawn: with
+    // the altered form aura already known (it can be, from the previous session), the model drawn has to be the altered
+    // one, and keeping the native one left the unit drawn in the other form, as the aura list then changes nothing
+    bool reuse = this->m_modelData && (this->m_modelData->m_flags & 0x4) && CGPlayer_C::s_displayId == this->m_unit->m_unitFieldDisplayid
+        && CGPlayer_C::s_displayId == this->GetLocalDisplayID();
+
+    AlteredFormLog(this, "character select model: reused %d, select display %d, display field %d, display info %d", reuse,
+        CGPlayer_C::s_displayId, this->m_unit->m_unitFieldDisplayid, this->m_displayInfo ? this->m_displayInfo->m_id : 0); // Custom
+
+    if (reuse) {
         this->SetCharacterModel(CCharacterComponent::m_activePlayerComponent->m_data.m_model);
         this->m_characterComponent = component;
         RetailRaceBindOwner(component, this); // Custom: the component follows this unit's retail look
@@ -14170,6 +14205,10 @@ void CGUnit_C::OnAuraUpdate(CDataStore* msg, bool updateAll) {
     bool wasAltered = this->HasAuraEffect(s_alteredFormAura);
     this->UpdateAuraEffectMask();
     bool changed = false;
+
+    AlteredFormLog(this, "aura update: all %d, altered %d -> %d, world model %d, display info %d, local display %d, component %d",
+        updateAll, wasAltered, this->HasAuraEffect(s_alteredFormAura), this->m_worldModel != nullptr,
+        this->m_displayInfo ? this->m_displayInfo->m_id : 0, this->GetLocalDisplayID(), this->m_characterComponent != nullptr);
 
     // Custom: the altered form aura changes the drawn display (Cataclysm's UpdateAlteredForm). A change seen as it
     // happens keeps the old model and its component from UpdateDisplayInfo, which would otherwise free them, to draw
