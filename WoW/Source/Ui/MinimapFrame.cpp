@@ -50,6 +50,8 @@
 #include "WoW/Source/Object/ObjectClient/VehiclePassenger_C.h"
 #include <ctime>
 #include <malloc.h>
+#include <string>
+#include <unordered_map>
 #include "WoW/Source/Ui/PartyFrame.h"
 #include "WoW/Source/Ui/RaidInfo.h"
 #include "WoW/Source/Game/GameClient/NameCache.h"
@@ -929,6 +931,85 @@ void MinimapSetSpiritHealerPOI(float x, float y) {
     s_closestPOIsChanged = 1;
 }
 
+// Custom: "<wmo>_<group>" (wmo as s_mapObjName, lower case) -> the md5 name of one of that group's minimap quads,
+// filled from md5translate.trs. In a WMO group with no quads (MoP WMOs on the Wandering Isle and Pandaria, Stormwind's
+// roads, buildings whose minimaps are missing) the indoor minimap is all black, so MinimapUpdate keeps the terrain
+// minimap there instead; this replaces flagging such groups 0x20 in WMOAreaTable.dbc
+static std::unordered_map<std::string, std::string> s_mapObjMinimapTextures;
+static int32_t s_mapObjTexturesHash;
+static int32_t s_mapObjTexturesGroup;
+static bool s_mapObjTexturesChecked;
+static bool s_mapObjTexturesFound;
+
+static std::string MinimapLowerName(const char* name) {
+    std::string lower(name);
+
+    for (char& c : lower) {
+        c = static_cast<char>(tolower(static_cast<unsigned char>(c)));
+    }
+
+    return lower;
+}
+
+// Custom: see s_mapObjMinimapTextures; WMO quads are "<wmo>_ggg_xx_yy.blp" (s_minimapQuadFormat)
+static void MinimapNoteMapObjTexture(const char* source, const char* md5Name) {
+    size_t length = SStrLen(source);
+    const size_t suffix = SStrLen("_000_00_00.blp");
+
+    if (length <= suffix) {
+        return;
+    }
+
+    const char* tail = source + length - suffix;
+
+    if (tail[0] != '_' || tail[4] != '_' || tail[7] != '_' || SStrCmpI(tail + 10, ".blp", STORM_MAX_STR)) {
+        return;
+    }
+
+    std::string name = MinimapLowerName(source);
+    name.resize(length - suffix + 4);
+    s_mapObjMinimapTextures.emplace(name, md5Name);
+}
+
+// Custom: see s_mapObjMinimapTextures; checked once per WMO group
+static bool MinimapMapObjHasTextures(CMapEntity* entity, int32_t wmoHash, int32_t groupNum) {
+    if (s_mapObjTexturesChecked && s_mapObjTexturesHash == wmoHash && s_mapObjTexturesGroup == groupNum) {
+        return s_mapObjTexturesFound;
+    }
+
+    s_mapObjTexturesChecked = true;
+    s_mapObjTexturesHash = wmoHash;
+    s_mapObjTexturesGroup = groupNum;
+    s_mapObjTexturesFound = false;
+
+    const char* fileName = nullptr;
+    World::QueryMapObjFileName(entity, &fileName);
+
+    if (!fileName || SStrLen(fileName) <= SStrLen("World\\")) {
+        return false;
+    }
+
+    std::string name = MinimapLowerName(fileName + SStrLen("World\\"));
+    size_t extension = name.rfind('.');
+
+    if (extension != std::string::npos) {
+        name.resize(extension);
+    }
+
+    char group[16];
+    SStrPrintf(group, sizeof(group), "_%03d", groupNum);
+    name += group;
+    auto found = s_mapObjMinimapTextures.find(name);
+
+    if (found != s_mapObjMinimapTextures.end()) {
+        char path[260];
+        SStrPrintf(path, sizeof(path), "%s\\%s", s_minimapTexturePath, found->second.c_str());
+        s_mapObjTexturesFound = SFile::FileExistsInArchives(path) != 0;
+    }
+
+    return s_mapObjTexturesFound;
+}
+
 // VERIFY: 0eda32e5 manual
 // OFFSET: 0x007F6540
 static void LoadMD5Names() {
@@ -962,6 +1043,7 @@ static void LoadMD5Names() {
         }
 
         *tab = '\0';
+        MinimapNoteMapObjTexture(line, tab + 1);
         MINIMAPMD5NAME* entry = s_md5Names.Ptr(line);
 
         if (!entry) {
@@ -990,6 +1072,9 @@ void MinimapShutdown() {
     s_mapObjAreaGroup = -1;
     s_updateFlags = 0;
     s_md5Names.InternalClear(0);
+    // Custom: see s_mapObjMinimapTextures
+    s_mapObjMinimapTextures.clear();
+    s_mapObjTexturesChecked = false;
 }
 
 // VERIFY: 885c45ba manual
@@ -1540,7 +1625,8 @@ int32_t MinimapUpdate(CMapEntity* entity, int32_t mapId, const C3Vector* positio
         if (groupRec && (groupRec->m_flags & 0x20)) {
             inside = 0;
             s_mapObjIndoorArea = 0;
-        } else if ((outdoorArea || indoorArea || inside) && World::QueryMapObjIDs(entity, &wmoId, &wmoHash, &groupId)) {
+        } else if ((outdoorArea || indoorArea || inside) && World::QueryMapObjIDs(entity, &wmoId, &wmoHash, &groupId) && MinimapMapObjHasTextures(entity, wmoHash, groupId)) {
+            // Custom: MinimapMapObjHasTextures, a WMO group without minimap textures keeps the terrain minimap
             indoor->m_active = 1;
 
             if (wmoId != s_mapObjId || wmoHash != s_mapObjGroup) {
