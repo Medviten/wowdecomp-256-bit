@@ -12,9 +12,10 @@ static int32_t CompareStrings(const void* a, const void* b, void* context) {
 }
 
 // Custom: patch archives may have names longer than one character, and a tag that limits them to one realm:
-// "patch-<stem>[.<tag>].MPQ", or "patch-<locale>-<stem>[.<tag>].MPQ" in the locale folder. The stem is letters and
-// digits. A tagged archive loads only while realmName (the last realm, also set by -realmname) equals its tag, so
-// e.g. patch-A.war.MPQ and patch-A.peace.MPQ can stay side by side. Changing realms needs a restart to swap them.
+// "patch-<stem>[.<tag>].MPQ" ("patch-<locale>-<stem>[.<tag>].MPQ" in the locale folder, where the locale is simply
+// part of the stem). The stem is letters, digits and hyphens, e.g. patch-WHE-assets.MPQ. A tagged archive loads only
+// while realmName (the last realm, also set by -realmname) equals its tag, so e.g. patch-WHE.war.MPQ and
+// patch-WHE.peace.MPQ can stay side by side. Changing realms needs a restart to swap them.
 struct PatchName {
     const char* m_stem;
     size_t m_stemLength;
@@ -37,14 +38,8 @@ static bool ParsePatchName(const char* path, PatchName& name) {
         return false;
     }
 
-    const char* stem = firstDot;
-
-    while (stem > fileName && stem[-1] != '-') {
-        stem--;
-    }
-
-    name.m_stem = stem;
-    name.m_stemLength = static_cast<size_t>(firstDot - stem);
+    name.m_stem = fileName + 6;
+    name.m_stemLength = static_cast<size_t>(firstDot - name.m_stem);
     name.m_tag = firstDot + 1;
     name.m_tagLength = firstDot == lastDot ? 0 : static_cast<size_t>(lastDot - firstDot - 1);
 
@@ -53,9 +48,9 @@ static bool ParsePatchName(const char* path, PatchName& name) {
     }
 
     for (size_t i = 0; i < name.m_stemLength; i++) {
-        char c = stem[i];
+        char c = name.m_stem[i];
 
-        if (!((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))) {
+        if (!((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '-')) {
             return false;
         }
     }
@@ -63,41 +58,24 @@ static bool ParsePatchName(const char* path, PatchName& name) {
     return true;
 }
 
-static bool IsNumber(const char* text, size_t length) {
-    for (size_t i = 0; i < length; i++) {
-        if (text[i] < '0' || text[i] > '9') {
-            return false;
-        }
-    }
-
-    return true;
+static char LowerAscii(char c) {
+    return c >= 'A' && c <= 'Z' ? static_cast<char>(c - 'A' + 'a') : c;
 }
 
-// Ranks two patch names, > 0 when a takes priority. Letters beat numbers, as with one character. Numbers compare by
-// value (patch-10 beats patch-9), letters by length and then alphabet (patch-AA beats patch-Z), and a tagged archive
-// beats the untagged one of the same stem.
+// Ranks two patch names, > 0 when a takes priority (loads later and overrides). Names compare alphabetically without
+// case and without ".MPQ", the tag included, and a name that is the start of another ranks first: patch-3 <
+// patch-OAMaps < patch-WHE < patch-WHE-assets < patch-WHE.war. As before, one-character names keep their order
+// (patch-4 < patch-A < patch-B).
 static int32_t ComparePatchNames(const PatchName& a, const PatchName& b) {
-    bool aNumber = IsNumber(a.m_stem, a.m_stemLength);
-    bool bNumber = IsNumber(b.m_stem, b.m_stemLength);
+    size_t aLength = a.m_tagLength ? a.m_stemLength + 1 + a.m_tagLength : a.m_stemLength;
+    size_t bLength = b.m_tagLength ? b.m_stemLength + 1 + b.m_tagLength : b.m_stemLength;
 
-    if (aNumber != bNumber) {
-        return aNumber ? -1 : 1;
-    }
+    for (size_t i = 0; i < aLength && i < bLength; i++) {
+        char aChar = LowerAscii(a.m_stem[i]);
+        char bChar = LowerAscii(b.m_stem[i]);
 
-    const char* aStem = a.m_stem;
-    size_t aLength = a.m_stemLength;
-    const char* bStem = b.m_stem;
-    size_t bLength = b.m_stemLength;
-
-    if (aNumber) {
-        while (aLength > 1 && *aStem == '0') {
-            aStem++;
-            aLength--;
-        }
-
-        while (bLength > 1 && *bStem == '0') {
-            bStem++;
-            bLength--;
+        if (aChar != bChar) {
+            return aChar > bChar ? 1 : -1;
         }
     }
 
@@ -105,17 +83,7 @@ static int32_t ComparePatchNames(const PatchName& a, const PatchName& b) {
         return aLength > bLength ? 1 : -1;
     }
 
-    int32_t order = SStrCmpI(aStem, bStem, static_cast<uint32_t>(aLength));
-
-    if (order) {
-        return order;
-    }
-
-    if (!a.m_tagLength != !b.m_tagLength) {
-        return a.m_tagLength ? 1 : -1;
-    }
-
-    return SStrCmpI(a.m_tag, b.m_tag, static_cast<uint32_t>(a.m_tagLength > b.m_tagLength ? a.m_tagLength : b.m_tagLength));
+    return 0;
 }
 
 // Sorts like CompareStrings (highest priority first), but by ComparePatchNames within one folder.

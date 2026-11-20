@@ -84,8 +84,9 @@ Key pieces:
   MPQs via `(listfile)`); CVar `extendedDBC` 0 turns them off (`DBContinuations` in `WowClientDB.h/.cpp`, log in
   `Logs\ExtendedDBC.log`). **Sound fallback** — a missing `.wav` opens as `.ogg` and back (`OpenAlternateSoundFile`
   in `SoundEngine.cpp`), for the squished client's converted sounds.
-- **Patch names** — `patch-<stem>[.<tag>].MPQ` with any letters/digits stem (`PatchFiles.cpp`): numbers by value,
-  letters by length then alphabet, letters above numbers; a tagged patch loads only when `realmName` equals the tag.
+- **Patch names** — `patch-<stem>[.<tag>].MPQ` with a letters/digits/hyphens stem (`PatchFiles.cpp`), ranked
+  alphabetically without case or `.MPQ`, tag included, a prefix first (`3 < OAMaps < WHE < WHE-assets < WHE.war`;
+  later overrides); a tagged patch loads only when `realmName` equals the tag.
 
 To see the full fork delta: `git diff 4119c4b HEAD -- WoW Engine` (4119c4b is the last pure-upstream commit before
 the fork's work), or grep for `// Custom`.
