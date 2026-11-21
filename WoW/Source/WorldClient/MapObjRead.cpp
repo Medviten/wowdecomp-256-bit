@@ -188,6 +188,10 @@ void CMapObj::CreateMaterial(uint8_t texture) {
             break;
 
         default:
+            // Custom: shaders past 6 come from later expansions' WMOs (Open Azeroth's Cataclysm buildings use 9-11).
+            // s_classicShaders/s_unifiedShaders hold 0-6, so they read past the tables and crash; draw them diffuse.
+            material.m_shader = 0;
+            texture2 = nullptr;
             break;
     }
 
