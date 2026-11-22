@@ -182,6 +182,13 @@ void UploadSkinGaps(CGxTex* texture);
 // Custom: set while composing a character of a race in creatureSkinRaces (per thread, the component thread composes
 // requests too): skin pastes keep the skin's alpha instead of making it opaque, for models with alpha-keyed parts
 thread_local bool s_keepSkinAlpha = false;
+
+// Custom: whether the skin is pasted into the head sections. Stock only for skin rows with flag 0x8; otherwise the face
+// textures fill them. Creature-skin races have no face textures, so without the skin those sections kept whatever the
+// shared composite buffer last held (another character's pixels on hats, loincloths and other parts sampling there).
+bool SkinFillsHead(const CharSectionsRec* skinRec, uint32_t raceID) {
+    return (skinRec && (skinRec->m_flags & 0x8)) || ClientRaceHidesArmorTextures(raceID);
+}
 }
 
 // STATIC: 0x00B6B928
@@ -1331,7 +1338,8 @@ void CCharacterComponent::CreateRequestHA() {
 void CCharacterComponent::CreateRequestHU() {
     CharSectionsRec* skinRec = ComponentGetSectionsRecord(CCharacterComponent::s_chrVarArray, this->m_data.m_preferences.m_raceID, this->m_data.m_preferences.m_sexID, VARIATION_SKIN, 0, this->m_data.m_preferences.m_skinID, nullptr);
 
-    if (skinRec && (skinRec->m_flags & 0x8)) {
+    // Custom: creature-skin races always (see SkinFillsHead)
+    if (SkinFillsHead(skinRec, this->m_data.m_preferences.m_raceID)) {
         this->m_request->m_baseTextures[SECTION_HEAD_UPPER] = TextureCacheCopyTexture(this->m_baseVariation[VARIATION_SKIN].m_texture[0]);
     }
 
@@ -1353,7 +1361,8 @@ void CCharacterComponent::CreateRequestHU() {
 void CCharacterComponent::CreateRequestHL() {
     CharSectionsRec* skinRec = ComponentGetSectionsRecord(CCharacterComponent::s_chrVarArray, this->m_data.m_preferences.m_raceID, this->m_data.m_preferences.m_sexID, VARIATION_SKIN, 0, this->m_data.m_preferences.m_skinID, nullptr);
 
-    if (skinRec && (skinRec->m_flags & 0x8)) {
+    // Custom: creature-skin races always (see SkinFillsHead)
+    if (SkinFillsHead(skinRec, this->m_data.m_preferences.m_raceID)) {
         this->m_request->m_baseTextures[SECTION_HEAD_LOWER] = TextureCacheCopyTexture(this->m_baseVariation[VARIATION_SKIN].m_texture[0]);
     }
 
@@ -5326,7 +5335,8 @@ void CCharacterComponent::RenderPrepHA() {
 void CCharacterComponent::RenderPrepHU() {
     CharSectionsRec* skinRec = ComponentGetSectionsRecord(CCharacterComponent::s_chrVarArray, this->m_data.m_preferences.m_raceID, this->m_data.m_preferences.m_sexID, VARIATION_SKIN, 0, this->m_data.m_preferences.m_skinID, nullptr);
 
-    if (skinRec && (skinRec->m_flags & 0x8)) {
+    // Custom: creature-skin races always (see SkinFillsHead)
+    if (SkinFillsHead(skinRec, this->m_data.m_preferences.m_raceID)) {
         CCharacterComponent::PasteFromSkin(SECTION_HEAD_UPPER, this->m_baseVariation[VARIATION_SKIN].m_texture[0], CCharacterComponent::s_textureBuffer);
     }
 
@@ -5348,7 +5358,8 @@ void CCharacterComponent::RenderPrepHU() {
 void CCharacterComponent::RenderPrepHL() {
     CharSectionsRec* skinRec = ComponentGetSectionsRecord(CCharacterComponent::s_chrVarArray, this->m_data.m_preferences.m_raceID, this->m_data.m_preferences.m_sexID, VARIATION_SKIN, 0, this->m_data.m_preferences.m_skinID, nullptr);
 
-    if (skinRec && (skinRec->m_flags & 0x8)) {
+    // Custom: creature-skin races always (see SkinFillsHead)
+    if (SkinFillsHead(skinRec, this->m_data.m_preferences.m_raceID)) {
         CCharacterComponent::PasteFromSkin(SECTION_HEAD_LOWER, this->m_baseVariation[VARIATION_SKIN].m_texture[0], CCharacterComponent::s_textureBuffer);
     }
 
