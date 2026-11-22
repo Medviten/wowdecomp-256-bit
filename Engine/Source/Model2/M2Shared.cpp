@@ -2125,7 +2125,10 @@ int32_t CM2Shared::FinishLoadingLowPrioritySequence(uint32_t sequenceIndex, CAsy
         return 0;
     }
 
-    for (uint16_t* alias = &sequence->m_aliasNext; *alias != sequenceIndex; alias = &this->m_data->m_sequences[*alias].m_aliasNext) {
+    // Custom: bounded to one pass and to the table, for aliasNext chains that never lead back (they hung the client).
+    uint32_t steps = this->m_data->m_sequences.m_count;
+
+    for (uint16_t* alias = &sequence->m_aliasNext; *alias != sequenceIndex && *alias < this->m_data->m_sequences.m_count && steps--; alias = &this->m_data->m_sequences[*alias].m_aliasNext) {
         if (!this->FinishLoadingLowPrioritySequence(*alias, static_cast<uint8_t*>(object->m_buffer), object->m_size)) {
             return 0;
         }
@@ -2586,8 +2589,10 @@ CM2SequenceLoad* CM2Shared::LoadLowPrioritySequence(uint16_t sequenceIndex) {
     load->m_shared = this;
 
     M2Sequence* source = sequence;
+    // Custom: bounded like the alias walks below, for alias chains that loop among alias sequences.
+    uint32_t steps = this->m_data->m_sequences.m_count;
 
-    while (source->m_flags & 0x40) {
+    while ((source->m_flags & 0x40) && source->m_aliasNext < this->m_data->m_sequences.m_count && steps--) {
         source = &this->m_data->m_sequences[source->m_aliasNext];
     }
 
@@ -2633,7 +2638,10 @@ CM2SequenceLoad* CM2Shared::LoadLowPrioritySequence(uint16_t sequenceIndex) {
 
     sequence->m_flags |= 0x10;
 
-    for (uint16_t i = sequence->m_aliasNext; i != sequenceIndex; i = this->m_data->m_sequences[i].m_aliasNext) {
+    // Custom: bounded to one pass and to the table, for aliasNext chains that never lead back (they hung the client).
+    steps = this->m_data->m_sequences.m_count;
+
+    for (uint16_t i = sequence->m_aliasNext; i != sequenceIndex && i < this->m_data->m_sequences.m_count && steps--; i = this->m_data->m_sequences[i].m_aliasNext) {
         this->m_data->m_sequences[i].m_flags |= 0x10;
     }
 

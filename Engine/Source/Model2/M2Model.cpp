@@ -6693,8 +6693,11 @@ void CM2Model::SetBoneSequenceDeferred(uint16_t sequenceIndex, M2Data* data, uin
 
     if (data->m_sequences[sequenceIndex].m_flags & 0x10) {
         uint16_t index = sequenceIndex;
+        // Custom: give up after one pass over the sequences; an aliasNext chain that never leads back to
+        // sequenceIndex (e.g. ZEPSHREDDERMOUNT.M2, grummle.m2) hung the client here.
+        uint32_t steps = data->m_sequences.m_count;
 
-        while (true) {
+        while (steps--) {
             TSList<CM2SequenceLoad>& loads = this->m_shared->m_sequenceLoads;
 
             for (CM2SequenceLoad* load = loads.Head(); !loads.IsEnd(load); load = loads.RawNext(load)) {
@@ -6715,10 +6718,14 @@ void CM2Model::SetBoneSequenceDeferred(uint16_t sequenceIndex, M2Data* data, uin
 
             index = data->m_sequences[index].m_aliasNext;
 
-            if (index == sequenceIndex) {
+            // Custom: also stop at an aliasNext past the table.
+            if (index == sequenceIndex || index >= data->m_sequences.m_count) {
                 return;
             }
         }
+
+        // Custom: the chain didn't lead back (see above).
+        return;
     } else {
         CM2SequenceLoad* load = this->m_shared->LoadLowPrioritySequence(sequenceIndex);
 
@@ -7297,6 +7304,20 @@ void CM2Model::SetBoneSequence(uint32_t boneId, uint32_t sequenceId, uint32_t va
                     }
                 }
             }
+
+            // Custom: some converted M2s (e.g. OA's 7xp_gobstationx.m2) have a lookup table that misses a sequence id
+            // they do have; search the sequences directly instead of leaving index at 0xFFFF.
+            if (index == 0xFFFF) {
+                for (index = 0; index < data->m_sequences.m_count; index++) {
+                    if (data->m_sequences[index].m_id == fallback.m_id) {
+                        break;
+                    }
+                }
+
+                if (index >= data->m_sequences.m_count) {
+                    index = 0xFFFF;
+                }
+            }
         } else {
             for (index = 0; index < data->m_sequences.m_count; index++) {
                 if (data->m_sequences[index].m_id == fallback.m_id) {
@@ -7312,6 +7333,12 @@ void CM2Model::SetBoneSequence(uint32_t boneId, uint32_t sequenceId, uint32_t va
         this->PickRandomSequenceVariation(&variation, &index);
     } else if (pickRandom) {
         this->PickRandomSequenceVariation(&variation, &index);
+    }
+
+    // Custom: the stock client reads m_sequences[0xFFFF] here when the sequence isn't found; that garbage could send
+    // SetBoneSequenceDeferred's alias walk into an endless loop.
+    if (index >= data->m_sequences.m_count) {
+        return;
     }
 
     if (!(data->m_sequences[index].m_flags & 0x20)) {
