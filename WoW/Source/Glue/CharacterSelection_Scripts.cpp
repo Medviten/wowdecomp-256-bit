@@ -14,6 +14,8 @@
 #include "WoW/Source/DB/Rec/AreaTableRec.h"
 #include "WoW/Source/DB/Rec/ChrClassesRec.h"
 #include "WoW/Source/DB/Rec/ChrRacesRec.h"
+#include "WoW/Source/DB/Rec/FactionGroupRec.h"
+#include "WoW/Source/DB/Rec/FactionTemplateRec.h"
 #include "WoW/Source/Glue/CGlueMgr.h"
 #include "WoW/Source/Glue/CSimpleModelFFX.h"
 #include "WoW/Source/Glue/CharacterSelectionDisplay.h"
@@ -229,6 +231,26 @@ static int32_t Script_DeclineCharacter(lua_State* L) {
     return 1;
 }
 
+// Custom: the internal name of the faction group a race belongs to ("Alliance"/"Horde"), as GetFactionForRace's second
+// value in character creation, or nullptr
+static const char* GetRaceFactionGroupName(ChrRacesRec* raceRec) {
+    FactionTemplateRec* factionTemplate = raceRec ? g_factionTemplateDB.GetRecord(raceRec->m_factionID) : nullptr;
+
+    if (!factionTemplate) {
+        return nullptr;
+    }
+
+    for (int32_t i = 0; i < g_factionGroupDB.m_numRecords; i++) {
+        FactionGroupRec* group = &g_factionGroupDB.m_records[i];
+
+        if (group->m_maskID && ((1 << group->m_maskID) & factionTemplate->m_factionGroup)) {
+            return group->m_internalName;
+        }
+    }
+
+    return nullptr;
+}
+
 // VERIFY: 433a84a4 manual
 // OFFSET: 0x004E3620
 static int32_t Script_GetSelectBackgroundModel(lua_State* L) {
@@ -266,15 +288,20 @@ static int32_t Script_GetSelectBackgroundModel(lua_State* L) {
             return 1;
         }
 
-        uint32_t raceID = display->m_characterInfo.m_raceID;
-
-        if (raceID == 7) {
-            raceID = 3;
-        } else if (raceID == 8) {
-            raceID = 2;
-        }
+        // Custom: gnomes and trolls keep their own scene when it is installed (was always 7 -> 3, 8 -> 2)
+        uint32_t raceID = CCharacterSelection::GetBackgroundRace(display->m_characterInfo.m_raceID);
 
         raceRec = g_chrRacesDB.GetRecord(raceID);
+
+        // Custom: also return the race's file string and faction ("Alliance"/"Horde", as GetFactionForRace), so the
+        // glue scripts can show races starting on Exile's Reach their faction's scene, as character creation does
+        if (raceRec) {
+            ChrRacesRec* ownRaceRec = g_chrRacesDB.GetRecord(display->m_characterInfo.m_raceID);
+            lua_pushstring(L, raceRec->m_clientFileString);
+            lua_pushstring(L, ownRaceRec ? ownRaceRec->m_clientFileString : "");
+            lua_pushstring(L, GetRaceFactionGroupName(ownRaceRec));
+            return 3;
+        }
     } else {
         raceRec = g_chrRacesDB.GetRecord(2);
     }

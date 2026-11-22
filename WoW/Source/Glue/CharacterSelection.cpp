@@ -9,6 +9,7 @@
 #include "Engine/Source/Model2/M2Model.h"
 #include "Engine/Source/Model2/M2Scene.h"
 #include "Engine/Source/Model2/M2Shared.h"
+#include "Engine/Source/BlizzardCore/SFile2-Core.h"
 #include "Engine/Source/Os/OsFile.h"
 #include "Engine/Source/Storm/H/storm.h"
 #include "Engine/Source/Tempest/C44Matrix.h"
@@ -16,6 +17,7 @@
 #include "WoW/Common/ComponentCore/CharacterComponent.h"
 #include "WoW/Source/Client.h"
 #include "WoW/Source/DB/DBClient/DBClient.h"
+#include "WoW/Source/DB/Rec/ChrRacesRec.h"
 #include "WoW/Source/DB/Rec/CreatureDisplayInfoRec.h"
 #include "WoW/Source/DB/Rec/CreatureFamilyRec.h"
 #include "WoW/Source/DB/Rec/CreatureModelDataRec.h"
@@ -302,6 +304,28 @@ void CCharacterSelection::UpdateCharacterNameDeclension(WOWGUID guid) {
             return;
         }
     }
+}
+
+// Custom: gnomes and trolls had no glue scene before Cataclysm and show the dwarf and orc ones, as the original
+// GetCreateBackgroundModel/GetSelectBackgroundModel did, unless their own scene, UI_<file string>, is installed
+// (Cataclysm's UI_Gnome / UI_Troll, WHE modpak F-141)
+uint32_t CCharacterSelection::GetBackgroundRace(uint32_t raceID) {
+    if (raceID != 7 && raceID != 8) {
+        return raceID;
+    }
+
+    ChrRacesRec* raceRec = g_chrRacesDB.GetRecord(raceID);
+
+    if (raceRec) {
+        char path[260];
+        SStrPrintf(path, sizeof(path), "Interface\\Glues\\Models\\UI_%s\\UI_%s.m2", raceRec->m_clientFileString, raceRec->m_clientFileString);
+
+        if (SFile::FileExists(path)) {
+            return raceID;
+        }
+    }
+
+    return raceID == 7 ? 3 : 2;
 }
 
 // VERIFY: 805a43b3 auto

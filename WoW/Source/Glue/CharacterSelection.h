@@ -25,6 +25,8 @@ class CCharacterSelection {
     static void DressComponent(const CHARACTER_INFO& info, CCharacterComponent* component);
     static void EnumerateCharactersCallback(CHARACTER_INFO& info, void* param);
     static void GenericLightingCallback(CM2Model* model, CM2Lighting* lighting, void* arg);
+    // Custom: the race whose glue scene a race uses (see the definition)
+    static uint32_t GetBackgroundRace(uint32_t raceID);
     static CharacterSelectionDisplay* GetCharacterDisplay(uint32_t index);
     static void GuildCallback(int32_t guildID, const WOWGUID& guid, void* param, bool success);
     static int32_t Idle(const void* data, void* param);

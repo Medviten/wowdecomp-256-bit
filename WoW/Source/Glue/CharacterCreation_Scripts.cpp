@@ -769,13 +769,8 @@ static int32_t Script_GetCreateBackgroundModel(lua_State* L) {
             return 2;
         }
     } else {
-        uint32_t raceID = CCharacterCreation::m_character->m_data.m_preferences.m_raceID;
-
-        if (raceID == 7) {
-            raceID = 3;
-        } else if (raceID == 8) {
-            raceID = 2;
-        }
+        // Custom: gnomes and trolls keep their own scene when it is installed (was always 7 -> 3, 8 -> 2)
+        uint32_t raceID = CCharacterSelection::GetBackgroundRace(CCharacterCreation::m_character->m_data.m_preferences.m_raceID);
 
         ChrRacesRec* raceRec = g_chrRacesDB.GetRecord(raceID);
 
