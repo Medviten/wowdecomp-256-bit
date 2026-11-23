@@ -39,8 +39,8 @@ static thread_local ObjectMgr* s_curMgr;
 // STATIC: 0x00B4B014
 static ObjectMgr* s_savedObjMgr;
 
-// Custom: the active player has PLAYER_EXT_FIELDS more fields than stock (1326) for the 255-slot quest log and its
-// size, which takes the update mask past the stock 42 blocks
+// Custom: the active player has PLAYER_EXT_FIELDS more fields than stock (1326) for the 255-slot quest log, its size
+// and the extended explored zones, which takes the update mask past the stock 42 blocks
 static constexpr uint32_t ACTIVE_PLAYER_DWORDS = 1326 + PLAYER_EXT_FIELDS;
 static constexpr uint32_t MAX_DIRTY_MASK_BLOCKS = (ACTIVE_PLAYER_DWORDS + 31) / 32;
 static_assert(ACTIVE_PLAYER_DWORDS * sizeof(uint32_t) == sizeof(CGObjectData) + sizeof(CGUnitData) + sizeof(CGPlayerLocalData), "active player field count");

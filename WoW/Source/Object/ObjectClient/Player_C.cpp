@@ -2809,7 +2809,7 @@ CGPlayer_C::CGPlayer_C(uint32_t time, const CClientObjCreate& create)
     }
 
     if (this->m_obj->m_guid == ClntObjMgrGetActivePlayer()) {
-        // Custom: + PLAYER_EXT_FIELDS lists for the appended fields (extended quest log, quest log size)
+        // Custom: + PLAYER_EXT_FIELDS lists for the appended fields (extended quest log, quest log size, extended explored zones)
         for (uint32_t i = 0; i < 1002 + PLAYER_EXT_FIELDS; i++) {
             new (&this->m_playerLocalMirrorLists[i]) TSList<void>();
         }
@@ -13465,7 +13465,7 @@ void CGPlayer_C::DestructActivePlayer() {
         CGGameUI::LeaveWorld();
     }
 
-    // Custom: + PLAYER_EXT_FIELDS lists for the appended fields (extended quest log, quest log size)
+    // Custom: + PLAYER_EXT_FIELDS lists for the appended fields (extended quest log, quest log size, extended explored zones)
     for (uint32_t i = 0; i < 1002 + PLAYER_EXT_FIELDS; i++) {
         this->m_playerLocalMirrorLists[i].~TSList<void>();
     }

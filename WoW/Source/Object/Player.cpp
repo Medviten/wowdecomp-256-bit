@@ -99,7 +99,8 @@ uint32_t CGPlayer::GetSavedIndexFromDataIndex(uint32_t index, uint32_t count, in
             }
         }
 
-        // Custom: the appended fields (extended quest log, quest log size) follow the stock local mirror fields
+        // Custom: the appended fields (extended quest log, quest log size, extended explored zones) follow the stock local
+    // mirror fields
         if (index >= 1178 && index < 1178 + PLAYER_EXT_FIELDS) {
             return index - 1178 + sizeof(CGPlayer::s_mirrorFields) / sizeof(CGPlayer::s_mirrorFields[0]) + sizeof(CGPlayer::s_localMirrorFields) / sizeof(CGPlayer::s_localMirrorFields[0]);
         }
@@ -125,8 +126,15 @@ float CGPlayer::GetDrunknessTurnValue() {
 // VERIFY: ce82abd2 manual
 // OFFSET: 0x00546100
 int32_t CGPlayer::HasZoneExplored(int32_t zone) {
+    // Custom: bits 4096-16383 are in the appended m_playerExploredZonesExt
     if (static_cast<uint32_t>(zone / 8) >= sizeof(this->m_player->m_playerExploredZones1)) {
-        return 1;
+        uint32_t byte = static_cast<uint32_t>(zone / 8) - sizeof(this->m_player->m_playerExploredZones1);
+
+        if (byte >= sizeof(this->m_player->m_playerExploredZonesExt)) {
+            return 1;
+        }
+
+        return this->m_player->m_playerExploredZonesExt[byte] & (1 << (zone % 8));
     }
 
     return this->m_player->m_playerExploredZones1[zone / 8] & (1 << (zone % 8));
@@ -135,7 +143,7 @@ int32_t CGPlayer::HasZoneExplored(int32_t zone) {
 // VERIFY: 89fd3c87 auto
 // OFFSET: 0x004F5530
 int32_t CGPlayer::TotalFields() {
-    // Custom: + the appended fields (extended quest log, quest log size)
+    // Custom: + the appended fields (extended quest log, quest log size, extended explored zones)
     return CGUnit::TotalFields() + 1043 + PLAYER_EXT_FIELDS;
 }
 

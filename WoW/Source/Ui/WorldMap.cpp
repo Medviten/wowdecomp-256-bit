@@ -85,6 +85,9 @@ static int32_t s_chunkCacheIndex;
 // OFFSET: 0x00547120
 void CGWorldMap::EnterWorld() {
     ClntObjMgrSetObjMirrorHandler(ClntObjMgrGetActivePlayer(), ID_PLAYER, 0xDF4, 0x200, PlayerExploredZonesUpdateHandler, nullptr, static_cast<HANDLER_PRIORITY>(0), 0);
+    // Custom: the appended explored-zone words redraw the map too
+    static_assert(offsetof(CGPlayerLocalData, m_playerExploredZones1) == 0xDF4, "explored zones offset");
+    ClntObjMgrSetObjMirrorHandler(ClntObjMgrGetActivePlayer(), ID_PLAYER, offsetof(CGPlayerLocalData, m_playerExploredZonesExt), sizeof(CGPlayerLocalData::m_playerExploredZonesExt), PlayerExploredZonesUpdateHandler, nullptr, static_cast<HANDLER_PRIORITY>(0), 0);
 }
 
 // VERIFY: ceb82748 auto
@@ -1439,4 +1442,6 @@ bool WorldMapTransformPosition(int32_t mapID, float x, float y, int32_t* outMapI
 // OFFSET: 0x00547150
 void CGWorldMap::LeaveWorld() {
     ClntObjMgrUnsetObjMirrorHandler(ClntObjMgrGetActivePlayer(), ID_PLAYER, 0xDF4, PlayerExploredZonesUpdateHandler, nullptr);
+    // Custom: see EnterWorld
+    ClntObjMgrUnsetObjMirrorHandler(ClntObjMgrGetActivePlayer(), ID_PLAYER, offsetof(CGPlayerLocalData, m_playerExploredZonesExt), PlayerExploredZonesUpdateHandler, nullptr);
 }

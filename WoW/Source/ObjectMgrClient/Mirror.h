@@ -24,7 +24,7 @@ extern CGFieldDescriptor OBJECT_DISCRIPTORS[5];
 extern CGFieldDescriptor ITEM_DESCRIPTORS[38];
 extern CGFieldDescriptor CONTAINER_DESCRIPTORS[3];
 extern CGFieldDescriptor UNIT_DESCRIPTORS[89];
-extern CGFieldDescriptor PLAYER_DESCRIPTORS[217]; // Custom: was 215
+extern CGFieldDescriptor PLAYER_DESCRIPTORS[218]; // Custom: was 215
 extern CGFieldDescriptor GAMEOBJECT_DESCRIPTORS[8];
 extern CGFieldDescriptor DYNAMICOBJECT_DESCRIPTORS[5];
 extern CGFieldDescriptor CORPSE_DESCRIPTORS[10];
